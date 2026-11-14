@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="A worked example of one AI 440 Concept Debate: four fictional students through the HOS 1 debate on whether a digital twin should control or only advise, with a timeline, the posts, grading, and Brightspace setup.">
+<title>AI 440 — Concept Debate: A Worked Example</title>
+<link rel="stylesheet" href="../assets/course.css">
+<style>
+/* Concept Debate example */
+.timeline { display:grid; gap:0; margin:8px 0 16px; border-left:3px solid var(--border); padding-left:18px; }
+.tl { position:relative; padding:0 0 16px; }
+.tl::before { content:""; position:absolute; left:-25px; top:4px; width:11px; height:11px; border-radius:50%; background:var(--accent); border:2px solid var(--surface); }
+.tl.inst::before { background:var(--violet); }
+.tl .when { font-size:.72rem; font-weight:800; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); }
+.tl h3 { margin:2px 0 4px; font-size:.95rem; }
+.tl p { margin:0; font-size:.88rem; }
+.cast { display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:10px; margin:10px 0 4px; }
+.person { border:1px solid var(--border); border-radius:10px; padding:10px 12px; background:var(--surface2); font-size:.85rem; }
+.person b { display:block; font-size:.95rem; }
+.thread-view { border:1px solid var(--border); border-radius:10px; background:var(--surface); overflow:hidden; margin:10px 0 16px; font-size:.86rem; }
+.thread-view .tv-head { background:var(--surface2); padding:8px 12px; font-weight:700; font-size:.8rem; color:var(--muted); border-bottom:1px solid var(--border); }
+.tv-row { padding:7px 12px; border-bottom:1px solid var(--border); display:flex; gap:8px; flex-wrap:wrap; align-items:baseline; }
+.tv-row:last-child { border-bottom:none; }
+.tv-row.r1 { padding-left:34px; } .tv-row.r2 { padding-left:56px; }
+.tv-row .who { font-weight:700; } .tv-row .ts { color:var(--muted); font-size:.78rem; margin-left:auto; }
+.post { border:1px solid var(--border); border-radius:10px; background:var(--surface); margin:10px 0; overflow:hidden; }
+.post.reply { margin-left:26px; }
+.post .ph { display:flex; flex-wrap:wrap; gap:6px 10px; align-items:baseline; padding:8px 12px; background:var(--surface2); border-bottom:1px solid var(--border); font-size:.8rem; }
+.post .ph b { font-size:.88rem; }
+.post .ph .ts { color:var(--muted); margin-left:auto; }
+.post .pb { padding:10px 12px; font-size:.88rem; }
+.post .pb p { margin:0 0 6px; } .post .pb p:last-child { margin:0; }
+.post .note { padding:8px 12px; font-size:.8rem; border-top:1px dashed var(--border); color:var(--muted); }
+.post .note b { color:var(--text); }
+.post.weakp { border-left:5px solid var(--bad); } .post.strongp { border-left:5px solid var(--ok); } .post.instp { border-left:5px solid var(--violet); }
+@media (max-width:560px) { .post.reply { margin-left:10px; } .tv-row.r1 { padding-left:22px; } .tv-row.r2 { padding-left:34px; } }
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="top">
+  <div class="top-inner">
+    <a class="brand" href="../index.html"><span class="brand-icon">440</span><span><b>AI 440: Digital Twins and Physical AI</b><small>Reference</small></span></a>
+    <div class="top-right"><a class="pill-btn" href="../index.html">Course home</a><button class="pill-btn" id="themeToggle" type="button">🌙 Dark</button></div>
+  </div>
+</header>
+<section class="hero">
+  <div class="hero-inner">
+    <div class="eyebrow">AI 440 · Concept Debate</div>
+    <h1>Concept Debate: A Worked Example</h1>
+    <p class="lede">Four students, one debate, one week. Every post they write, when they write it, what the Brightspace thread looks like, what the instructor does, and how each student is graded.</p>
+    <div class="chips"><span class="chip">Module 1 debate</span><span class="chip">3 stages</span><span class="chip">For students and instructors</span></div>
+  </div>
+</section>
+<main id="main">
+<nav class="secnav no-print" aria-label="Sections">
+  <div class="secnav-inner"><a href="#setup">The setup</a><a href="#timeline">Timeline</a><a href="#thread">Thread view</a><a href="#posts">The posts</a><a href="#ai-use">AI use</a><a href="#grading">Grading</a><a href="#brightspace">Brightspace setup</a></div>
+</nav>
+<section class="module card" id="setup">
+  <div class="module-head"><div class="module-icon">⚖️</div><div><h2>The setup</h2><div class="module-meta"><span class="tag">HOS 1 · Week 1</span><span class="tag">CO1</span></div></div></div>
+<p><b>The question</b> (already in the <a href="../module-1/index.html#debate">Module 1 lesson</a>): <em>Should a digital twin ever control the physical system directly, or only advise a human operator?</em></p>
+  <ul>
+    <li><b>Side A — Let it control, within limits.</b> Close the loop: the twin acts automatically inside tested limits.</li>
+    <li><b>Side B — Advise only.</b> The twin recommends; a named person decides and acts.</li>
+  </ul>
+  <p>Before the first debate, the class is split into two debate groups of about the same size, either assigned by the instructor or chosen by students. In HOS 1, Debate Group 1 argues Side A and Debate Group 2 argues Side B. The four students below are fictional.</p>
+  <div class="cast">
+    <div class="person"><b>Mei</b>Debate Group 1 · Side A<br><span class="muted">Strong throughout</span></div>
+    <div class="person"><b>Tomás</b>Debate Group 1 · Side A<br><span class="muted">On time, but general</span></div>
+    <div class="person"><b>Dev</b>Debate Group 2 · Side B<br><span class="muted">Strong throughout</span></div>
+    <div class="person"><b>Rosa</b>Debate Group 2 · Side B<br><span class="muted">Strong, but Stage 1 late</span></div>
+  </div>
+</section>
+
+<section class="module card" id="timeline">
+  <div class="module-head"><div class="module-icon">🗓️</div><div><h2>Timeline</h2><div class="module-meta"><span class="tag">Week 1 of the HOS</span><span class="tag violet">Instructor steps in purple</span></div></div></div>
+<p class="small muted">Days follow the suggested pacing in the lessons; your Brightspace dates win.</p>
+  <div class="timeline">
+    <div class="tl"><span class="when">Week 1 · Monday</span><h3>The topic opens</h3><p>After the lecture, students read the question and both sides in the lesson. The instructor posts nothing new; the question is already in the course.</p></div>
+    <div class="tl inst"><span class="when">Monday · instructor</span><h3>Check the groups</h3><p>Confirm the two debate groups are close to even, and place anyone who added late.</p></div>
+    <div class="tl"><span class="when">Monday – Tuesday</span><h3>Stage 1: initial position</h3><p>Each student starts <b>their own thread</b>, titled with their side and name. Until they post it, Brightspace hides everyone else's threads.</p></div>
+    <div class="tl inst"><span class="when">Wednesday · instructor</span><h3>Skim Stage 1 and nudge</h3><p>About 15 minutes. Look for topic summaries with no claim or evidence, and leave one short public question on those threads. Note anyone who hasn't posted.</p></div>
+    <div class="tl"><span class="when">Wednesday – Thursday</span><h3>Stage 2: argue the opposite</h3><p>Each student replies <b>to their own thread</b> with the strongest case for the side they didn't argue. Now they can read everyone's posts.</p></div>
+    <div class="tl"><span class="when">Friday – Saturday</span><h3>Stage 3: synthesis</h3><p>Each student replies <b>to a classmate's thread from the other side</b>, citing one specific point from it. The topic closes Saturday night.</p></div>
+    <div class="tl inst"><span class="when">Week 2 · Monday · instructor</span><h3>Grade and reuse</h3><p>Grade from the topic's Assessment view (about 2 minutes per student; each student's posts appear together). Quote one strong synthesis, anonymized or with permission, in the Week 2 lecture.</p></div>
+  </div>
+</section>
+
+<section class="module card" id="thread">
+  <div class="module-head"><div class="module-icon">🧵</div><div><h2>What the thread looks like in Brightspace</h2><div class="module-meta"><span class="tag">One topic, one thread per student</span></div></div></div>
+<p>One whole-class topic for this debate. Each student's thread holds their Stage 1 and Stage 2; Stage 3 lives in someone else's thread.</p>
+  <div class="thread-view" role="group" aria-label="Brightspace topic: HOS 1 Concept Debate">
+    <div class="tv-head">Concept Debates › HOS 1: Control or advise only?</div>
+    <div class="tv-row"><span class="who">Side A — Mei</span><span class="tag">Stage 1</span><span class="ts">Mon 8:40 pm</span></div><div class="tv-row r1"><span>↳ Mei</span><span class="tag">Stage 2</span><span class="ts">Wed 6:05 pm</span></div><div class="tv-row r1"><span>↳ Dev</span><span class="tag">Stage 3</span><span class="ts">Sat 11:20 am</span></div><div class="tv-row"><span class="who">Side B — Dev</span><span class="tag">Stage 1</span><span class="ts">Tue 10:15 am</span></div><div class="tv-row r1"><span>↳ Dev</span><span class="tag">Stage 2</span><span class="ts">Thu 2:30 pm</span></div><div class="tv-row r1"><span>↳ Mei</span><span class="tag">Stage 3</span><span class="ts">Fri 7:45 pm</span></div><div class="tv-row"><span class="who">Side A — Tomás</span><span class="tag">Stage 1</span><span class="ts">Tue 9:50 pm</span></div><div class="tv-row r1"><span>↳ Instructor</span><span class="tag violet">Nudge</span><span class="ts">Wed 9:10 am</span></div><div class="tv-row r1"><span>↳ Tomás</span><span class="tag">Stage 2</span><span class="ts">Thu 11:05 pm</span></div><div class="tv-row r1"><span>↳ Rosa</span><span class="tag">Stage 3</span><span class="ts">Sat 4:10 pm</span></div><div class="tv-row"><span class="who">Side B — Rosa</span><span class="tag bad">Stage 1 · late</span><span class="ts">Wed 7:30 am</span></div><div class="tv-row r1"><span>↳ Rosa</span><span class="tag">Stage 2</span><span class="ts">Thu 8:00 pm</span></div><div class="tv-row r1"><span>↳ Tomás</span><span class="tag">Stage 3</span><span class="ts">Sat 10:55 pm</span></div>
+  </div>
+</section>
+
+<section class="module card" id="posts">
+  <div class="module-head"><div class="module-icon">💬</div><div><h2>The posts</h2><div class="module-meta"><span class="tag">In the order they were written</span></div></div></div>
+<h3>Stage 1 · Monday – Tuesday: initial position</h3>
+<div class="post strongp"><div class="ph"><b>Side A — Mei</b><span class="tag blue">Side A</span><span class="tag">Stage 1</span><span class="ts">Mon 8:40 pm</span></div><div class="pb"><p><b>Claim:</b> a twin should control slow, reversible actions itself, because a person reading its advice adds nothing when they see the same data it does.</p><p><b>Evidence:</b> in the Sensor Pipeline Simulator I set the fault to <em>stuck</em> with validation off. In advise mode the dashboard showed a calm 21.4 °C for twenty readings while the room cooled, and the "operator" (me) would have agreed with it. The person was no check at all. What caught it was turning on validation: a rule in code, which works the same in either mode.</p></div><div class="note"><b>Why it works:</b> one claim, and evidence from a run she actually did, with the setting she used.</div></div>
+<div class="post strongp"><div class="ph"><b>Side B — Dev</b><span class="tag rose">Side B</span><span class="tag">Stage 1</span><span class="ts">Tue 10:15 am</span></div><div class="pb"><p><b>Claim:</b> a twin should only advise, because physical damage can't be rolled back the way software can.</p><p><b>Evidence:</b> in my HOS 1 Week 2 build, I measured my pipeline's delay from <code>ts</code> to the twin at 1.2 s on a quiet Codespace, and over 6 s while Grafana was rebuilding a panel. A twin acting on a 6-second-old reading is acting on a building that no longer exists. A person can wait for the next reading; a valve that already opened can't un-open.</p></div><div class="note"><b>Why it works:</b> a real number from his own build, tied to why the action matters.</div></div>
+<div class="post weakp"><div class="ph"><b>Side A — Tomás</b><span class="tag blue">Side A</span><span class="tag">Stage 1</span><span class="ts">Tue 9:50 pm</span></div><div class="pb"><p>A digital twin is a virtual copy of a physical system connected by real-time data. Unlike a digital shadow, a twin can send commands back to the physical system. This is the future of Industry 4.0 and makes factories more efficient.</p></div><div class="note"><b>What's missing:</b> this is a summary of what a twin is, not an argument for when it should control. No specific claim, no evidence.</div></div>
+<div class="post instp reply"><div class="ph"><b>Instructor</b><span class="tag violet">Instructor</span><span class="ts">Wed 9:10 am</span></div><div class="pb"><p>Tomás, this explains what a twin is, but not why it should act instead of advising. For Stage 2, pick one specific system and say what goes wrong if a person has to approve every action there.</p></div><div class="note"><b>Instructor move:</b> one public question, not a grade. Other students can see what a stronger post needs.</div></div>
+<div class="post strongp"><div class="ph"><b>Side B — Rosa</b><span class="tag rose">Side B</span><span class="tag">Stage 1</span><span class="ts">Wed 7:30 am</span></div><div class="pb"><p><b>Claim:</b> a twin should only advise, because accountability needs a person who can be asked why.</p><p><b>Evidence:</b> the lecture's water-utility example: when an automated setpoint change went wrong, nobody could say which reading it had acted on, because nothing was logged. With an operator in the loop there is always someone who decided, and a record of when.</p></div><div class="note"><b>Strong, but late:</b> posted a day after the Stage 1 deadline. That costs Participation, not Writing.</div></div>
+
+  <h3>Stage 2 · Wednesday – Thursday: argue the opposite (a reply to your own thread)</h3>
+<div class="post strongp reply"><div class="ph"><b>Mei</b><span class="tag blue">Side A</span><span class="tag">Stage 2</span><span class="ts">Wed 6:05 pm</span></div><div class="pb"><p>The strongest case for advise only: my own run cuts both ways. Validation caught the stuck sensor, but only the fault I wrote a rule for. A twin in control acts on every fault nobody anticipated, at machine speed, with nobody watching. An advising twin with a wrong reading costs a bad recommendation; a controlling one costs whatever it was controlling.</p></div></div>
+<div class="post strongp reply"><div class="ph"><b>Dev</b><span class="tag rose">Side B</span><span class="tag">Stage 2</span><span class="ts">Thu 2:30 pm</span></div><div class="pb"><p>The strongest case for control: on a packaging line a jam has to stop the conveyor in under a second, and no person approves that in time. And people do stop reading advice: an operator who clicks "accept" on the hundredth identical recommendation of the day isn't a check any more, just a slower actuator.</p></div></div>
+<div class="post weakp reply"><div class="ph"><b>Tomás</b><span class="tag blue">Side A</span><span class="tag">Stage 2</span><span class="ts">Thu 11:05 pm</span></div><div class="pb"><p>The other side would say that a person is safer than automation.</p></div><div class="note"><b>What's missing:</b> names the other side's point but doesn't make its strongest case, and doesn't take up the instructor's nudge.</div></div>
+<div class="post strongp reply"><div class="ph"><b>Rosa</b><span class="tag rose">Side B</span><span class="tag">Stage 2</span><span class="ts">Thu 8:00 pm</span></div><div class="pb"><p>The strongest case for control: my accountability point is about the <em>log</em>, not about who acts. A twin that records the reading, its state, the proposed action and the limit it checked is more accountable than an operator who clicked accept at 3 a.m. and doesn't remember why.</p></div></div>
+
+  <h3>Stage 3 · Friday – Saturday: synthesis (a reply to a classmate from the other side)</h3>
+<div class="post strongp"><div class="ph"><b>Mei → Dev's thread</b><span class="tag blue">Side A</span><span class="tag">Stage 3</span><span class="ts">Fri 7:45 pm</span></div><div class="pb"><p>Dev's 6-second delay changed where I draw the line. My stuck-sensor point still stands, but a twin that controls needs to know how old its data is, and to stop when the data is too old for the action. My position: let the twin control slow, reversible actions such as a heating setpoint, only while its newest reading is younger than a limit chosen for that action; past that limit it falls back to advising.</p><p><em>AI use: I asked Copilot for the best objection to my position. It said latency limits are hard to choose, which is why I tied mine to a measured delay instead of a guess.</em></p></div><div class="note"><b>Why it works:</b> cites a specific point from Dev, changes her own view because of it, says how AI was used, and lands on a position that isn't just "it depends".</div></div>
+<div class="post strongp"><div class="ph"><b>Dev → Mei's thread</b><span class="tag rose">Side B</span><span class="tag">Stage 3</span><span class="ts">Sat 11:20 am</span></div><div class="pb"><p>Mei's stuck-sensor run convinced me that "a person checks it" isn't a safeguard if the person sees the same bad data. I'm dropping "advise only, always". My position: data-quality checks come first in either mode, and the twin may act only where the action is reversible within one reading interval. Anything irreversible stays advice-only.</p></div></div>
+<div class="post strongp"><div class="ph"><b>Rosa → Tomás's thread</b><span class="tag rose">Side B</span><span class="tag">Stage 3</span><span class="ts">Sat 4:10 pm</span></div><div class="pb"><p>Building on Tomás's point that a twin sends commands back: each of those commands is a message we can log, which answers my own accountability worry from Stage 1. So the choice isn't "a person or a machine". My synthesis: a twin can control what it can explain afterwards, from its log, and a person should decide whatever the log couldn't justify.</p></div><div class="note"><b>Why it works:</b> finds the one usable point in a weak post and builds on it, which counts as engaging with a classmate.</div></div>
+<div class="post weakp"><div class="ph"><b>Tomás → Rosa's thread</b><span class="tag blue">Side A</span><span class="tag">Stage 3</span><span class="ts">Sat 10:55 pm</span></div><div class="pb"><p>Great points! I agree both sides have pros and cons and it really depends on the system.</p></div><div class="note"><b>What's missing:</b> no point from Rosa's post, and no position. This is the response Stage 3 is designed to rule out.</div></div>
+</section>
+
+<section class="module card" id="ai-use">
+  <div class="module-head"><div class="module-icon">🤖</div><div><h2>AI use in a debate</h2><div class="module-meta"><span class="tag">AI can help you think, not write</span></div></div></div>
+<p>You may use an AI assistant to test your thinking. Your posts must be your own words and your own reasoning. Here's the difference in practice, on this debate's question:</p>
+  <div class="two">
+    <div class="eg weak"><span class="label">Pasted AI text</span>"Digital twins offer significant benefits for automation, while human oversight ensures safety. The optimal approach balances autonomy and control based on the specific use case."<br><br><b>What's missing:</b> no classmate's point, no specific evidence, and no position. It would earn little under Writing without anyone needing to ask where it came from.</div>
+    <div class="eg strong"><span class="label">AI as a sparring partner</span>Mei's Stage 3 above. Copilot supplied an objection, Mei weighed it against Dev's measured delay, then named the AI use in one line. The reasoning and the position are all Mei's.</div>
+  </div>
+  <p class="small muted" style="margin-top:10px">Full rules for every activity: <a href="../start-here/ai-use.html">AI Use Guide</a>.</p>
+</section>
+
+<section class="module card" id="grading">
+  <div class="module-head"><div class="module-icon">✅</div><div><h2>How each student is graded</h2><div class="module-meta"><span class="tag">10 points per debate</span><span class="tag">Participation 50% · Writing 50%</span></div></div></div>
+<div class="table-wrap" tabindex="0"><table class="t">
+    <tr><th>Student</th><th>Participation (5)</th><th>Writing (5)</th><th>Total</th><th>Why</th></tr>
+    <tr><td><b>Mei</b></td><td>5</td><td>5</td><td><b>10</b></td><td>All three stages on time. Evidence from a simulator run, a genuine Stage 2, and a synthesis that cites Dev and changes her own view.</td></tr>
+    <tr><td><b>Dev</b></td><td>5</td><td>5</td><td><b>10</b></td><td>All three on time. A measured number from his own build, and a synthesis that narrows his position because of Mei's point.</td></tr>
+    <tr><td><b>Rosa</b></td><td>3</td><td>5</td><td><b>8</b></td><td>Stage 1 a day late (checked from the post time). The writing is strong at every stage.</td></tr>
+    <tr><td><b>Tomás</b></td><td>5</td><td>1</td><td><b>6</b></td><td>Posted every stage on time, so full Participation. Stage 1 is a summary, Stage 2 a one-liner, and Stage 3 "great points, I agree", which doesn't meet the Writing criterion.</td></tr>
+  </table></div>
+  <div class="callout"><span class="label">Feedback that moves Tomás up next time</span><p>"Your Stage 3 needs one point from Rosa's post, in your own words, and what it made you think. Rosa's 'control what it can explain from its log' idea was there to respond to."</p></div>
+</section>
+
+<section class="module card" id="brightspace">
+  <div class="module-head"><div class="module-icon">🛠️</div><div><h2>Set it up in Brightspace</h2><div class="module-meta"><span class="tag">Instructor · once per term, then once per debate</span></div></div></div>
+<ol>
+    <li><b>One forum,</b> "Concept Debates", with <b>one topic per debate</b>: HOS 1–4 and the Week 8 Integration debate. Paste the question and both sides into each topic's description.</li>
+    <li><b>Turn on "Users must start a thread before they can read and reply to other threads in this topic"</b> (Post and View settings). Nobody can read and borrow arguments before posting their own Stage 1.</li>
+    <li><b>Set the topic's end date to the Stage 3 deadline.</b> Brightspace allows one end date per topic, so check Stage 1 and Stage 2 times when grading rather than splitting a debate into three topics.</li>
+    <li><b>Assessment tab:</b> score out of 10 and attach the Participation 50 / Writing 50 rubric, so you can grade from the topic with each student's posts together.</li>
+    <li><b>Tell students the thread title format:</b> "Side A — First name L." It makes the topic easy to scan.</li>
+    <li><b>Keep it one whole-class topic.</b> Above about 30–35 students, use Brightspace groups to make two or three restricted copies of the topic, each with a mix of both sides. Don't split by side: Stages 2 and 3 need the other side's posts.</li>
+  </ol>
+  <p class="small muted">Not one thread for everyone: replies nest until they're unreadable, the start-a-thread-first setting stops working, and grading means hunting for each student's posts.</p>
+</section>
+
+<section class="card"><h2>Related</h2><ul>
+<li><a href="../start-here/ai-use.html">AI Use Guide</a>: the rule for every activity.</li>
+<li>The debates themselves: <a href="../module-1/index.html#debate">Module 1</a> · <a href="../module-2/index.html#debate">Module 2</a> · <a href="../module-3/index.html#debate">Module 3</a> · <a href="../module-4/index.html#debate">Module 4</a> · <a href="../module-4/index.html#integration">Integration (Week 8)</a></li>
+</ul></section>
+</main>
+<footer class="foot">AI 440: Digital Twins and Physical AI · City University of Seattle, School of Technology &amp; Computing<br>Course design &amp; materials: Clark Ngo<br>© 2026 Clark Ngo · Free to reuse and adapt under <a href="https://creativecommons.org/licenses/by/4.0/" rel="license">CC BY 4.0</a>, except where noted · <a href="https://github.com/cityuseattle/ai440/blob/main/LICENSE.md">How to credit</a></footer>
+<script src="../assets/course.js"></script>
+<script>
+(function(){
+  var links=[].slice.call(document.querySelectorAll('.secnav a')); var map={};
+  links.forEach(function(a){ map[a.getAttribute('href').slice(1)]=a; });
+  if(!('IntersectionObserver' in window)) return;
+  var io=new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){ links.forEach(function(l){l.classList.remove('active');}); var a=map[e.target.id]; if(a) a.classList.add('active'); } }); },{rootMargin:'-45% 0px -50% 0px'});
+  Object.keys(map).forEach(function(id){ var s=document.getElementById(id); if(s) io.observe(s); });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="AI 440 Wall Heat PINN Simulator: an interactive browser model that pairs with HOS 2, with a guided tour.">
+<title>AI 440 — Wall Heat PINN Simulator</title>
+<link rel="stylesheet" href="../assets/course.css">
+<style>
+.sim-layout { display:grid; grid-template-columns:minmax(260px,340px) 1fr; gap:16px; align-items:start; }
+@media (max-width:860px){ .sim-layout { grid-template-columns:minmax(0,1fr); } }
+.sim-layout > * { min-width:0; }
+.panel { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:16px 18px; box-shadow:var(--shadow); margin-bottom:16px; min-width:0; }
+.panel h2 { font-size:1.02rem; margin-bottom:10px; }
+.panel h3 { font-size:.9rem; margin:14px 0 6px; }
+.presets { display:flex; flex-wrap:wrap; gap:6px; margin:6px 0 4px; }
+.presets button { font-family:inherit; font-size:.74rem; border:1px solid var(--border); background:var(--surface2); color:var(--text); border-radius:14px; padding:4px 10px; cursor:pointer; }
+.presets button:hover { border-color:var(--accent); }
+.toggle { display:flex; gap:8px; align-items:flex-start; font-size:.85rem; margin:6px 0; cursor:pointer; }
+.toggle input { accent-color:var(--accent); margin-top:4px; }
+.toggle small { display:block; color:var(--muted); font-size:.74rem; }
+.lanes { display:grid; grid-template-columns:repeat(var(--lanes,4),1fr); gap:8px; margin-bottom:12px; }
+.lane { border:2px solid var(--border); border-radius:10px; padding:10px; text-align:center; font-size:.8rem; background:var(--surface2); transition:all .2s; min-width:0; }
+.lane b { display:block; font-size:.86rem; }
+.lane .ic { font-size:1.3rem; display:block; }
+.lane.from { border-color:var(--blue); background:var(--blue-bg); }
+.lane.to { border-color:var(--accent); background:var(--accent-light); box-shadow:0 0 0 3px var(--accent-light); }
+.lane.err { border-color:var(--bad); background:var(--bad-bg); }
+@media (max-width:520px){ .lanes { grid-template-columns:repeat(2,1fr); } }
+.stepbox { border:1px solid var(--border); border-left:5px solid var(--accent); border-radius:8px; padding:10px 14px; background:var(--surface2); margin-bottom:12px; min-height:84px; }
+.stepbox.err { border-left-color:var(--bad); } .stepbox.warn { border-left-color:var(--amber); }
+.stepbox .k { font-size:.7rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); }
+.steps-list { list-style:none; margin:0; padding:0; font-size:.8rem; }
+.steps-list li { padding:5px 8px; border-radius:6px; color:var(--muted); display:flex; gap:8px; }
+.steps-list li.cur { background:var(--accent-light); color:var(--text); font-weight:700; }
+.steps-list li.past { color:var(--text); }
+.steps-list li .n { flex:none; width:20px; text-align:right; }
+.steps-list li.bad { color:var(--bad); }
+.verdict { border-radius:8px; padding:10px 14px; font-size:.86rem; margin-top:10px; }
+.verdict.ok { background:var(--ok-bg); color:var(--ok); } .verdict.bad { background:var(--bad-bg); color:var(--bad); } .verdict.warn { background:var(--amber-bg); color:var(--amber); }
+.kv { display:grid; grid-template-columns:auto 1fr; gap:4px 12px; font-size:.82rem; }
+.kv dt { color:var(--muted); } .kv dd { margin:0; font-weight:600; }
+.bar-row { display:grid; grid-template-columns:70px 1fr 48px; gap:8px; align-items:center; font-size:.78rem; margin-bottom:4px; }
+.bar-track { height:12px; background:var(--surface2); border:1px solid var(--border); border-radius:6px; overflow:hidden; position:relative; }
+.bar-fill { height:100%; background:var(--accent); }
+.project-tip { border:1px dashed var(--accent); border-radius:var(--radius); padding:14px 18px; background:var(--accent-light); font-size:.88rem; }
+.project-tip b.h { display:block; font-size:.72rem; letter-spacing:.08em; text-transform:uppercase; color:var(--accent2); margin-bottom:4px; }
+
+.stepcard { border:1px solid var(--border); border-left:4px solid var(--accent); border-radius:8px; padding:8px 12px; margin-bottom:6px; font-size:.84rem; background:var(--surface); }
+.stepcard .k { font-size:.68rem; font-weight:800; letter-spacing:.07em; text-transform:uppercase; color:var(--muted); }
+.stepcard.tool { border-left-color:var(--blue); } .stepcard.final { border-left-color:var(--ok); } .stepcard.stop { border-left-color:var(--amber); } .stepcard.bad { border-left-color:var(--bad); background:var(--bad-bg); }
+.stepcard.pick { cursor:pointer; } .stepcard.pick:hover { box-shadow:0 0 0 2px var(--accent-light); } .stepcard.chosen { box-shadow:0 0 0 3px var(--accent); }
+.metrics { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin:10px 0; }
+@media (max-width:560px){ .metrics { grid-template-columns:repeat(2,1fr); } }
+.metric { border:1px solid var(--border); border-radius:8px; padding:8px; text-align:center; background:var(--surface2); }
+.metric b { display:block; font-size:1.2rem; } .metric span { font-size:.72rem; color:var(--muted); }
+.seg { display:inline-flex; border:1px solid var(--border); border-radius:8px; overflow:hidden; flex-wrap:wrap; }
+.seg button { font-family:inherit; font-size:.8rem; font-weight:700; padding:6px 12px; border:none; background:var(--surface2); color:var(--text); cursor:pointer; }
+.seg button[aria-pressed="true"] { background:var(--accent); color:var(--on-accent); }
+.tbl { width:100%; border-collapse:collapse; font-size:.8rem; }
+.tbl th, .tbl td { border:1px solid var(--border); padding:5px 8px; text-align:left; }
+.tbl th { background:var(--surface2); font-size:.7rem; text-transform:uppercase; color:var(--muted); }
+.ok { color:var(--ok); font-weight:700; } .no { color:var(--bad); font-weight:700; }
+
+.chart { width:100%; height:auto; display:block; }
+.chart text { font-size:11px; fill:var(--muted); }
+.legend { display:flex; flex-wrap:wrap; gap:12px; font-size:.76rem; color:var(--muted); margin:4px 0 8px; }
+.legend i { display:inline-block; width:18px; height:0; border-top:3px solid; vertical-align:middle; margin-right:4px; }
+.legend i.dash { border-top-style:dashed; }
+.hm { display:grid; gap:2px; font-size:.7rem; }
+.hm div { padding:6px 2px; text-align:center; border-radius:3px; }
+.hm .h { color:var(--muted); font-weight:700; }
+.hm-wrap { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; }
+@media (max-width:560px){ .hm-wrap { grid-template-columns:minmax(0,1fr); } }
+.v-allow { color:var(--ok); font-weight:700; } .v-block { color:var(--bad); font-weight:700; } .v-stop { color:var(--amber); font-weight:700; }
+.range-v { font-weight:700; color:var(--accent2); }
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="top">
+  <div class="top-inner">
+    <a class="brand" href="../index.html"><span class="brand-icon">440</span><span><b>AI 440: Digital Twins and Physical AI</b><small>Simulators</small></span></a>
+    <div class="top-right"><a class="pill-btn" href="../index.html">Course home</a><button class="pill-btn" id="themeToggle" type="button">🌙 Dark</button></div>
+  </div>
+</header>
+<section class="hero">
+  <div class="hero-inner">
+    <div class="eyebrow">Simulator 2 · Pairs with HOS 2 (Weeks 3–4)</div>
+    <h1>Wall Heat PINN Simulator</h1>
+    <p class="lede">Predict the temperature through a building wall during a cold snap from three buried sensors. Compare a data-only model with a physics-informed one between the sensors and nine hours past the data, then give the physics the wrong diffusivity.</p>
+    <div class="chips"><span class="chip">CO2</span><span class="chip">Heat equation</span><span class="chip">Physics weight λ</span><span class="chip">Extrapolation</span><span class="chip">Wrong physics</span></div>
+  </div>
+</section>
+<main id="main">
+<div class="row no-print" style="margin-bottom:16px"><span class="small muted"><b>Simulators:</b></span><a class="tag blue" href="../module-1/simulator.html" style="text-decoration:none">1 · Sensor Pipeline</a><span class="tag">2 · Wall Heat PINN</span><a class="tag blue" href="../module-3/simulator.html" style="text-decoration:none">3 · Sim-to-Real Lab</a><a class="tag blue" href="../module-4/simulator.html" style="text-decoration:none">4 · What-If &amp; Safety Envelope</a></div>
+<section class="card tour" id="tour" aria-label="Guided tour"><p class="small muted" style="margin:0">Guided tour loading…</p></section>
+<div class="sim-layout">
+  <div>
+    <div class="panel">
+      <h2>1 · Readings and model</h2>
+      <p class="small muted">A 20 cm wall: inside held at 21 °C, the outside surface drops to −5 °C at hour 0. Three sensors at 4, 10 and 16 cm.</p>
+      <label class="field" for="hours">Hours of readings: <span class="range-v" id="hoursV"></span></label>
+      <input type="range" id="hours" min="1" max="6" value="3" step="1">
+      <label class="field" for="noise">Noise on each reading: <span class="range-v" id="noiseV"></span></label>
+      <input type="range" id="noise" min="0" max="6" value="1" step="1">
+      <label class="field" for="lam">Physics weight λ: <span class="range-v" id="lamV"></span></label>
+      <input type="range" id="lam" min="0" max="6" value="4" step="1">
+      <label class="field" for="alpha">Diffusivity the model assumes: <span class="range-v" id="alphaV"></span></label>
+      <input type="range" id="alpha" min="0" max="10" value="5" step="1">
+      <label class="toggle"><input type="checkbox" id="learn"><span>Learn α from the readings<small>The Week 4 Understand &amp; Refine build.</small></span></label>
+    </div>
+    <div class="panel">
+      <h2>Errors against the true wall</h2>
+      <div style="overflow-x:auto" tabindex="0"><table class="tbl" id="errs"></table></div>
+      <p class="small muted" style="margin-top:6px">Mean absolute error, °C. "Impossible" counts predictions colder than −5 °C or warmer than 21 °C anywhere in the wall.</p>
+    </div>
+  </div>
+  <div>
+    <div class="panel">
+      <h2>2 · The middle of the wall (10 cm) over 12 hours</h2>
+      <div class="legend"><span><i style="border-color:var(--muted)"></i>true</span><span><i class="dash" style="border-color:var(--bad)"></i>data-only network</span><span><i style="border-color:var(--accent)"></i>physics-informed</span><span>● readings · shaded = hours with data</span></div>
+      <div id="chartT"></div>
+    </div>
+    <div class="panel">
+      <h2>3 · Through the wall at hour <span id="timeV"></span></h2>
+      <label class="field" for="time">Time</label>
+      <input type="range" id="time" min="0" max="12" value="9" step="0.5">
+      <div id="chartX"></div>
+      <div id="verdict"></div>
+    </div>
+  </div>
+</div>
+<div class="card"><h2>What this teaches</h2><ul><li><b>Error at the sensors says little.</b> Compare models between the sensors and past the data, where the twin is used.</li><li><b>Physics rules out the impossible:</b> nothing in the wall can be colder than the outside surface.</li><li><b>λ is a balance.</b> At 0 you have a data-only network; very high, the physics wins even when it's wrong.</li><li><b>Wrong physics is confidently wrong.</b> Learning the uncertain parameter from the data is often the fix.</li></ul>
+<p class="small muted">This is a simplified browser model for building intuition, not the real build: the "PINN" is a physics-shaped fit rather than a trained network, and the wall is idealized (one material, no moisture). Your HOS 2 build in Codespaces is the real thing. Back to the <a href="index.html">Module 2 lesson</a> · <a href="hos-guide.html">HOS 2 guide</a>.</p></div>
+<div class="project-tip"><b class="h">For your Term Project</b>Name the law that governs your system and mark each parameter you only know from a spec sheet. Then ask where your sensors leave gaps, and whether a decision depends on them: that's where a physics-informed model earns its place.</div>
+</main>
+<footer class="foot">AI 440: Digital Twins and Physical AI · City University of Seattle, School of Technology &amp; Computing<br>Course design &amp; materials: Clark Ngo · Simulators are illustrative HTML models — no real sensors, models, simulators or network calls.<br>© 2026 Clark Ngo · Free to reuse and adapt under <a href="https://creativecommons.org/licenses/by/4.0/" rel="license">CC BY 4.0</a>, except where noted · <a href="https://github.com/cityuseattle/ai440/blob/main/LICENSE.md">How to credit</a></footer>
+<script src="../assets/course.js"></script>
+<script>
+var $=function(i){return document.getElementById(i);};
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');}
+/* line chart: series=[{pts:[[x,y]...], color, dash, w, dots}], opts {x0,x1,y0,y1,label,xt,yt,shade:[a,b],hline:[{y,color,label}],vline} */
+function chart(series,o){
+  var W=600,H=230,L=42,R=10,T=10,B=28;
+  function X(x){return L+(x-o.x0)/(o.x1-o.x0)*(W-L-R);} function Y(y){return T+(o.y1-y)/(o.y1-o.y0)*(H-T-B);}
+  var s='<svg class="chart" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="'+esc(o.label)+'">';
+  if(o.shade) s+='<rect x="'+X(o.shade[0])+'" y="'+T+'" width="'+(X(o.shade[1])-X(o.shade[0]))+'" height="'+(H-T-B)+'" style="fill:var(--accent-light)"/>';
+  (o.yt||[]).forEach(function(v){ s+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+Y(v)+'" y2="'+Y(v)+'" style="stroke:var(--border)"/><text x="'+(L-6)+'" y="'+(Y(v)+4)+'" text-anchor="end">'+v+'</text>'; });
+  (o.xt||[]).forEach(function(v){ s+='<text x="'+X(v[0])+'" y="'+(H-8)+'" text-anchor="middle">'+v[1]+'</text>'; });
+  (o.hline||[]).forEach(function(h){ s+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+Y(h.y)+'" y2="'+Y(h.y)+'" style="stroke:'+h.color+';stroke-dasharray:2 4"/>'+(h.label?'<text x="'+(W-R-4)+'" y="'+(Y(h.y)-4)+'" text-anchor="end">'+h.label+'</text>':''); });
+  if(o.vline!=null) s+='<line x1="'+X(o.vline)+'" x2="'+X(o.vline)+'" y1="'+T+'" y2="'+(H-B)+'" style="stroke:var(--muted);stroke-dasharray:3 3"/>';
+  series.forEach(function(se){
+    if(se.dots){ se.pts.forEach(function(p){ if(p[1]!=null) s+='<circle cx="'+X(p[0]).toFixed(1)+'" cy="'+Y(Math.max(o.y0,Math.min(o.y1,p[1]))).toFixed(1)+'" r="2.6" style="fill:'+se.color+'"/>'; }); return; }
+    var d='',pen=false;
+    se.pts.forEach(function(p){ if(p[1]==null){pen=false;return;} var y=Math.max(o.y0-50,Math.min(o.y1+50,p[1])); d+=(pen?'L':'M')+X(p[0]).toFixed(1)+' '+Y(y).toFixed(1); pen=true; });
+    s+='<path d="'+d+'" style="fill:none;stroke:'+se.color+';stroke-width:'+(se.w||2.4)+(se.dash?';stroke-dasharray:6 4':'')+'"/>';
+  });
+  s+='<rect x="'+L+'" y="'+T+'" width="'+(W-L-R)+'" height="'+(H-T-B)+'" style="fill:none;stroke:var(--border)"/>';
+  return s+'</svg>';
+}
+function seg(id,cb){ var g=$(id); [].slice.call(g.querySelectorAll('button')).forEach(function(b){ b.addEventListener('click',function(){ [].slice.call(g.querySelectorAll('button')).forEach(function(x){x.setAttribute('aria-pressed',x===b?'true':'false');}); cb(b.dataset.v); }); }); }
+function rng(seed){ return function(){ seed=(seed*16807)%2147483647; return (seed-1)/2147483646; }; }
+
+var A0=0.05, TI=21, TO=-5, TEND=12, XS=[0.2,0.5,0.8], LAMS=[0,0.01,0.1,1,10,100,1000], NOISES=[0,0.3,0.6,0.9,1.2,1.5,2.0], NM=6;
+function bn(n){ return 52*(n%2?1:-1)/(n*Math.PI); }
+function truth(x,t){ var u=TI-26*x; for(var n=1;n<=40;n++) u+=bn(n)*Math.sin(n*Math.PI*x)*Math.exp(-A0*n*n*Math.PI*Math.PI*t); return u; }
+function solve(A,b){ var n=b.length,i,j,k; A=A.map(function(r,i){return r.concat([b[i]]);});
+  for(i=0;i<n;i++){ var p=i; for(j=i+1;j<n;j++) if(Math.abs(A[j][i])>Math.abs(A[p][i])) p=j; var t=A[i];A[i]=A[p];A[p]=t; var d=A[i][i]||1e-12;
+    for(j=i;j<=n;j++) A[i][j]/=d; for(k=0;k<n;k++) if(k!==i){ var f=A[k][i]; for(j=i;j<=n;j++) A[k][j]-=f*A[i][j]; } }
+  return A.map(function(r){return r[n];}); }
+function lsq(F,y,reg,prior){ var m=F[0].length,A=[],b=[],i,j,k; for(i=0;i<m;i++){ A.push([]); for(j=0;j<m;j++){ var s=0; for(k=0;k<F.length;k++) s+=F[k][i]*F[k][j]; A[i].push(s+(i===j?reg:0)); } var sb=0; for(k=0;k<F.length;k++) sb+=F[k][i]*y[k]; b.push(sb+reg*(prior?prior[i]:0)); } return solve(A,b); }
+function readings(H,noise){ var r=rng(5),out=[]; for(var t=0;t<=H+1e-9;t+=0.25) XS.forEach(function(x){ var g=(r()+r()+r()-1.5)*1.4; out.push([x,t,truth(x,t)+g*noise]); }); return out; }
+function feats(x,t,H){ var s=t/H; return [1,x,s,x*x,s*s,x*s,x*x*s,x*s*s]; }
+function modes(x,t,a){ var f=[]; for(var n=1;n<=NM;n++) f.push(Math.sin(n*Math.PI*x)*Math.exp(-a*n*n*Math.PI*Math.PI*t)); return f; }
+function build(o){
+  var R=readings(o.H,o.noise);
+  var cD=lsq(R.map(function(p){return feats(p[0],p[1],o.H);}), R.map(function(p){return p[2];}), 1e-6);
+  function dataOnly(x,t){ var f=feats(x,t,o.H),s=0; for(var i=0;i<f.length;i++) s+=f[i]*cD[i]; return s; }
+  var prior=[]; for(var n=1;n<=NM;n++) prior.push(bn(n));
+  function fitPhys(a){ var reg=o.lam*40; var c=lsq(R.map(function(p){return modes(p[0],p[1],a);}), R.map(function(p){return p[2]-(TI-26*p[0]);}), reg+1e-6, prior);
+    var err=0; R.forEach(function(p){ var m=modes(p[0],p[1],a),u=TI-26*p[0]; for(var i=0;i<NM;i++) u+=c[i]*m[i]; err+=(u-p[2])*(u-p[2]); }); return {c:c,a:a,err:err}; }
+  var a=o.alpha, P;
+  if(o.learn){ var best=null; for(var s=0.4;s<=1.8;s+=0.02){ var q=fitPhys(A0*s); if(!best||q.err<best.err) best=q; } P=best; } else P=fitPhys(a);
+  var w=o.lam/(o.lam+0.1);
+  function phys(x,t){ var m=modes(x,t,P.a),u=TI-26*x; for(var i=0;i<NM;i++) u+=P.c[i]*m[i]; return u; }
+  function pinn(x,t){ return w*phys(x,t)+(1-w)*dataOnly(x,t); }
+  return {R:R,dataOnly:dataOnly,pinn:pinn,alphaUsed:P.a};
+}
+function opts(){ return {H:+$('hours').value, noise:NOISES[+$('noise').value], lam:LAMS[+$('lam').value], alpha:A0*(0.5+0.1*$('alpha').value), learn:$('learn').checked}; }
+function errs(f,o){
+  function mae(pts){ var s=0; pts.forEach(function(p){ s+=Math.abs(f(p[0],p[1])-truth(p[0],p[1])); }); return s/pts.length; }
+  var at=[],btw=[],bey=[],imp=0,t,x;
+  for(t=0.25;t<=o.H;t+=0.25){ XS.forEach(function(x){at.push([x,t]);}); [0.35,0.65].forEach(function(x){btw.push([x,t]);}); }
+  for(t=o.H+0.5;t<=TEND;t+=0.5) [0.2,0.35,0.5,0.65,0.8].forEach(function(x){bey.push([x,t]);});
+  for(t=0;t<=TEND;t+=0.5) for(x=0.05;x<1;x+=0.1){ var u=f(x,t); if(u< TO-0.3||u>TI+0.3) imp++; }
+  return [mae(at),mae(btw),bey.length?mae(bey):null,imp];
+}
+function draw(){
+  var o=opts(), m=build(o), tt=+$('time').value;
+  $('hoursV').textContent=o.H+' h'; $('noiseV').textContent='± '+o.noise.toFixed(1)+' °C'; $('lamV').textContent=o.lam===0?'0 (no physics)':o.lam;
+  $('alphaV').textContent=(o.alpha/A0*100).toFixed(0)+'% of the real value'+(o.learn?' (start)':''); $('timeV').textContent=tt;
+  var ts=[]; for(var t=0;t<=TEND+1e-9;t+=0.1) ts.push(t);
+  $('chartT').innerHTML=chart([{pts:ts.map(function(t){return [t,truth(0.5,t)];}),color:'var(--muted)',w:1.6},{pts:ts.map(function(t){return [t,m.dataOnly(0.5,t)];}),color:'var(--bad)',dash:1},{pts:ts.map(function(t){return [t,m.pinn(0.5,t)];}),color:'var(--accent)'},{pts:m.R.filter(function(p){return p[0]===0.5;}).map(function(p){return [p[1],p[2]];}),color:'var(--text)',dots:1}],
+    {x0:0,x1:TEND,y0:-15,y1:25,yt:[-10,-5,0,5,10,15,20],xt:[[0,'0 h'],[3,'3'],[6,'6'],[9,'9'],[12,'12 h']],shade:[0,o.H],vline:tt,hline:[{y:TO,color:'var(--bad)',label:'outside −5 °C'}],label:'Temperature at the middle of the wall over 12 hours: true, data-only and physics-informed.'});
+  var xs=[]; for(var x=0;x<=1.0001;x+=0.02) xs.push(x);
+  $('chartX').innerHTML=chart([{pts:xs.map(function(x){return [x*20,truth(x,tt)];}),color:'var(--muted)',w:1.6},{pts:xs.map(function(x){return [x*20,m.dataOnly(x,tt)];}),color:'var(--bad)',dash:1},{pts:xs.map(function(x){return [x*20,m.pinn(x,tt)];}),color:'var(--accent)'}],
+    {x0:0,x1:20,y0:-15,y1:25,yt:[-10,-5,0,5,10,15,20],xt:[[0,'inside 0 cm'],[4,'4'],[10,'10'],[16,'16'],[20,'outside 20 cm']],hline:[{y:TO,color:'var(--bad)'},{y:TI,color:'var(--bad)',label:'physically possible: −5 to 21 °C'}],label:'Temperature through the wall at hour '+tt+'.'});
+  var eD=errs(m.dataOnly,o), eP=errs(m.pinn,o);
+  function f(v){ return v==null?'—':v.toFixed(2); }
+  $('errs').innerHTML='<tr><th>Model</th><th>At sensors</th><th>Between</th><th>Past the data</th><th>Impossible</th></tr><tr><td>Data-only</td><td>'+f(eD[0])+'</td><td>'+f(eD[1])+'</td><td>'+f(eD[2])+'</td><td class="'+(eD[3]?'no':'ok')+'">'+eD[3]+'</td></tr><tr><td>Physics-informed</td><td>'+f(eP[0])+'</td><td>'+f(eP[1])+'</td><td>'+f(eP[2])+'</td><td class="'+(eP[3]?'no':'ok')+'">'+eP[3]+'</td></tr>'+(o.learn?'<tr><td colspan="5">Learned α: '+(m.alphaUsed/A0*100).toFixed(0)+'% of the real value</td></tr>':'');
+  var v,c, wrong=Math.abs(o.alpha/A0-1)>0.15 && !o.learn;
+  if(o.lam===0){ v='<b>λ = 0: no physics.</b> The "PINN" is now the data-only network, and it inherits its failures past the data.'; c='warn'; }
+  else if(wrong && o.lam>=10 && Math.max(eP[0],eP[1])>1){ v='<b>Confidently wrong.</b> The physics is weighted heavily and its diffusivity is wrong, so the smooth curve ignores its own readings: it misses them by '+eP[0].toFixed(1)+' °C on average (the data-only model: '+eD[0].toFixed(1)+' °C) and is off by '+eP[1].toFixed(1)+' °C between the sensors. Past the data it looks fine only because the wall has settled.'; c='bad'; }
+  else if(eD[2]!=null && eP[2]!=null && eP[2]<eD[2]){ v='<b>Physics earns its place.</b> Past the data the physics-informed model is off by '+eP[2].toFixed(1)+' °C, the data-only one by '+eD[2].toFixed(1)+' °C'+(eD[3]?', with '+eD[3]+' impossible predictions':'')+'.'; c='ok'; }
+  else { v='Compare the two models in all three regions, not just at the sensors.'; c='warn'; }
+  $('verdict').innerHTML='<div class="verdict '+c+'">'+v+'</div>';
+}
+['hours','noise','lam','alpha','learn','time'].forEach(function(id){ $(id).addEventListener('input',draw); $(id).addEventListener('change',draw); });
+draw();
+</script>
+<script>window.SIM_TOUR=[
+ {title:'1 · Inside the data, both models look fine',
+  'do':'Press <b>Set this up for me</b>. Three hours of readings, low noise, the right diffusivity, and the time slider at hour 2.',
+  watch:'Panel 3, through the wall at hour 2, and the <b>At sensors</b> column.',
+  expect:'Both models sit on the true profile, and both are within a few tenths of a degree at the sensors.',
+  why:'Judging a model at its sensors tells you almost nothing. The twin is consulted between and beyond them.',
+  setup:function(h){ h.set('hours',3); h.set('noise',1); h.set('lam',4); h.set('alpha',5); h.set('learn',false); h.set('time',2); }},
+ {title:'2 · Nine hours past the data',
+  'do':'Press <b>Set this up for me</b>. It moves the time slider to hour 9.',
+  watch:'The dashed line in both charts, and the <b>Impossible</b> column.',
+  expect:'The data-only network keeps following its early trend, colder than the outside air in places. The physics-informed line levels off toward the straight-line profile.',
+  why:'The maximum principle: nothing inside the wall gets colder than −5 °C. Only the physics term knows that.',
+  setup:function(h){ h.set('hours',3); h.set('noise',1); h.set('lam',4); h.set('alpha',5); h.set('learn',false); h.set('time',9); }},
+ {title:'3 · λ = 0: the PINN loses its physics',
+  'do':'Press <b>Set this up for me</b>. It sets the physics weight to 0.',
+  watch:'The solid line.',
+  expect:'It falls onto the dashed line: with no physics term, a PINN is just a data-only network.',
+  why:'λ is the balance in your HOS 2 loss. Lecture Part 2 asks what each extreme does.',
+  setup:function(h){ h.set('hours',3); h.set('noise',1); h.set('lam',0); h.set('alpha',5); h.set('learn',false); h.set('time',9); }},
+ {title:'4 · Wrong physics, heavily weighted',
+  'do':'Press <b>Set this up for me</b>. The model assumes a diffusivity 50% too high, with λ = 1000. Then tick <b>Learn α from the readings</b>.',
+  watch:'The first hours in panel 1, the <b>At sensors</b> column, and the verdict.',
+  expect:'A smooth, confident curve that misses its own readings while the wall is still changing. Past the data it looks fine, only because the wall has settled. Learning α closes the gap.',
+  why:'This is Evaluate\'s "wrong physics" test and your Week 4 Understand &amp; Refine build.',
+  setup:function(h){ h.set('hours',3); h.set('noise',1); h.set('lam',6); h.set('alpha',10); h.set('learn',false); h.set('time',1); }},
+ {title:'5 · Fewer, noisier readings',
+  'do':'Press <b>Set this up for me</b>. One hour of readings with ±1.2 °C of noise.',
+  watch:'Both rows of the error table.',
+  expect:'The data-only network wanders badly between and past the readings. The physics-informed model barely changes.',
+  why:'Sparse, noisy data and a trusted equation: the situation where a PINN is worth its training time.',
+  setup:function(h){ h.set('hours',1); h.set('noise',4); h.set('lam',4); h.set('alpha',5); h.set('learn',false); h.set('time',6); }}
+];</script>
+<script src="../assets/sim-tour.js"></script>
+</body>
+</html>

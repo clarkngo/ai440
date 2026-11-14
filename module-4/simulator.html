@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="AI 440 What-If and Safety Envelope Simulator: an interactive browser model that pairs with HOS 4, with a guided tour.">
+<title>AI 440 — What-If and Safety Envelope Simulator</title>
+<link rel="stylesheet" href="../assets/course.css">
+<style>
+.sim-layout { display:grid; grid-template-columns:minmax(260px,340px) 1fr; gap:16px; align-items:start; }
+@media (max-width:860px){ .sim-layout { grid-template-columns:minmax(0,1fr); } }
+.sim-layout > * { min-width:0; }
+.panel { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:16px 18px; box-shadow:var(--shadow); margin-bottom:16px; min-width:0; }
+.panel h2 { font-size:1.02rem; margin-bottom:10px; }
+.panel h3 { font-size:.9rem; margin:14px 0 6px; }
+.presets { display:flex; flex-wrap:wrap; gap:6px; margin:6px 0 4px; }
+.presets button { font-family:inherit; font-size:.74rem; border:1px solid var(--border); background:var(--surface2); color:var(--text); border-radius:14px; padding:4px 10px; cursor:pointer; }
+.presets button:hover { border-color:var(--accent); }
+.toggle { display:flex; gap:8px; align-items:flex-start; font-size:.85rem; margin:6px 0; cursor:pointer; }
+.toggle input { accent-color:var(--accent); margin-top:4px; }
+.toggle small { display:block; color:var(--muted); font-size:.74rem; }
+.lanes { display:grid; grid-template-columns:repeat(var(--lanes,4),1fr); gap:8px; margin-bottom:12px; }
+.lane { border:2px solid var(--border); border-radius:10px; padding:10px; text-align:center; font-size:.8rem; background:var(--surface2); transition:all .2s; min-width:0; }
+.lane b { display:block; font-size:.86rem; }
+.lane .ic { font-size:1.3rem; display:block; }
+.lane.from { border-color:var(--blue); background:var(--blue-bg); }
+.lane.to { border-color:var(--accent); background:var(--accent-light); box-shadow:0 0 0 3px var(--accent-light); }
+.lane.err { border-color:var(--bad); background:var(--bad-bg); }
+@media (max-width:520px){ .lanes { grid-template-columns:repeat(2,1fr); } }
+.stepbox { border:1px solid var(--border); border-left:5px solid var(--accent); border-radius:8px; padding:10px 14px; background:var(--surface2); margin-bottom:12px; min-height:84px; }
+.stepbox.err { border-left-color:var(--bad); } .stepbox.warn { border-left-color:var(--amber); }
+.stepbox .k { font-size:.7rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); }
+.steps-list { list-style:none; margin:0; padding:0; font-size:.8rem; }
+.steps-list li { padding:5px 8px; border-radius:6px; color:var(--muted); display:flex; gap:8px; }
+.steps-list li.cur { background:var(--accent-light); color:var(--text); font-weight:700; }
+.steps-list li.past { color:var(--text); }
+.steps-list li .n { flex:none; width:20px; text-align:right; }
+.steps-list li.bad { color:var(--bad); }
+.verdict { border-radius:8px; padding:10px 14px; font-size:.86rem; margin-top:10px; }
+.verdict.ok { background:var(--ok-bg); color:var(--ok); } .verdict.bad { background:var(--bad-bg); color:var(--bad); } .verdict.warn { background:var(--amber-bg); color:var(--amber); }
+.kv { display:grid; grid-template-columns:auto 1fr; gap:4px 12px; font-size:.82rem; }
+.kv dt { color:var(--muted); } .kv dd { margin:0; font-weight:600; }
+.bar-row { display:grid; grid-template-columns:70px 1fr 48px; gap:8px; align-items:center; font-size:.78rem; margin-bottom:4px; }
+.bar-track { height:12px; background:var(--surface2); border:1px solid var(--border); border-radius:6px; overflow:hidden; position:relative; }
+.bar-fill { height:100%; background:var(--accent); }
+.project-tip { border:1px dashed var(--accent); border-radius:var(--radius); padding:14px 18px; background:var(--accent-light); font-size:.88rem; }
+.project-tip b.h { display:block; font-size:.72rem; letter-spacing:.08em; text-transform:uppercase; color:var(--accent2); margin-bottom:4px; }
+
+.stepcard { border:1px solid var(--border); border-left:4px solid var(--accent); border-radius:8px; padding:8px 12px; margin-bottom:6px; font-size:.84rem; background:var(--surface); }
+.stepcard .k { font-size:.68rem; font-weight:800; letter-spacing:.07em; text-transform:uppercase; color:var(--muted); }
+.stepcard.tool { border-left-color:var(--blue); } .stepcard.final { border-left-color:var(--ok); } .stepcard.stop { border-left-color:var(--amber); } .stepcard.bad { border-left-color:var(--bad); background:var(--bad-bg); }
+.stepcard.pick { cursor:pointer; } .stepcard.pick:hover { box-shadow:0 0 0 2px var(--accent-light); } .stepcard.chosen { box-shadow:0 0 0 3px var(--accent); }
+.metrics { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin:10px 0; }
+@media (max-width:560px){ .metrics { grid-template-columns:repeat(2,1fr); } }
+.metric { border:1px solid var(--border); border-radius:8px; padding:8px; text-align:center; background:var(--surface2); }
+.metric b { display:block; font-size:1.2rem; } .metric span { font-size:.72rem; color:var(--muted); }
+.seg { display:inline-flex; border:1px solid var(--border); border-radius:8px; overflow:hidden; flex-wrap:wrap; }
+.seg button { font-family:inherit; font-size:.8rem; font-weight:700; padding:6px 12px; border:none; background:var(--surface2); color:var(--text); cursor:pointer; }
+.seg button[aria-pressed="true"] { background:var(--accent); color:var(--on-accent); }
+.tbl { width:100%; border-collapse:collapse; font-size:.8rem; }
+.tbl th, .tbl td { border:1px solid var(--border); padding:5px 8px; text-align:left; }
+.tbl th { background:var(--surface2); font-size:.7rem; text-transform:uppercase; color:var(--muted); }
+.ok { color:var(--ok); font-weight:700; } .no { color:var(--bad); font-weight:700; }
+
+.chart { width:100%; height:auto; display:block; }
+.chart text { font-size:11px; fill:var(--muted); }
+.legend { display:flex; flex-wrap:wrap; gap:12px; font-size:.76rem; color:var(--muted); margin:4px 0 8px; }
+.legend i { display:inline-block; width:18px; height:0; border-top:3px solid; vertical-align:middle; margin-right:4px; }
+.legend i.dash { border-top-style:dashed; }
+.hm { display:grid; gap:2px; font-size:.7rem; }
+.hm div { padding:6px 2px; text-align:center; border-radius:3px; }
+.hm .h { color:var(--muted); font-weight:700; }
+.hm-wrap { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; }
+@media (max-width:560px){ .hm-wrap { grid-template-columns:minmax(0,1fr); } }
+.v-allow { color:var(--ok); font-weight:700; } .v-block { color:var(--bad); font-weight:700; } .v-stop { color:var(--amber); font-weight:700; }
+.range-v { font-weight:700; color:var(--accent2); }
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="top">
+  <div class="top-inner">
+    <a class="brand" href="../index.html"><span class="brand-icon">440</span><span><b>AI 440: Digital Twins and Physical AI</b><small>Simulators</small></span></a>
+    <div class="top-right"><a class="pill-btn" href="../index.html">Course home</a><button class="pill-btn" id="themeToggle" type="button">🌙 Dark</button></div>
+  </div>
+</header>
+<section class="hero">
+  <div class="hero-inner">
+    <div class="eyebrow">Simulator 4 · Pairs with HOS 4 (Weeks 7–8)</div>
+    <h1>What-If &amp; Safety Envelope Simulator</h1>
+    <p class="lede">Sweep a heat-wave afternoon on Floor 3 to find where it fails, then let an agent change setpoints with and without a safety envelope. Tighten the envelope, count what it costs, and give it a lying sensor.</p>
+    <div class="chips"><span class="chip">CO5</span><span class="chip">What-if sweep</span><span class="chip">Combined failures</span><span class="chip">Safety envelope</span><span class="chip">Action log</span></div>
+  </div>
+</section>
+<main id="main">
+<div class="row no-print" style="margin-bottom:16px"><span class="small muted"><b>Simulators:</b></span><a class="tag blue" href="../module-1/simulator.html" style="text-decoration:none">1 · Sensor Pipeline</a><a class="tag blue" href="../module-2/simulator.html" style="text-decoration:none">2 · Wall Heat PINN</a><a class="tag blue" href="../module-3/simulator.html" style="text-decoration:none">3 · Sim-to-Real Lab</a><span class="tag">4 · What-If &amp; Safety Envelope</span></div>
+<section class="card tour" id="tour" aria-label="Guided tour"><p class="small muted" style="margin:0">Guided tour loading…</p></section>
+<div class="sim-layout">
+  <div>
+    <div class="panel">
+      <h2>1 · The what-if sweep</h2>
+      <p class="small muted">Floor 3 on a heat-wave afternoon. Each cell: minutes the worst room spends above 27 °C (worst of 10 seeds).</p>
+      <label class="toggle"><input type="checkbox" id="combined"><span>Add a stuck sensor in r2<small>A combined failure: HOS 1's fault inside HOS 4's sweep.</small></span></label>
+      <div class="row" style="margin-top:6px"><button class="btn" id="sweep" type="button">Run the sweep</button></div>
+    </div>
+    <div class="panel">
+      <h2>2 · The agent and its envelope</h2>
+      <label class="field" for="scen">Scenario (one afternoon, 12:00–18:00)</label>
+      <select id="scen"><option value="normal">Heat wave, everything working</option><option value="fail">Heat wave, one unit fails at 14:00</option><option value="precool">Facilities asks to pre-cool every room to 16 °C</option><option value="noisy">A noisy sensor in r1</option><option value="stuck">r2's sensor sticks at 22 °C (a lying sensor)</option></select>
+      <label class="toggle"><input type="checkbox" id="env"><span>Safety envelope on<small>Off = the permissive stub: every proposal is sent.</small></span></label>
+      <label class="field" for="spMin">Lowest setpoint allowed: <span class="range-v" id="spMinV"></span></label>
+      <input type="range" id="spMin" min="16" max="23" value="20" step="1">
+      <label class="field" for="spMax">Highest setpoint allowed: <span class="range-v" id="spMaxV"></span></label>
+      <input type="range" id="spMax" min="23" max="30" value="26" step="1">
+      <label class="field" for="stepMax">Biggest change at once: <span class="range-v" id="stepMaxV"></span></label>
+      <input type="range" id="stepMax" min="0.5" max="6" value="2" step="0.5">
+      <label class="field" for="rate">Minutes between changes per room: <span class="range-v" id="rateV"></span></label>
+      <input type="range" id="rate" min="0" max="60" value="10" step="5">
+      <label class="field" for="disagree">Stop and alert when sensor and prediction differ by more than: <span class="range-v" id="disagreeV"></span></label>
+      <input type="range" id="disagree" min="1" max="10" value="5" step="1">
+      <label class="toggle"><input type="checkbox" id="stuckRule"><span>Stop and alert on a sensor unchanged for 20 minutes during a heat wave</span></label>
+    </div>
+  </div>
+  <div>
+    <div class="panel">
+      <h2>3 · Sweep heatmap</h2>
+      <div id="heat"><p class="small muted">Press <b>Run the sweep</b>.</p></div>
+    </div>
+    <div class="panel">
+      <h2>4 · Action log</h2>
+      <div class="metrics"><div class="metric"><b id="mAllow">—</b><span>sent</span></div><div class="metric"><b id="mBlock">—</b><span>blocked or stopped</span></div><div class="metric"><b id="mUnsafe">—</b><span>unsafe actions sent</span></div><div class="metric"><b id="mFine">—</b><span>fine actions blocked</span></div></div>
+      <div style="overflow-x:auto" tabindex="0"><table class="tbl" id="log"></table></div>
+      <div id="verdict"></div>
+    </div>
+  </div>
+</div>
+<div class="card"><h2>What this teaches</h2><ul><li><b>Failures combine.</b> Each factor alone is survivable; together they aren't. Sweep, don't spot-check.</li><li><b>An envelope is code, outside the agent:</b> state limits, rate limits and stop-and-alert conditions.</li><li><b>Every limit has a cost.</b> Count the fine actions it blocks as well as the unsafe ones it stops.</li><li><b>An envelope inherits its model's blind spots.</b> Checking that the twin still matches the building is part of the envelope.</li></ul>
+<p class="small muted">This is a simplified browser model for building intuition, not the real build: the floor is a simple thermal formula, and the "agent" is a scripted list of proposals, not a language model. Your HOS 4 build in Codespaces is the real thing. Back to the <a href="index.html">Module 4 lesson</a> · <a href="hos-guide.html">HOS 4 guide</a>.</p></div>
+<div class="project-tip"><b class="h">For your Term Project</b>For your twin, write the one action it may take on its own, the limits your what-if tests support, and the condition that makes it stop and tell a person. Then log every proposal, allowed or not.</div>
+</main>
+<footer class="foot">AI 440: Digital Twins and Physical AI · City University of Seattle, School of Technology &amp; Computing<br>Course design &amp; materials: Clark Ngo · Simulators are illustrative HTML models — no real sensors, models, simulators or network calls.<br>© 2026 Clark Ngo · Free to reuse and adapt under <a href="https://creativecommons.org/licenses/by/4.0/" rel="license">CC BY 4.0</a>, except where noted · <a href="https://github.com/cityuseattle/ai440/blob/main/LICENSE.md">How to credit</a></footer>
+<script src="../assets/course.js"></script>
+<script>
+var $=function(i){return document.getElementById(i);};
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');}
+/* line chart: series=[{pts:[[x,y]...], color, dash, w, dots}], opts {x0,x1,y0,y1,label,xt,yt,shade:[a,b],hline:[{y,color,label}],vline} */
+function chart(series,o){
+  var W=600,H=230,L=42,R=10,T=10,B=28;
+  function X(x){return L+(x-o.x0)/(o.x1-o.x0)*(W-L-R);} function Y(y){return T+(o.y1-y)/(o.y1-o.y0)*(H-T-B);}
+  var s='<svg class="chart" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="'+esc(o.label)+'">';
+  if(o.shade) s+='<rect x="'+X(o.shade[0])+'" y="'+T+'" width="'+(X(o.shade[1])-X(o.shade[0]))+'" height="'+(H-T-B)+'" style="fill:var(--accent-light)"/>';
+  (o.yt||[]).forEach(function(v){ s+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+Y(v)+'" y2="'+Y(v)+'" style="stroke:var(--border)"/><text x="'+(L-6)+'" y="'+(Y(v)+4)+'" text-anchor="end">'+v+'</text>'; });
+  (o.xt||[]).forEach(function(v){ s+='<text x="'+X(v[0])+'" y="'+(H-8)+'" text-anchor="middle">'+v[1]+'</text>'; });
+  (o.hline||[]).forEach(function(h){ s+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+Y(h.y)+'" y2="'+Y(h.y)+'" style="stroke:'+h.color+';stroke-dasharray:2 4"/>'+(h.label?'<text x="'+(W-R-4)+'" y="'+(Y(h.y)-4)+'" text-anchor="end">'+h.label+'</text>':''); });
+  if(o.vline!=null) s+='<line x1="'+X(o.vline)+'" x2="'+X(o.vline)+'" y1="'+T+'" y2="'+(H-B)+'" style="stroke:var(--muted);stroke-dasharray:3 3"/>';
+  series.forEach(function(se){
+    if(se.dots){ se.pts.forEach(function(p){ if(p[1]!=null) s+='<circle cx="'+X(p[0]).toFixed(1)+'" cy="'+Y(Math.max(o.y0,Math.min(o.y1,p[1]))).toFixed(1)+'" r="2.6" style="fill:'+se.color+'"/>'; }); return; }
+    var d='',pen=false;
+    se.pts.forEach(function(p){ if(p[1]==null){pen=false;return;} var y=Math.max(o.y0-50,Math.min(o.y1+50,p[1])); d+=(pen?'L':'M')+X(p[0]).toFixed(1)+' '+Y(y).toFixed(1); pen=true; });
+    s+='<path d="'+d+'" style="fill:none;stroke:'+se.color+';stroke-width:'+(se.w||2.4)+(se.dash?';stroke-dasharray:6 4':'')+'"/>';
+  });
+  s+='<rect x="'+L+'" y="'+T+'" width="'+(W-L-R)+'" height="'+(H-T-B)+'" style="fill:none;stroke:var(--border)"/>';
+  return s+'</svg>';
+}
+function seg(id,cb){ var g=$(id); [].slice.call(g.querySelectorAll('button')).forEach(function(b){ b.addEventListener('click',function(){ [].slice.call(g.querySelectorAll('button')).forEach(function(x){x.setAttribute('aria-pressed',x===b?'true':'false');}); cb(b.dataset.v); }); }); }
+function rng(seed){ return function(){ seed=(seed*16807)%2147483647; return (seed-1)/2147483646; }; }
+
+var TO=[30,34,38,42], CAP=[1,0.75,0.5,0], OCC=[20,60,100], swept=false;
+function tmax(to,c,p,comb){ return 21+0.45*(to-30)+0.03*p+4*(1-c)*Math.max(0,to-30)/8+(comb&&c<1?1.4:0)+(comb?0.6:0); }
+function minsAbove(t){ return Math.max(0,Math.min(360,Math.round((t-27)*75))); }
+function color(m){ if(m===0) return 'background:var(--ok-bg);color:var(--ok)'; if(m<90) return 'background:var(--amber-bg);color:var(--amber)'; return 'background:var(--bad-bg);color:var(--bad)'; }
+function drawHeat(){
+  if(!swept) return; var comb=$('combined').checked;
+  $('heat').innerHTML='<div class="hm-wrap">'+OCC.map(function(p){
+    var s='<div><p class="small" style="margin:0 0 4px"><b>'+p+' people</b></p><div class="hm" style="grid-template-columns:44px repeat(4,1fr)" role="table" aria-label="Minutes above 27 °C for '+p+' people, by outside temperature and HVAC capacity"><div class="h" role="columnheader">cap.</div>'+TO.map(function(t){return '<div class="h" role="columnheader">'+t+'°</div>';}).join('');
+    CAP.forEach(function(c){ s+='<div class="h" role="rowheader">'+Math.round(c*100)+'%</div>'; TO.forEach(function(t){ var m=minsAbove(tmax(t,c,p,comb)); s+='<div role="cell" style="'+color(m)+'">'+m+'</div>'; }); });
+    return s+'</div></div>'; }).join('')+'</div><p class="small muted" style="margin-top:8px">Columns: outside peak. Rows: HVAC capacity (50% = one of two units failed). Green = never above 27 °C. '+(comb?'<b>With the stuck sensor, more cells fail: the controller under-cools r2 because it believes r2 is cool.</b>':'Find the cells where a single factor is fine and the combination fails.')+'</p>';
+}
+var SCEN={
+ normal:{fail:false,lie:false,props:[[0,'r2',24,23,1],[30,'r2',23,22.5,1],[60,'r4',24,25,1],[90,'r1',24,23,1],[120,'r2',22.5,22,1],[150,'r3',24,23,1],[180,'r4',25,25.5,1],[240,'r2',22,23,1],[300,'r1',23,24,1],[330,'r3',23,24,1]]},
+ fail:{fail:true,lie:false,props:[[0,'r2',24,23,1],[60,'r2',23,22,1],[120,'r2',22,18,0],[125,'r3',24,18,0],[130,'r1',24,19,0],[150,'r2',22,21,1],[180,'r4',24,26,1],[210,'r2',21,20,1],[270,'r3',24,23,1],[300,'r2',20,22,1]]},
+ precool:{fail:false,lie:false,props:[[0,'r1',24,16,0],[0,'r2',24,16,0],[0,'r3',24,16,0],[0,'r4',24,16,0],[60,'r2',24,23,1],[120,'r1',24,23,1],[180,'r3',24,23,1],[240,'r4',24,25,1]]},
+ noisy:{fail:false,lie:false,props:[[0,'r1',24,23,1],[5,'r1',23,24,0],[10,'r1',24,22.5,0],[15,'r1',22.5,24,0],[20,'r1',24,23,0],[25,'r1',23,24.5,0],[30,'r1',24.5,23,0],[40,'r1',23,24,0],[50,'r1',24,23,0],[120,'r2',24,23,1],[180,'r3',24,23,1]]},
+ stuck:{fail:false,lie:true,props:[[0,'r2',24,23,1],[60,'r2',23,24,0],[90,'r2',24,25,0],[120,'r2',25,26,0],[150,'r4',24,25,1],[180,'r2',26,26,0],[240,'r1',24,23,1],[300,'r3',24,23,1]]}
+};
+function hhmm(m){ var h=12+Math.floor(m/60), mm=m%60; return h+':'+(mm<10?'0':'')+mm; }
+function drawLog(){
+  var o={env:$('env').checked, spMin:+$('spMin').value, spMax:+$('spMax').value, step:+$('stepMax').value, rate:+$('rate').value, dis:+$('disagree').value, stuckRule:$('stuckRule').checked};
+  $('spMinV').textContent=o.spMin+' °C'; $('spMaxV').textContent=o.spMax+' °C'; $('stepMaxV').textContent=o.step+' °C'; $('rateV').textContent=o.rate+' min'; $('disagreeV').textContent=o.dis+' °C';
+  var S=SCEN[$('scen').value], last={}, stopped={}, rows=[], nA=0,nB=0,nU=0,nF=0;
+  S.props.forEach(function(p){
+    var t=p[0],room=p[1],prev=p[2],sp=p[3],fine=!!p[4];
+    var trueT = 23.2+t/120 + (S.fail&&t>=120?1.8:0) + (S.lie&&room==='r2'?Math.min(4.5,t/50):0);
+    var sensor = (S.lie&&room==='r2') ? 22.0 : trueT+($('scen').value==='noisy'&&room==='r1'?((t/5)%2?0.9:-0.9):0);
+    var pred = trueT;  /* the physics-informed prediction (HOS 2) */
+    var verdict='allow', why='inside the envelope';
+    if(o.env){
+      if(stopped[room]){ verdict='stop'; why='held: this room is stopped until a person checks it'; }
+      else if(o.stuckRule && S.lie && room==='r2' && t>=30){ verdict='stop'; why='r2\'s sensor unchanged for '+Math.min(t,180)+' min in a heat wave'; stopped[room]=1; }
+      else if(Math.abs(sensor-pred)>o.dis){ verdict='stop'; why='sensor '+sensor.toFixed(1)+' °C vs. prediction '+pred.toFixed(1)+' °C'; stopped[room]=1; }
+      else if(sp<o.spMin||sp>o.spMax){ verdict='block'; why='setpoint '+sp+' °C is outside '+o.spMin+'–'+o.spMax+' °C'; }
+      else if(Math.abs(sp-prev)>o.step){ verdict='block'; why='a '+Math.abs(sp-prev)+' °C step is bigger than '+o.step+' °C'; }
+      else if(last[room]!=null && t-last[room]<o.rate){ verdict='block'; why='changed '+(t-last[room])+' min ago (limit '+o.rate+')'; }
+    } else why='no envelope: the permissive stub sends everything';
+    if(verdict==='allow'){ last[room]=t; nA++; if(!fine) nU++; } else { nB++; if(fine) nF++; }
+    rows.push('<tr><td>'+hhmm(t)+'</td><td>'+room+': '+prev+' → '+sp+' °C</td><td>'+sensor.toFixed(1)+' / '+trueT.toFixed(1)+' °C</td><td class="'+(verdict==='allow'?'v-allow':verdict==='block'?'v-block':'v-stop')+'">'+(verdict==='allow'?'sent':verdict==='block'?'blocked':'stop &amp; alert')+'</td><td>'+why+(fine?'':' <span class="tag bad">unsafe</span>')+'</td></tr>');
+  });
+  $('log').innerHTML='<tr><th>Time</th><th>Agent proposes</th><th>Sensor / true</th><th>Envelope</th><th>Reason</th></tr>'+rows.join('');
+  $('mAllow').textContent=nA; $('mBlock').textContent=nB; $('mUnsafe').textContent=nU; $('mFine').textContent=nF;
+  var v,c;
+  if(!o.env && nU){ v='<b>No envelope: '+nU+' unsafe action'+(nU>1?'s':'')+' sent.</b> The agent did what it was asked, optimizing what it could see. Nothing stood between it and the building.'; c='bad'; }
+  else if(nU && S.lie){ v='<b>The lying sensor got through.</b> The twin and the envelope both believed r2 was at 22 °C. Every rule checked the action; none checked whether the twin still matched the building. Try a tighter disagreement threshold, or the stuck-sensor rule.'; c='bad'; }
+  else if(nU){ v='<b>'+nU+' unsafe action'+(nU>1?'s':'')+' still sent.</b> Which rule would have caught '+(nU>1?'them':'it')+'?'; c='bad'; }
+  else if(nF>=3){ v='<b>Safe, but too tight.</b> No unsafe action got through, and '+nF+' fine ones were blocked. An envelope that blocks normal work gets switched off.'; c='warn'; }
+  else { v='<b>Safe, and the agent can still work.</b> '+(nF?nF+' fine action'+(nF>1?'s were':' was')+' blocked: the price of the margin.':'Every blocked action was unsafe.'); c='ok'; }
+  $('verdict').innerHTML='<div class="verdict '+c+'">'+v+'</div>';
+}
+$('sweep').addEventListener('click',function(){ swept=true; drawHeat(); });
+$('combined').addEventListener('change',drawHeat);
+['scen','env','spMin','spMax','stepMax','rate','disagree','stuckRule'].forEach(function(id){ $(id).addEventListener('input',drawLog); $(id).addEventListener('change',drawLog); });
+drawLog();
+</script>
+<script>window.SIM_TOUR=[
+ {title:'1 · The sweep: where the floor overheats',
+  'do':'Press <b>Set this up for me</b>. It runs the sweep with no combined failure.',
+  watch:'The three heatmaps in panel 3.',
+  expect:'With 60 people, a 38 °C day at full capacity or one failed unit at 34 °C: 0 minutes above 27 °C. A full floor, a failed unit and 38 °C together: over three hours.',
+  why:'Single-failure tests all pass; the combination fails. That\'s why HOS 4 sweeps instead of spot-checking.',
+  setup:function(h){ h.set('combined',false); h.click('sweep'); }},
+ {title:'2 · A combined failure the sweep missed',
+  'do':'Press <b>Set this up for me</b>. It adds a stuck sensor in r2 to every run.',
+  watch:'Which cells change color.',
+  expect:'More cells fail, including some with all units working: the controller under-cools a room it believes is cool.',
+  why:'Your Evaluate runs <code>sweep --combined</code> for exactly this. A HOS 1 fault inside a HOS 4 question.',
+  setup:function(h){ h.set('combined',true); h.click('sweep'); }},
+ {title:'3 · An agent with no envelope',
+  'do':'Press <b>Set this up for me</b>. A unit fails at 14:00; the envelope is off.',
+  watch:'The action log, and <b>unsafe actions sent</b>.',
+  expect:'Every proposal goes straight to the building, including setpoints of 18 °C that overload the remaining unit.',
+  why:'This is the permissive stub in your Week 7 build. Try the pre-cool and noisy-sensor scenarios too.',
+  setup:function(h){ h.set('scen','fail'); h.set('env',false); }},
+ {title:'4 · An envelope from the sweep, and one too tight',
+  'do':'Press <b>Set this up for me</b>. The envelope is on with limits from the sweep. Then raise the lowest setpoint to 23 °C and the rate limit to 60 min.',
+  watch:'Unsafe actions sent, and fine actions blocked.',
+  expect:'First, no unsafe action gets through and the agent still works. Too tight, and normal actions are blocked too.',
+  why:'Your Week 8 Understand &amp; Refine build: every limit should point to a sweep result, and cost something you can name.',
+  setup:function(h){ h.set('scen','fail'); h.set('env',true); h.set('spMin',20); h.set('spMax',26); h.set('stepMax',2); h.set('rate',10); h.set('disagree',5); h.set('stuckRule',false); }},
+ {title:'5 · A lying sensor',
+  'do':'Press <b>Set this up for me</b>. r2\'s sensor sticks at 22 °C while the room heats up. Then tick the stuck-sensor rule, or lower the disagreement threshold to 3 °C.',
+  watch:'The <b>Sensor / true</b> column and the verdict.',
+  expect:'The envelope passes the agent\'s "it\'s cool, save energy" changes, because it believes the same sensor. The stop-and-alert rule catches it.',
+  why:'An envelope is only as good as the model and data under it. Stop-and-alert is how a twin admits it no longer knows.',
+  setup:function(h){ h.set('scen','stuck'); h.set('env',true); h.set('spMin',20); h.set('spMax',26); h.set('stepMax',2); h.set('rate',10); h.set('disagree',5); h.set('stuckRule',false); }}
+];</script>
+<script src="../assets/sim-tour.js"></script>
+</body>
+</html>

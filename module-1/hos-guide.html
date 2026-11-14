@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="AI 440 HOS 1 hands-on guide: Digital Shadows, Twins and Real-Time Pipelines, stage by stage (Create, Evaluate, Analyze, Understand and Refine) in GitHub Codespaces.">
+<title>AI 440 — HOS 1 Hands-On Guide: Digital Shadows, Twins and Real-Time Pipelines</title>
+<link rel="stylesheet" href="../assets/course.css">
+<style>
+.needs-list li { margin-bottom:6px; }
+.stage-tagline { color:var(--muted); font-size:0.85rem; margin:0 0 14px; }
+.not-graded { background:var(--surface2); border-left:3px solid var(--border); padding:8px 14px; margin:10px 0; font-size:0.85rem; border-radius:0 4px 4px 0; color:var(--muted); }
+.submit-box { background:var(--accent-light); border-left:5px solid var(--accent); padding:14px 18px; margin:14px 0 0; border-radius:0 4px 4px 0; font-size:0.9rem; }
+.submit-box h3 { margin:0 0 8px; color:var(--accent2); font-size:0.85rem; text-transform:uppercase; letter-spacing:0.03em; }
+.submit-box ul { margin:0; padding-left:20px; }
+.snag-box { background:var(--amber-bg); border-left:5px solid var(--amber); padding:15px 18px; margin:20px 0; border-radius:4px; }
+.ref-box { background:var(--surface2); border:1px solid var(--border); padding:12px 16px; margin:16px 0; border-radius:6px; font-size:0.9rem; }
+.ref-box h3 { margin:0 0 6px; font-size:0.9rem; }
+.option { border:1px solid var(--border); border-radius:8px; padding:12px 16px; margin:10px 0; background:var(--surface); }
+.option h3 { margin:0 0 6px; font-size:1rem; }
+.option ul { margin:0; }
+.guide-nav { display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-top:30px; padding-top:16px; border-top:1px solid var(--border); font-size:0.9rem; }
+.guide-nav a { color:var(--link); text-decoration:none; font-weight:600; }
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="top">
+  <div class="top-inner">
+    <a class="brand" href="../index.html"><span class="brand-icon">440</span><span><b>AI 440: Digital Twins and Physical AI</b><small>Course guides</small></span></a>
+    <div class="top-right"><a class="pill-btn" href="../index.html">Course home</a><button class="pill-btn" id="themeToggle" type="button">🌙 Dark</button></div>
+  </div>
+</header>
+<section class="hero">
+  <div class="hero-inner">
+    <div class="eyebrow">AI 440 · Module 1 · Hands-On Skill (HOS) guide</div>
+    <h1>HOS 1: Digital Shadows, Twins &amp; Real-Time Pipelines</h1>
+    <p class="lede">Stream a floor of simulated building sensors over MQTT into a virtual entity that keeps each room's live state, measure the delay hop by hop, break the pipeline on purpose, then teach the twin when not to believe its sensors.</p>
+    <div class="chips"><span class="chip">Est. 4–5 hrs</span><span class="chip">CO1 · CO3</span><span class="chip">Module 1 · Weeks 1–2</span><span class="chip">10% of final grade</span></div>
+  </div>
+</section>
+<main id="main">
+<nav class="secnav no-print" aria-label="Page sections">
+  <div class="secnav-inner"><a href="#before">Before you start</a><a href="#create">Create</a><a href="#evaluate">Evaluate</a><a href="#analyze">Analyze</a><a href="#refine">Understand &amp; Refine</a><a href="#snags">Common snags</a></div>
+</nav>
+<section class="module card" id="before">
+  <div class="module-head"><div class="module-icon">🧭</div><div><h2>Before you start</h2></div></div>
+<ol>
+    <li><b>Know the concepts.</b> Read <a href="../reference/concept-companion.html#module-1">Concept Companion → Module 1</a> and try its self-check before you open the starter code.</li>
+    <li><b>Rehearse it.</b> The <a href="simulator.html">Sensor Pipeline Simulator</a> plays the finished build in your browser; its guided tour takes about 15 minutes.</li>
+  </ol>
+  <h3>What you'll need</h3>
+  <ul class="needs-list">
+    <li><strong>Starter code:</strong> your own <b>HOS 1</b> repo, opened in GitHub Codespaces. <span class="tag amber">Planned</span> The HOS 1 starter repository and its GitHub Classroom invite are being built and tested; the invite link goes here when they are published. Not sure what a file does? See the <a href="../reference/starter-code-walkthrough.html#hos1">starter code walkthrough for this HOS</a>.</li>
+    <li>A <a href="../start-here/accounts.html#github">GitHub account</a>. Nothing else: the broker, database and dashboard run in Docker inside your Codespace.</li><li>A Codespace with at least 2 cores (the default). The stack (Mosquitto, Node-RED, InfluxDB, Grafana) uses about 1.5 GB of memory; close other Codespaces if it won't start.</li>
+  </ul>
+  <div class="ref-box"><h3>Reference reading (optional, before you start)</h3><ul>
+    <li><a href="https://mqtt.org/getting-started/" target="_blank" rel="noopener">MQTT: getting started</a>: topics, publish/subscribe and QoS in ten minutes.</li><li><a href="https://eclipse.dev/paho/files/paho.mqtt.python/html/migrations.html" target="_blank" rel="noopener">paho-mqtt 2.0 migration notes</a>: why 1.x examples break, and the <code>CallbackAPIVersion.VERSION2</code> callbacks.</li><li><a href="https://docs.influxdata.com/influxdb/v2/get-started/" target="_blank" rel="noopener">InfluxDB 2 get started</a>: buckets, measurements and Flux queries, as the Grafana panels use them.</li>
+  </ul></div>
+  <p>This HOS is graded across four stages instead of on code correctness alone: <strong>Engagement</strong> (Create/Scaffold) is 20% of the HOS grade, and <strong>Skills</strong> is 80%: Evaluate, Analyze, Apply (the change you make by hand in Understand &amp; Refine) and Understand (your own explanation of it), 20% each. Each stage below says exactly what to submit. Everything goes in your Module 1 GitHub Classroom repo: written work under the matching heading in <code>NOTES.md</code>, screenshots in <code>screenshots/</code>. Commit and push as you go. By the end of Week 2, push your final work: your repo is your submission, so there is nothing to submit in Brightspace, and your last push before the deadline is what counts.</p>
+</section>
+<section class="module card" id="create">
+  <div class="module-head"><div class="module-icon">🛠️</div><div><h2>1 · Create / Scaffold</h2><div class="module-meta"><span class="tag blue">Week 1 · Wed–Thu</span></div></div></div>
+<p class="stage-tagline">Graded as Engagement: 20% of this HOS. The AI-built starting point, not the deliverable.</p>
+  <p>Get the virtual entity and a latency probe running with an AI coding assistant. The sensors, broker, database and dashboard already run in the starter; your assistant builds the part that keeps each room's live state. This is the starting point, not the deliverable. It's also the only HOS where the full prompt is given to you.</p>
+  <ol>
+    <li>Open your own <b>HOS 1</b> repo in GitHub Codespaces (its <code>.devcontainer</code> installs Python and Docker). <span class="tag amber">Planned</span> The HOS 1 starter repository and its GitHub Classroom invite are being built and tested; the invite link goes here when they are published.</li>
+    <li>Start the stack and the sensors: <code>docker compose up -d</code>, then <code>python -m sensors.simulate</code> in its own terminal. Open Grafana from the <b>Ports</b> tab (port 3000) and check that the <b>Floor 3</b> dashboard is moving.</li>
+    <li>Give your assistant the prompt below, then run <code>python -m twin.floor</code> in a second terminal and <code>python -m tools.latency</code> in a third.</li>
+  </ol>
+  <h3>The prompt</h3>
+  <p>Use an AI coding assistant in Agent mode (GitHub Copilot is free for students in Codespaces). Give it this prompt as written, and read what it changed before you run anything:</p>
+  <pre tabindex="0"><code>In THIS existing workspace (the starter-code folder that&#x27;s already open),
+edit files here; do not create a new workspace or project.
+The Docker stack (Mosquitto, Node-RED, InfluxDB, Grafana) and
+sensors/simulate.py already run. Don&#x27;t change docker-compose.yml
+or pipeline/flows.json.
+1. In twin/floor.py, write a FloorTwin class with paho-mqtt 2.x
+   (CallbackAPIVersion.VERSION2) that subscribes to
+   building/floor3/+/+ and keeps, for each room, the latest temp,
+   co2 and occupancy, each with its sensor timestamp (ts), its
+   sequence number (seq) and the time it arrived.
+   - state(room) returns those readings plus age_s, the seconds
+     since each one arrived.
+   - Once a second, publish each room&#x27;s state as JSON to
+     twin/floor3/&lt;room&gt;/state.
+   - Never publish to building/floor3/+/hvac/set. Control belongs
+     to twin/control.py, and it stays off for now.
+2. In tools/latency.py, subscribe to the sensor topics and to
+   twin/floor3/+/state for 60 seconds, then print a table per room:
+   median and worst delay from the sensor timestamp to (a) the
+   broker and (b) the twin state, and how many seq numbers were
+   missing.
+3. Read the broker host, port and topics from twin/config.py.
+4. Make python -m pytest tests/test_floor.py pass.</code></pre>
+  <p class="small"><b>Gotchas to expect:</b> (1) The assistant may build in a <em>new</em> workspace instead of your starter folder; use Agent mode and say "this existing workspace" (the prompt does). (2) Assistants often write paho-mqtt 1.x code. The starter uses 2.x, where the client needs <code>CallbackAPIVersion.VERSION2</code> and the callbacks take an extra argument; if <code>on_connect</code> never fires, check this first. (3) Inside the Codespace the broker is <code>localhost:1883</code>; only your browser needs the forwarded port URLs.</p>
+  <div class="submit-box"><h3>Submit (Engagement)</h3><ul><li>Paste the prompt you gave your AI assistant under <b>Create</b> in <code>NOTES.md</code>, add a screenshot of the Floor 3 Grafana dashboard and of <code>tools.latency</code>'s table to <code>screenshots/</code>, then commit and push to your Module 1 repo.</li></ul></div>
+</section>
+<section class="module card" id="evaluate">
+  <div class="module-head"><div class="module-icon">🔍</div><div><h2>2 · Evaluate</h2><div class="module-meta"><span class="tag blue">Week 1 · Fri–Sun</span></div></div></div>
+<p class="stage-tagline">The critical gate — is the AI-built result actually right?</p>
+  <p>Is the AI-built virtual entity actually right, and can it be trusted? Check the numbers it reports against the simulator's ground truth, and break the pipeline on purpose. Run each of these and write down what happened:</p>
+  <ul><li><b>Latency, hop by hop:</b> run <code>tools.latency</code>. What are the median and worst delays to the broker and to the twin state? Is that real-time enough for a room's heating, and how would you decide?</li><li><b>Stuck sensor:</b> restart the simulator with <code>--fault stuck --room r2</code>. Does the twin state, Grafana or anything else notice? How long before you would?</li><li><b>Broker outage:</b> <code>docker compose stop mosquitto</code>, wait 30 seconds, start it again. Which seq numbers were lost, how does Grafana draw the gap, and what does the twin's <code>age_s</code> say?</li><li><b>Turn the arrow on:</b> with the stuck sensor still running, start <code>TWIN_MODE=1 python -m twin.control</code>. Compare room 2's true temperature (<code>sim/truth/r2/temp</code>) with what the twin believes. What did control do?</li></ul>
+  <div class="submit-box"><h3>Submit</h3><ul><li>Paste this note under <b>Evaluate</b> in <code>NOTES.md</code>, add your screenshots to <code>screenshots/</code>, then commit and push by the end of Week 1. Your commit history is your Week 1 checkpoint.</li></ul></div>
+</section>
+<section class="module card" id="analyze">
+  <div class="module-head"><div class="module-icon">🔬</div><div><h2>3 · Analyze</h2><div class="module-meta"><span class="tag blue">Week 2 · Mon–Tue</span></div></div></div>
+<p class="stage-tagline">Why does this work, mechanically?</p>
+  <p>Pick <strong>one</strong> of these and explain it in your own words. Depth beats breadth: one mechanism explained well scores higher than a tour of every file. Your instructor may ask a follow-up about one line, so write it so you could answer.</p>
+  <div class="option"><h3>Shadow or twin: the one arrow</h3><p class="small muted">Draw the three components and every arrow between them, from your code.</p><ul><li>Draw Floor 3's three components and every arrow between them. Which file or container is each one?</li><li>Quote the line in <code>twin/control.py</code> that makes this a twin. What has to be true before it runs?</li><li>What new failure became possible in Evaluate test 4 that wasn't possible in shadow mode?</li></ul></div>
+  <div class="option"><h3>Where the latency goes</h3><p class="small muted">Each hop, measured, and the slowest one explained.</p><ul><li>Break the end-to-end delay into hops, using your <code>tools.latency</code> numbers. Which hop is slowest, and why?</li><li>Why can the twin state be fresher than the Grafana panel, even though both come from the same broker?</li><li>What happens to the twin if messages arrive out of order, and how would <code>seq</code> show it?</li></ul></div>
+  <div class="option"><h3>What the data can't tell you</h3><p class="small muted">Which faults look exactly like real readings, and why.</p><ul><li>Which of the four faults looked exactly like a real reading in your runs, and which didn't?</li><li>Where in the pipeline should validation live, and why not only in Grafana?</li><li>What should the virtual entity report for a room whose newest reading is 90 seconds old?</li></ul></div>
+  <div class="submit-box"><h3>Submit</h3><ul><li>A short written walkthrough of the one you chose, under <b>Analyze</b> in <code>NOTES.md</code>, quoting the lines you explain, with a screenshot of the run you describe in <code>screenshots/</code>.</li></ul></div>
+</section>
+<section class="module card" id="refine">
+  <div class="module-head"><div class="module-icon">✋</div><div><h2>4 · Understand &amp; Refine</h2><div class="module-meta"><span class="tag blue">Week 2 · Wed–Thu</span><span class="tag bad">No AI assistant for this part</span></div></div></div>
+<p class="stage-tagline">The mastery check — by hand, no AI assistance for this stage.</p>
+  <div class="not-graded">By hand this time. Turn off your AI assistant (Copilot: the status-bar icon, then <b>Disable completions</b>) and close its chat. Docs, the lecture and your own Week 1 code are fine.</div>
+  <p>The virtual entity believes every reading. Teach it when not to: write the data-quality check yourself, in <code>twin/quality.py</code>, and wire it in so a room that fails the check is marked <code>unknown</code> and control leaves it alone.</p>
+  <ol><li>Write each rule in one sentence, with the number you chose and why: how long may a reading stay unchanged, how fast can room air really change temperature, and how old may the newest reading be?</li><li>Implement <code>check(history) -> "ok" | "stuck" | "jump" | "stale"</code> by hand in <code>twin/quality.py</code>.</li><li>Wire it into <code>FloorTwin</code>: a room that fails is marked <code>unknown</code>, and <code>twin/control.py</code> skips unknown rooms.</li><li>Write <code>tests/test_quality.py</code>: every recorded fault in <code>data/faults/</code> is flagged, and <code>data/normal_hour.csv</code> raises no alarm. Screenshot the passing <code>pytest</code> run.</li><li>Write 2–3 sentences: which fault your check still can't see (try a sensor that slowly drifts), and what it would take to catch it.</li></ol>
+  <div class="submit-box"><h3>Submit</h3><ul>
+    <li><b>Apply:</b> The <code>twin/quality.py</code> and <code>tests/test_quality.py</code> you wrote by hand are committed, and the tests pass.</li>
+    <li><b>Understand:</b> your own explanation under <b>Understand &amp; Refine</b> in <code>NOTES.md</code>, with its screenshots in <code>screenshots/</code>.</li>
+    <li>Then push by the end of Week 2. Your repo is the submission; the last push before the deadline counts.</li>
+  </ul></div>
+</section>
+<section class="module card" id="snags">
+  <div class="module-head"><div class="module-icon">🧯</div><div><h2>Common snags</h2></div></div>
+<div class="snag-box">
+    <ul><li><strong><code>docker compose up</code> hangs or a container keeps restarting</strong> — usually memory. Run <code>docker compose ps</code>; if InfluxDB or Grafana restarts, stop other Codespaces or rebuild this one with 4 cores (still free within the monthly quota).</li><li><strong><code>on_connect</code> never fires</strong> — paho-mqtt 1.x code on the 2.x library. Create the client with <code>mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)</code>; 2.x callbacks take an extra <code>properties</code> (and <code>reason_code</code>) argument.</li><li><strong>Connection refused on port 1883</strong> — inside the Codespace the broker is <code>localhost:1883</code>. Only your browser uses the forwarded URLs from the <b>Ports</b> tab, for Grafana (3000) and Node-RED (1880).</li><li><strong>Grafana shows "No data"</strong> — check the time range (last 15 minutes), that <code>sensors.simulate</code> is still running, and that the Node-RED flow shows "connected" under its MQTT node.</li><li><strong>The latency table shows negative delays</strong> — a clock mismatch: compare timestamps from the same clock. In the starter, all timestamps are the Codespace's clock in UTC seconds; check the assistant didn't mix in local time or milliseconds.</li>
+      <li><strong>The assistant created a new folder or project</strong> — it built in a new workspace instead of your starter. Delete what it made, reopen the repo folder, and say "this existing workspace" in Agent mode.</li>
+    </ul>
+    <p class="small" style="margin:10px 0 0">Most snags trace back to a concept. If one doesn't make sense, see <a href="../reference/concept-companion.html#module-1">Concept Companion → Module 1</a>.</p>
+  </div>
+</section>
+
+<div class="guide-nav"><span></span><a href="index.html">Module 1 lesson →</a></div>
+</main>
+<footer class="foot">AI 440: Digital Twins and Physical AI · City University of Seattle, School of Technology &amp; Computing<br>Course design &amp; materials: Clark Ngo · Simulators are illustrative HTML models — no real sensors, models, simulators or network calls.<br>© 2026 Clark Ngo · Free to reuse and adapt under <a href="https://creativecommons.org/licenses/by/4.0/" rel="license">CC BY 4.0</a>, except where noted · <a href="https://github.com/cityuseattle/ai440/blob/main/LICENSE.md">How to credit</a></footer>
+<script src="../assets/course.js"></script>
+
+</body>
+</html>

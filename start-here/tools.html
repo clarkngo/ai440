@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="AI 440 tools page: GitHub Codespaces, the first run of a HOS repo, Docker Compose and forwarded ports, keys, git and the AI coding assistant.">
+<title>AI 440 — Tools You'll Use All Term</title>
+<link rel="stylesheet" href="../assets/course.css">
+<style>
+.intro-box { background:var(--blue-bg); border-left:5px solid var(--blue); padding:15px 18px; margin:18px 0; border-radius:0 6px 6px 0; font-size:0.92rem; }
+        .intro-box h4 { margin:0 0 6px; color:var(--blue); font-size:0.95rem; }
+
+        /* Map table — the "modular" jump nav */
+        table.map-table { width:100%; border-collapse:collapse; margin:14px 0 6px; font-size:0.85rem; }
+        table.map-table th, table.map-table td { border:1px solid var(--border); padding:9px 12px; text-align:left; vertical-align:top; }
+        table.map-table th { background:var(--surface2); font-size:0.72rem; text-transform:uppercase; letter-spacing:0.03em; color:var(--muted); }
+        table.map-table td.mod-name { font-weight:700; color:var(--accent); white-space:nowrap; }
+        table.map-table a.jump { font-weight:600; text-decoration:none; color:var(--blue); }
+        table.map-table a.jump:hover { text-decoration:underline; }
+
+        /* Module blocks */
+        .module-pills { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:14px; }
+        .mod-pill { font-size:0.74rem; font-weight:700; padding:3px 10px; border-radius:999px; }
+        .mod-pill.hos { background:var(--blue-bg); color:var(--violet); }
+        .mod-pill.wk { background:var(--blue-bg); color:var(--blue); }
+        .mod-pill.outcome { background:var(--accent-light); color:var(--accent2); }
+        .why-line { font-size:0.92rem; color:var(--text); margin:0 0 18px; }
+        .why-line strong { color:var(--text); }
+
+        /* Concept cards */
+        .concept-grid { display:grid; grid-template-columns:1fr; gap:12px; margin:14px 0; }
+        .concept-card { background:var(--surface2); border:1px solid var(--border); border-radius:8px; padding:13px 16px; }
+        .concept-card h4 { margin:0 0 5px; font-size:0.95rem; color:var(--text); }
+        .concept-card p { margin:0; font-size:0.88rem; color:var(--text); }
+        .concept-card .why { margin-top:6px; font-size:0.82rem; color:var(--muted); }
+        .concept-card .why strong { color:var(--muted); }
+
+        /* Diagrams */
+        .diagram-box { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:16px; margin:18px 0; text-align:center; }
+        .diagram-box svg { max-width:100%; height:auto; }
+        .diagram-caption { font-size:0.8rem; color:var(--muted); margin-top:6px; }
+        .flow-line { stroke-dasharray:6 4; animation:flowdash 1s linear infinite; }
+        .flow-line.slow { animation-duration:1.8s; }
+        @keyframes flowdash { to { stroke-dashoffset:-20; } }
+        .flow-dot { animation:dotmove linear infinite; }
+        .pulse-box { animation:pulsebox 2.2s ease-in-out infinite; }
+        @keyframes pulsebox { 0%,100% { opacity:1; } 50% { opacity:0.45; } }
+        @media (prefers-reduced-motion: reduce) {
+            .flow-line, .flow-dot, .pulse-box { animation:none !important; }
+        }
+
+        /* Glossary / self-check boxes — matching AI-410.html's vocabulary */
+        .glossary-box { background:var(--surface2); border:1px solid var(--border); border-radius:6px; padding:12px 16px; margin:14px 0; font-size:0.85rem; }
+        .glossary-box h5 { margin:0 0 6px; font-size:0.78rem; text-transform:uppercase; letter-spacing:0.04em; color:var(--muted); }
+        .glossary-box dl { margin:0; }
+        .glossary-box dt { font-weight:700; color:var(--text); display:inline; }
+        .glossary-box dd { display:inline; margin:0 0 0 4px; color:var(--muted); }
+        .glossary-box dd::after { content:""; display:block; margin-bottom:4px; }
+        .check-box { background:var(--blue-bg); border-left:5px solid var(--blue); padding:12px 16px; margin:16px 0 0; border-radius:0 4px 4px 0; font-size:0.85rem; }
+        .check-box h5 { margin:0 0 6px; font-size:0.78rem; text-transform:uppercase; letter-spacing:0.04em; color:var(--blue); }
+        .check-box ul { margin:0; padding-left:18px; }
+        .check-box li { margin-bottom:4px; }
+
+        .module-nav { text-align:right; margin-top:16px; font-size:0.82rem; }
+        .module-nav a { color:var(--link); text-decoration:none; font-weight:600; }
+        .back-to-top { display:inline-block; margin-top:34px; font-size:0.85rem; color:var(--link); text-decoration:none; font-weight:600; }
+    
+.steps li { margin-bottom:8px; }
+.explain { background:var(--surface2); border-left:3px solid var(--border); padding:10px 14px; margin:12px 0; font-size:.88rem; border-radius:0 4px 4px 0; }
+.done-box { background:var(--ok-bg); border-left:5px solid var(--ok); padding:12px 16px; margin:14px 0 0; border-radius:0 4px 4px 0; font-size:.88rem; }
+.done-box h3 { margin:0 0 6px; font-size:.85rem; color:var(--ok); }
+.done-box ul { margin:0; padding-left:18px; }
+.env-example { background:var(--code-bg); color:var(--code-text); font-family:ui-monospace,Menlo,Consolas,monospace; font-size:.82rem; padding:12px 16px; border-radius:6px; overflow-x:auto; margin:10px 0; }
+.env-example .key { color:var(--accent2); }
+.intro-box h3, .check-box h3, .before-box h3 { margin:0 0 6px; font-size:.95rem; }
+.concept-card h3 { margin:0 0 5px; font-size:0.95rem; color:var(--text); }
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="top">
+  <div class="top-inner">
+    <a class="brand" href="../index.html"><span class="brand-icon">440</span><span><b>AI 440: Digital Twins and Physical AI</b><small>Start here</small></span></a>
+    <div class="top-right"><a class="pill-btn" href="../index.html">Course home</a><button class="pill-btn" id="themeToggle" type="button">🌙 Dark</button></div>
+  </div>
+</header>
+<section class="hero">
+  <div class="hero-inner">
+    <div class="eyebrow">AI 440 · Start here · Read before Week 1</div>
+    <h1>Tools You'll Use All Term</h1>
+    <p class="lede">GitHub Codespaces, the terminal, Docker, forwarded ports, keys and git: the tools every module uses. Learn them once here instead of under deadline pressure in HOS 1.</p>
+    <div class="chips"><span class="chip">Read before Week 1</span><span class="chip">Runs in GitHub Codespaces</span><span class="chip">CPU only, free tiers only</span></div>
+  </div>
+</section>
+<main id="main">
+<nav class="secnav no-print" aria-label="Page sections">
+  <div class="secnav-inner"><a href="#start">Start here</a><a href="#codespaces">Codespaces</a><a href="#first-run">First run</a><a href="#docker">Docker &amp; ports</a><a href="#module-0">Universal tooling</a></div>
+</nav>
+<section class="module card" id="start">
+  <div class="module-head"><div class="module-icon">🚦</div><div><h2>Start here, in this order</h2></div></div>
+<div class="before-box">
+    <h3>Start here, in this order</h3>
+    <ol>
+      <li><b>Set up your accounts</b> with the <a href="accounts.html">Account &amp; Service Setup Guide</a>. Week 1 needs only a GitHub account; a free Gemini API key comes in Week 7.</li>
+      <li><b>Read this page.</b> These are the tools every module uses.</li>
+      <li><b>Read the <a href="ai-use.html">AI Use Guide</a>.</b> It says where an AI assistant may help and where you work without one.</li>
+      <li>Then open <a href="../module-1/index.html">Module 1</a>.</li>
+    </ol>
+  </div>
+  <div class="intro-box">
+    <h3>Why everything runs in a Codespace</h3>
+    <p style="margin:0">Digital twins need a small stack of services: a message broker, a database, a dashboard, a physics engine. Installing those on every laptop goes wrong in a hundred ways. Each HOS repo describes its whole environment in a <code>.devcontainer</code>, so GitHub builds the same Linux machine for everyone, in the browser, with nothing to install. It has two CPU cores and no GPU, and every build in this course is sized to fit.</p>
+  </div>
+</section>
+
+<section class="module card" id="codespaces">
+  <div class="module-head"><div class="module-icon">☁️</div><div><h2>GitHub Codespaces</h2><div class="module-meta"><span class="tag blue">Every HOS</span></div></div></div>
+<p class="why-line">A Codespace is a Linux machine in the cloud with VS Code in your browser. You open one from a repo, and it's ready when its <code>.devcontainer</code> finishes installing.</p>
+  <ol class="steps">
+    <li>Open your HOS repo on github.com, click <b>Code → Codespaces → Create codespace on main</b>.</li>
+    <li>Wait for the first build (a few minutes; later starts take seconds). The terminal at the bottom shows progress.</li>
+    <li>Keep the default <b>2-core</b> machine. It's enough for every HOS, and bigger machines use your free hours faster.</li>
+    <li>When you finish, stop it: <b>Code → Codespaces → ⋯ → Stop codespace</b>, or let it stop itself after 30 idle minutes.</li>
+  </ol>
+  <div class="explain"><strong>Free hours.</strong> Personal GitHub accounts include a monthly allowance of Codespaces core-hours (120 core-hours, which is 60 hours on a 2-core machine), and GitHub Pro, free with the <a href="https://education.github.com/pack" target="_blank" rel="noopener">Student Developer Pack</a>, includes more. Stop Codespaces you aren't using, and delete old ones from <a href="https://github.com/codespaces" target="_blank" rel="noopener">github.com/codespaces</a>, since stored Codespaces count against a storage allowance too.</div>
+  <div class="explain"><strong>Rebuilds.</strong> If a repo's <code>.devcontainer</code> changes after you created the Codespace, open the Command Palette (<code>Cmd/Ctrl+Shift+P</code>) → <b>Codespaces: Rebuild Container</b>. Your files are kept.</div>
+</section>
+
+<section class="module card" id="first-run">
+  <div class="module-head"><div class="module-icon">▶️</div><div><h2>First run: one HOS repo, start to finish</h2></div></div>
+<p class="why-line">Every HOS starts with these same steps. The repo comes from the HOS invite link in each module. <span class="tag amber">Planned</span> The HOS 1 starter repository and its GitHub Classroom invite are being built and tested; the invite link goes here when they are published.</p>
+  <ol class="steps">
+    <li><b>Open the repo in a Codespace</b>, as above. The <code>.devcontainer</code> installs Python, the project's packages and Docker.</li>
+    <li><b>Read the README</b>, then <code>NOTES.md</code>: its four headings (Create, Evaluate, Analyze, Understand &amp; Refine) are where your written work goes.</li>
+    <li><b>Add keys only if the HOS needs them</b> (HOS 4 does): copy <code>.env.example</code> to <code>.env</code> and fill it in.</li>
+    <li><b>Run the tests</b> to see the starting point: <code>python -m pytest</code>. Most fail until you build the missing parts. That's the to-do list.</li>
+    <li><b>Commit and push</b> after each stage:
+<pre tabindex="0"><code>git add -A
+git commit -m "HOS 1: Create"
+git push</code></pre></li>
+    <li><b>Your repo is your submission.</b> There's no Brightspace upload for a HOS; the last push before the end of the HOS's second week is what's graded.</li>
+  </ol>
+</section>
+
+<section class="module card" id="docker">
+  <div class="module-head"><div class="module-icon">🐳</div><div><h2>Docker, services and forwarded ports</h2><div class="module-meta"><span class="tag blue">HOS 1 and HOS 4</span></div></div></div>
+<p class="why-line">HOS 1 runs four services in containers (Mosquitto, Node-RED, InfluxDB and Grafana), and HOS 4 runs Mosquitto again. Docker Compose starts them all from one file.</p>
+<pre tabindex="0"><code>docker compose up -d          # start everything in docker-compose.yml, in the background
+docker compose ps             # what's running, and on which port
+docker compose logs -f grafana   # follow one service's log (Ctrl+C to stop following)
+docker compose stop mosquitto    # stop one service (HOS 1 Evaluate does this on purpose)
+docker compose down           # stop and remove them all</code></pre>
+  <div class="concept-grid">
+    <div class="concept-card"><h3>Inside the Codespace vs. in your browser</h3><p>Your Python code talks to the services by name and port inside the Codespace, such as <code>localhost:1883</code> for the MQTT broker. Your <em>browser</em> can't reach <code>localhost</code> there; it uses the forwarded URLs in the <b>Ports</b> tab (Grafana on 3000, Node-RED on 1880, <code>adk web</code> on 8000).</p>
+      <div class="why"><strong>Why it matters:</strong> forwarded ports are private to your GitHub account by default. Leave them that way: nobody else needs your dashboard.</div></div>
+    <div class="concept-card"><h3>Memory is the limit</h3><p>The full HOS 1 stack uses about 1.5 GB. If a container keeps restarting, run <code>docker compose ps</code> and stop what you don't need, or close other Codespaces.</p></div>
+    <div class="concept-card"><h3>Local passwords</h3><p>InfluxDB and Grafana need an admin password. The starter's <code>.env.example</code> sets local-only defaults for them. They protect nothing outside your Codespace, so don't reuse a real password there.</p></div>
+  </div>
+</section>
+
+<section class="module card" id="module-0">
+  <div class="module-head"><div class="module-icon">🧰</div><div><h2>Universal tooling</h2><div class="module-meta"><span class="tag blue">Read before Week 1</span></div></div></div>
+<p class="why-line">These show up in every HOS, not just one.</p>
+  <div class="concept-grid">
+    <div class="concept-card"><h3>The terminal</h3><p>Where you run the simulator, the tests and the training scripts. A new terminal tab starts at the repo's top folder; many HOS steps need two or three tabs at once (the sensors in one, the twin in another).</p></div>
+    <div class="concept-card"><h3>Packages and the devcontainer</h3><p>Each repo pins its packages in <code>requirements.txt</code>, and the devcontainer installs them. Some are large (PyTorch, MuJoCo), so the starters pin CPU-only builds.</p>
+      <div class="why"><strong>Why it matters:</strong> if an AI assistant "helpfully" installs a GPU build of PyTorch, the Codespace runs out of disk. Don't let it change <code>requirements.txt</code>.</div></div>
+    <div class="concept-card"><h3><code>.env</code> files and API keys</h3><p>A key is a password for a service. It lives in <code>.env</code>, which each repo's <code>.gitignore</code> keeps out of Git. Never paste it into code, a chat or a screenshot.</p></div>
+    <div class="concept-card"><h3>Git</h3><p>Commit after each stage with a message that says which stage. Your commit history is your Week 1 checkpoint for each HOS, and in the Term Project it shows who built what.</p></div>
+    <div class="concept-card"><h3>Working with an AI coding assistant</h3><p>GitHub Copilot is built into Codespaces (free for verified students). The Create stage of each HOS is deliberately AI-driven; use <b>Agent mode</b>, and tell it to work in "this existing workspace". The rest of each HOS proves, in writing and by hand, that you understand what it built.</p>
+      <div class="why"><strong>Why it matters:</strong> getting the AI-built version running is 20% of each HOS grade. The other 80% is judging it, explaining it and extending it without AI help.</div></div>
+  </div>
+  <div class="check-box">
+    <h3>Quick self-check before you continue</h3>
+    <ul>
+      <li>Could you open a repo in a Codespace, run its tests and push a commit?</li>
+      <li>Do you know why your code uses <code>localhost:1883</code> but your browser uses the Ports tab?</li>
+      <li>Do you know which part of each HOS is done with an AI assistant, and which you must do yourself?</li>
+    </ul>
+  </div>
+  <p class="module-nav"><a href="../reference/concept-companion.html#module-1">Next: Concept Companion, Module 1 →</a></p>
+</section>
+
+<div class="guide-nav" style="display:flex;justify-content:space-between;gap:12px;margin-top:30px;padding-top:16px;border-top:1px solid var(--border)"><a href="../index.html">← Course home</a><a href="../module-1/index.html">Module 1 →</a></div>
+</main>
+<footer class="foot">AI 440: Digital Twins and Physical AI · City University of Seattle, School of Technology &amp; Computing<br>Course design &amp; materials: Clark Ngo<br>© 2026 Clark Ngo · Free to reuse and adapt under <a href="https://creativecommons.org/licenses/by/4.0/" rel="license">CC BY 4.0</a>, except where noted · <a href="https://github.com/cityuseattle/ai440/blob/main/LICENSE.md">How to credit</a></footer>
+<script src="../assets/course.js"></script>
+
+</body>
+</html>

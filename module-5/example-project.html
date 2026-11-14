@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="AI 440 example Term Project: Packaging Cell Twin, a fictional digital twin of a packaging line that combines all four HOS, with a step-by-step live demo, three releases and a demo video storyboard.">
+<title>Example Term Project: Packaging Cell Twin</title>
+<link rel="stylesheet" href="../assets/course.css">
+<style>
+.demo-layout { display:grid; grid-template-columns:minmax(250px,320px) 1fr; gap:16px; align-items:start; }
+@media (max-width:860px){ .demo-layout { grid-template-columns:1fr; } }
+.panel { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:16px 18px; box-shadow:var(--shadow); margin-bottom:16px; min-width:0; }
+.panel h3 { font-size:.95rem; margin:0 0 8px; }
+
+.steps-pick { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:8px; margin:10px 0 14px; }
+.steps-pick button { font-family:inherit; text-align:left; border:1px solid var(--border); background:var(--surface2); color:var(--text); border-radius:10px; padding:8px 10px; cursor:pointer; font-size:.8rem; }
+.steps-pick button .tm { display:block; font-size:.68rem; font-weight:800; letter-spacing:.06em; text-transform:uppercase; color:var(--accent2); }
+.steps-pick button b { display:block; font-size:.84rem; }
+.steps-pick button[aria-pressed="true"] { border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-light); }
+.steps-pick button.seen .tm::after { content:" ✓"; }
+
+.console { border:6px solid #1f2937; border-radius:14px; background:var(--surface2); max-width:320px; margin:0 auto; position:relative; overflow:hidden; }
+.console .bar { background:#1f2937; color:#e5e7eb; font-size:.68rem; text-align:center; padding:2px 0 6px; }
+.console .app-head { background:var(--accent); color:var(--on-accent); padding:8px 12px; font-weight:800; font-size:.86rem; display:flex; justify-content:space-between; align-items:center; }
+.console .screen { height:380px; overflow-y:auto; padding:10px; display:flex; flex-direction:column; gap:8px; }
+.bub { max-width:85%; padding:7px 10px; border-radius:12px; font-size:.8rem; line-height:1.4; }
+.bub.user { align-self:flex-end; background:var(--blue-bg); color:var(--text); border:1px solid var(--blue); border-bottom-right-radius:4px; }
+.bub.bot { align-self:flex-start; background:var(--surface); border:1px solid var(--border); border-bottom-left-radius:4px; }
+.bub.sys { align-self:center; background:none; color:var(--muted); font-size:.72rem; text-align:center; }
+.bub .cite { display:block; font-size:.68rem; color:var(--muted); margin-top:4px; }
+.fc { border:1px solid var(--border); border-left:4px solid var(--accent); border-radius:8px; padding:5px 8px; margin-top:5px; background:var(--surface2); font-size:.74rem; }
+.notif { position:absolute; left:8px; right:8px; top:26px; background:var(--surface); border:1px solid var(--border); border-radius:12px; box-shadow:var(--shadow); padding:8px 10px; font-size:.76rem; transform:translateY(-140%); transition:transform .35s; }
+.notif.show { transform:translateY(0); }
+.console-empty { margin:auto; text-align:center; color:var(--muted); font-size:.8rem; }
+
+.lanes { display:grid; grid-template-columns:repeat(auto-fit,minmax(88px,1fr)); gap:6px; margin-bottom:12px; }
+.lane { border:2px solid var(--border); border-radius:10px; padding:6px; text-align:center; font-size:.72rem; background:var(--surface2); transition:all .2s; min-width:0; }
+.lane b { display:block; font-size:.76rem; }
+.lane .ic { font-size:1.1rem; display:block; }
+.lane.from { border-color:var(--blue); background:var(--blue-bg); }
+.lane.to { border-color:var(--accent); background:var(--accent-light); box-shadow:0 0 0 3px var(--accent-light); }
+.lane.err { border-color:var(--bad); background:var(--bad-bg); }
+.stepbox { border:1px solid var(--border); border-left:5px solid var(--accent); border-radius:8px; padding:10px 14px; background:var(--surface2); margin-bottom:12px; min-height:84px; }
+.stepbox.warn { border-left-color:var(--amber); }
+.stepbox .k { font-size:.7rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); }
+.steps-list { list-style:none; margin:0; padding:0; font-size:.8rem; }
+.steps-list li { padding:5px 8px; border-radius:6px; color:var(--muted); display:flex; gap:8px; align-items:baseline; }
+.steps-list li.cur { background:var(--accent-light); color:var(--text); font-weight:700; }
+.steps-list li.past { color:var(--text); }
+.steps-list li .n { flex:none; width:20px; text-align:right; }
+.hos1 { background:var(--blue-bg); color:var(--blue); } .hos2 { background:var(--violet-bg); color:var(--violet); }
+.hos3 { background:var(--amber-bg); color:var(--amber); } .hos4 { background:var(--rose-bg); color:var(--rose); }
+.say { border-left:5px solid var(--violet); background:var(--violet-bg); border-radius:0 8px 8px 0; padding:10px 14px; font-size:.88rem; margin:0 0 12px; }
+.say .label { display:block; font-size:.7rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--violet); margin-bottom:2px; }
+
+.wf-row { display:grid; grid-template-columns:150px 1fr 60px; gap:8px; align-items:center; font-size:.76rem; margin-bottom:4px; }
+.wf-row .nm { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.wf-track { height:12px; background:var(--surface2); border:1px solid var(--border); border-radius:6px; position:relative; }
+.wf-fill { position:absolute; top:0; bottom:0; border-radius:5px; background:var(--accent); }
+@media (max-width:520px){ .wf-row { grid-template-columns:100px 1fr 50px; } }
+
+.rel { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:12px; }
+.rel .card { margin:0; }
+.rel h3 { margin:0 0 2px; font-size:1rem; }
+.rel ul { padding-left:18px; margin:6px 0 0; font-size:.86rem; }
+.shot { display:grid; grid-template-columns:86px 1fr; gap:10px; border-bottom:1px dashed var(--border); padding:8px 0; font-size:.86rem; }
+.shot .tm { font-weight:800; color:var(--accent2); }
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="top">
+  <div class="top-inner">
+    <a class="brand" href="../index.html"><span class="brand-icon">440</span><span><b>AI 440: Digital Twins and Physical AI</b><small>Course home</small></span></a>
+    <div class="top-right"><a class="pill-btn" href="../index.html">Course home</a><button class="pill-btn" id="themeToggle" type="button">🌙 Dark</button></div>
+  </div>
+</header>
+<section class="hero">
+  <div class="hero-inner">
+    <div class="eyebrow">AI 440 · Module 5 · Example Term Project</div>
+    <h1>Example Term Project: Packaging Cell Twin</h1>
+    <p class="lede">A fictional, finished Term Project you can click through: one digital twin of a small packaging line that combines all four HOS, its live demo played step by step with what the presenter says, its three releases, and its demo video storyboard.</p>
+    <div class="chips"><span class="chip">All 4 HOS</span><span class="chip">Group of three</span><span class="chip">Live demo player</span><span class="chip">Three releases</span><span class="chip">Video storyboard</span></div>
+  </div>
+</section>
+<main id="main">
+<nav class="secnav no-print" aria-label="Page sections">
+  <div class="secnav-inner"><a href="#overview">The project</a><a href="#demo">Live demo</a><a href="#releases">Three releases</a><a href="#video">Demo video</a><a href="#strong">What makes it strong</a></div>
+</nav>
+
+<p class="sim-note" style="margin-top:18px">⚠ Illustrative example only. Packaging Cell Twin, its team and its numbers are made up, and the demo is a scripted HTML model: no real sensors, models or network calls. Your project doesn't have to look like this. It has to be one functional twin for a targeted use case that combines all four HOS.</p>
+
+<section class="module card" id="overview">
+  <div class="module-head"><div class="module-icon">🗂️</div><div><h2>The project at a glance</h2><div class="module-meta"><span class="tag">Group of three</span><span class="tag blue">All 4 HOS</span></div></div></div>
+<p><strong>The use case.</strong> A small packaging line, a conveyor, a pick-and-place arm and a heat sealer, loses a few percent of its packs to bad seals, mostly after film changes and jams, when the sealer's jaw runs too cold or too hot. Two thermocouples sit at the jaw's edges; nobody can see its core. Packaging Cell Twin monitors the line live, predicts the jaw's core temperature, and may slow the conveyor on its own, only inside limits its what-if tests proved. It's the course description's manufacturing-cell example, cut to a size a team can finish in a Codespace.</p>
+  <div class="table-wrap" tabindex="0"><table>
+    <thead><tr><th>Decision</th><th>Made by</th><th>Why</th></tr></thead>
+    <tbody>
+      <tr><td>Slow the conveyor when the jaw is predicted to run cold</td><td><span class="tag">Twin</span> inside its envelope</td><td>Frequent, small and reversible, and the sweep tested the whole speed range.</td></tr>
+      <tr><td>Stop the line when the light curtain is broken</td><td><span class="tag ok">Deterministic code</span></td><td>A fixed safety rule. No model belongs anywhere near it.</td></tr>
+      <tr><td>Change the heater setpoint</td><td><span class="tag amber">A person</span></td><td>Not covered by the what-if tests yet, so not inside the envelope.</td></tr>
+      <tr><td>Restart after a stop-and-alert</td><td><span class="tag amber">A person</span></td><td>Someone has to find out whether the sensor or the model was wrong.</td></tr>
+    </tbody>
+  </table></div>
+  <div class="table-wrap" tabindex="0"><table>
+    <thead><tr><th>HOS</th><th>What it is in Packaging Cell Twin</th><th>Litmus test: why it's really that HOS</th></tr></thead>
+    <tbody>
+      <tr><td><span class="tag hos1">HOS 1 · pipeline &amp; twin</span></td><td>Recorded sensor traces replayed over MQTT into the twin's state, InfluxDB and a Grafana dashboard, with stuck, jump and stale checks.</td><td>The twin knows each reading's age, and one action travels back to the cell over MQTT.</td></tr>
+      <tr><td><span class="tag hos2">HOS 2 · physics-informed model</span></td><td>A PINN of heat through the jaw, with its diffusivity learned from a week of readings.</td><td>The heat equation is in the loss, and it beats a data-only model between the two sensors.</td></tr>
+      <tr><td><span class="tag hos3">HOS 3 · simulation &amp; synthetic data</span></td><td>The arm's cell in MuJoCo, exported to OpenUSD; a pick detector trained on 1,800 BlenderProc images.</td><td>Both were tested on held-out worlds they weren't built from, and the team reports the gap.</td></tr>
+      <tr><td><span class="tag hos4">HOS 4 · what-if &amp; safe decisions</span></td><td>A SimPy sweep of jams, heater faults and line speeds; an ADK agent that may only set conveyor speed, through an envelope callback; a JSONL action log.</td><td>Every limit points to a sweep result, including a combined failure, and the stop-and-alert rule is shown working.</td></tr>
+    </tbody>
+  </table></div>
+  <h3>The team and who owned what</h3>
+  <p class="small">One owner per area, not per week, as the <a href="index.html#roles">Roles section</a> suggests.</p>
+  <div class="table-wrap" tabindex="0"><table>
+    <thead><tr><th>Member (fictional)</th><th>Owned</th></tr></thead>
+    <tbody>
+      <tr><td>Member A</td><td>Sensors, pipeline and the twin's state (HOS 1)</td></tr>
+      <tr><td>Member B</td><td>The jaw PINN and the arm simulation (HOS 2 and 3)</td></tr>
+      <tr><td>Member C</td><td>What-if sweeps, the envelope and agent (HOS 4), and the demo script</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+
+<section class="module card" id="demo">
+  <div class="module-head"><div class="module-icon">🎬</div><div><h2>Live demo: play it step by step</h2><div class="module-meta"><span class="tag">Follows the Demo plan</span><span class="tag blue">≈ 5–6 min</span></div></div></div>
+<p>This is the live-demo part of Packaging Cell Twin's presentation, in the order the <a href="index.html#demo">Demo plan</a> suggests. Pick a step, then press <b>Next ▸</b> to play it one event at a time. The operator console shows what the audience sees; <b>Behind the scenes</b> shows what the presenter points at, with the HOS each event belongs to.</p>
+  <div class="steps-pick" id="pick" role="group" aria-label="Demo steps"></div>
+  <div class="say" id="say"><span class="label">The presenter says</span><span id="sayText"></span></div>
+  <div class="demo-layout">
+    <div>
+      <div class="console" role="group" aria-label="Operator console of Packaging Cell Twin">
+        <div class="bar">Browser · operator console</div>
+        <div class="notif" id="notif"><b>Alert</b><br><span id="notifText"></span></div>
+        <div class="app-head"><span>🏭 Packaging Cell Twin</span><span style="font-weight:600;font-size:.72rem">v1.0</span></div>
+        <div class="screen" id="screen" tabindex="0" role="log" aria-label="Console log"></div>
+      </div>
+      <div class="row" style="justify-content:center;margin-top:12px">
+        <button class="btn" id="next" type="button">Next ▸</button>
+        <button class="btn secondary" id="toEnd" type="button">Play to end</button>
+        <button class="btn secondary" id="replay" type="button">Replay step</button>
+      </div>
+    </div>
+    <div>
+      <div class="panel">
+        <h3>Behind the scenes</h3>
+        <div class="lanes"><div class="lane" id="L-sens"><span class="ic" aria-hidden="true">📡</span><b>Sensors</b>cell replay</div><div class="lane" id="L-mqtt"><span class="ic" aria-hidden="true">📨</span><b>MQTT</b>Mosquitto</div><div class="lane" id="L-twin"><span class="ic" aria-hidden="true">🧠</span><b>Twin state</b>twin/cell.py</div><div class="lane" id="L-pinn"><span class="ic" aria-hidden="true">🔥</span><b>Jaw PINN</b>PyTorch</div><div class="lane" id="L-sim"><span class="ic" aria-hidden="true">🦾</span><b>Simulation</b>MuJoCo · SimPy</div><div class="lane" id="L-agent"><span class="ic" aria-hidden="true">🤖</span><b>Agent</b>Google ADK</div><div class="lane" id="L-env"><span class="ic" aria-hidden="true">🛡️</span><b>Envelope</b>callback</div><div class="lane" id="L-log"><span class="ic" aria-hidden="true">📜</span><b>Action log</b>JSONL</div></div>
+        <div class="stepbox" id="stepbox"><span class="k">Ready</span><p style="margin:0">Pick a demo step above, then press <b>Next ▸</b>.</p></div>
+        <ol class="steps-list" id="events"></ol>
+        <div id="extra"></div>
+        <p class="sr-only" id="live" aria-live="polite"></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section class="module card" id="releases">
+  <div class="module-head"><div class="module-icon">🚀</div><div><h2>Three releases: what was in each</h2><div class="module-meta"><span class="tag amber">Phase 1 · 2 · 3</span></div></div></div>
+<p>Packaging Cell Twin didn't appear in Week 10. Each phase released a working system version and a report, the same as yours will.</p>
+  <div class="rel">
+    <div class="card"><span class="tag">End of Week 3 · Phase 1</span><h3>System v0.3</h3>
+      <ul><li>Repo <b>AI440 TP T03 Packaging_Cell_Twin</b> with a README, a <code>.gitignore</code>, no keys, and a working <code>.devcontainer</code></li><li>The sensor replay publishing over MQTT, and a first Grafana panel</li><li>A one-page proposal with 3 key references: the use case, the three components, which HOS goes where, and who owns what</li></ul></div>
+    <div class="card"><span class="tag">End of Week 7 · Phase 2</span><h3>System v0.7</h3>
+      <ul><li>The twin's state with quality checks, and the jaw PINN reading live data</li><li>The arm cell in MuJoCo and the first synthetic images</li><li>No envelope yet, so the agent wasn't allowed to act. Listed honestly as a known gap.</li><li>A 3–4 page progress report with 12+ references</li></ul></div>
+    <div class="card"><span class="tag ok">End of Week 10 · Phase 3</span><h3>System v1.0</h3>
+      <ul><li>The what-if sweep, the envelope from it, and the agent acting inside it</li><li>Stop-and-alert shown working with an injected sensor fault</li><li>Held-out results for the PINN, the arm policy and the detector</li><li>A README execution guide with an architecture diagram and an AI tool disclosure</li><li>Final report, presentation and demo video</li></ul></div>
+  </div>
+  <div class="callout blue" style="margin-top:14px">
+    <span class="label">What they cut, and said so</span>
+    <p>Running the arm's policy on the twin's live data (it runs only in simulation), and putting the heater setpoint under the agent (no sweep covers it yet). Both are on the "what didn't make it" slide. That's the Integration Debate in practice: they kept the autonomy narrow and the evidence complete.</p>
+  </div>
+</section>
+
+
+<section class="module card" id="video">
+  <div class="module-head"><div class="module-icon">📹</div><div><h2>The demo video: a storyboard</h2><div class="module-meta"><span class="tag">1–2 minutes</span><span class="tag">YouTube</span></div></div></div>
+<p>The video is separate from the live demo. It needs the problem, the twin monitoring live, one autonomous decision, and a title card naming who built what. Here is Packaging Cell Twin's shot list, about 1:50 in all, uploaded as <b>AI440 TP T03 Demo Video</b> with the three members' names.</p>
+  <div class="shot"><span class="tm">0:00–0:08</span><span><b>Title card.</b> "Packaging Cell Twin · AI 440 Term Project · Member A: sensors and pipeline · Member B: PINN and simulation · Member C: what-ifs, envelope and agent".</span></div>
+  <div class="shot"><span class="tm">0:08–0:25</span><span><b>The problem.</b> The cell, the jaw and its two sensors, and a voice-over: "Bad seals happen where we can't measure."</span></div>
+  <div class="shot"><span class="tm">0:25–0:55</span><span><b>The twin live.</b> A screen recording: Grafana moving, the PINN's jaw-core line, the agent slowing the conveyor, and its log line.</span></div>
+  <div class="shot"><span class="tm">0:55–1:20</span><span><b>Why it's allowed.</b> The sweep heatmap with the combined failure, and the envelope's three rules.</span></div>
+  <div class="shot"><span class="tm">1:20–1:40</span><span><b>When it stops.</b> The frozen sensor, the disagreement, and the operator alert.</span></div>
+  <div class="shot" style="border-bottom:none"><span class="tm">1:40–1:50</span><span><b>Close.</b> The repo link and one sentence on what's next.</span></div>
+</section>
+
+
+<section class="module card" id="strong">
+  <div class="module-head"><div class="module-icon">✅</div><div><h2>What makes this a strong example</h2><div class="module-meta"><span class="tag">Use it as a checklist</span></div></div></div>
+<ul>
+    <li><b>The autonomy is narrow and justified.</b> One action, in a tested range, with a named person for everything else.</li>
+    <li><b>Every HOS is real, not a token mention.</b> For each one the team can point to a specific part of the twin and say why it's that HOS (the litmus test in the second table).</li>
+    <li><b>One loop shows all four.</b> The demo follows a reading from a sensor to an action and back, instead of touring features one by one.</li>
+    <li><b>It shows a failure on purpose.</b> The frozen sensor proves the stop-and-alert rule earned its place, which is more convincing than a demo where nothing goes wrong.</li>
+    <li><b>Its numbers include the cost.</b> The envelope blocked three fine actions, and the presenters say so.</li>
+    <li><b>It's honest about the physical entity.</b> The cell is simulated and its traces replayed, and the report says what that can't show.</li>
+    <li><b>Every member is visible.</b> Owners per area, commits from all three, everyone speaks, and the title card names who built what.</li>
+  </ul>
+  <p>Now plan yours: <a href="index.html#map">map your twin</a>, <a href="index.html#backlog">write your backlog</a>, then use the <a href="index.html#freeze">freeze checklist</a> and the <a href="index.html#demo">Demo plan</a>.</p>
+</section>
+
+</main>
+<footer class="foot">AI 440: Digital Twins and Physical AI · City University of Seattle, School of Technology &amp; Computing<br>Course design &amp; materials: Clark Ngo · Simulators are illustrative HTML models — no real sensors, models, simulators or network calls.<br>© 2026 Clark Ngo · Free to reuse and adapt under <a href="https://creativecommons.org/licenses/by/4.0/" rel="license">CC BY 4.0</a>, except where noted · <a href="https://github.com/cityuseattle/ai440/blob/main/LICENSE.md">How to credit</a></footer>
+<script src="../assets/course.js"></script>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id);};
+  var HOS={1:'HOS 1 · pipeline & twin',2:'HOS 2 · physics-informed model',3:'HOS 3 · simulation & synthetic data',4:'HOS 4 · what-if & safe decisions'};
+  var SWEEP='<h3 style="margin-top:14px">What-if sweep · jam × heater stuck on × line speed (10 seeds)</h3><div class="table-wrap" tabindex="0"><table><thead><tr><th>Jam length</th><th>Heater OK</th><th>Heater stuck on</th></tr></thead><tbody><tr><td>30 s</td><td>jaw max 182 °C · ok</td><td>196 °C · ok</td></tr><tr><td>2 min</td><td>188 °C · ok</td><td><b>231 °C · film scorches</b></td></tr><tr><td>5 min</td><td>191 °C · ok</td><td><b>268 °C · stop the line</b></td></tr></tbody></table></div><p class="small" style="margin-top:8px">Each failure alone is fine. Together, past 2 minutes, they aren\'t. That boundary is where the envelope\'s stop-and-alert rule came from.</p>';
+  var NUM='<h3 style="margin-top:14px">Final numbers · one 8-hour replayed shift</h3><div class="table-wrap" tabindex="0"><table><thead><tr><th>What</th><th>Result</th></tr></thead><tbody><tr><td>Sensor → twin latency, p95</td><td>0.4 s</td></tr><tr><td>Jaw core error, PINN vs. data-only (between sensors)</td><td>0.9 °C vs. 4.7 °C</td></tr><tr><td>Pick detector, held-out worlds (1,800 synthetic images)</td><td>91% (fixed-scene images: 64%)</td></tr><tr><td>Agent proposals / allowed / blocked / stopped</td><td>41 / 37 / 3 / 1</td></tr></tbody></table></div><p class="small" style="margin-top:8px">The 3 blocked were all fine in hindsight: the price of the rate limit, and they say so.</p>';
+  var STEPS=[
+    {time:'~0:30', title:'The cell and the twin map', say:'"A small packaging line: a conveyor, a pick-and-place arm and a heat sealer. Bad seals happen when the sealer\'s jaw runs too cold or too hot, and nobody can see inside the jaw. Our twin watches the line live, predicts the jaw temperature where there\'s no sensor, and may do exactly one thing on its own: slow the conveyor."',
+     ev:[{from:'sens',to:'sens',t:'Show the twin map',d:'Physical entity: the cell (simulated, with recorded sensor traces replayed). Virtual entity: twin state, the jaw PINN and the arm simulation. Data connection: MQTT into InfluxDB and Grafana. Decisions: slowing the conveyor is the twin\'s, inside its envelope; the light-curtain stop is code; restarting the line is a person\'s.',hos:1,out:{sys:'cell-01 · conveyor 0.42 m/s · jaw 184 °C · line running'}}]},
+    {time:'~2:30', title:'The twin live: sense, predict, act', say:'"Everything you see is live in our Codespace. Sensor messages arrive every second. The twin keeps the cell\'s state and how old each reading is. Our PINN fills in the jaw\'s core temperature between its two sensors. When the jaw cools after a film change, the agent proposes slowing the conveyor, the envelope checks it, and it goes out over MQTT. Every proposal is logged."',
+     ev:[{from:'sens',to:'mqtt',t:'cell/jaw/temp_a, temp_b, conveyor/speed over MQTT',d:'Each payload carries the sensor\'s timestamp and a sequence number, so the twin can measure delay and spot gaps.',hos:1,out:{user:'▶ jaw A 171.2 °C · jaw B 176.0 °C · seq 48211'}},
+         {from:'mqtt',to:'twin',t:'The twin updates its state',d:'<code>twin/cell.py</code> keeps the latest values and their age; <code>twin/quality.py</code> checks for stuck, jumping and stale readings. Both sensors: ok.',hos:1},
+         {from:'twin',to:'pinn',t:'The PINN predicts the jaw core: 158 °C',d:'1-D heat equation through the jaw, with the heater as a boundary condition and diffusivity learned from a week of readings. A data-only model said 171 °C here, the average of the two sensors.',hos:2,out:{bot:'Jaw core (predicted): 158 °C · below the 165 °C seal minimum in ~40 s'}},
+         {from:'pinn',to:'agent',t:'The agent proposes: conveyor −10%',d:'An ADK agent with two tools, <code>read_twin</code> and <code>set_conveyor_speed</code>. A slower line gives the film longer in a cooler jaw.',hos:4},
+         {from:'agent',to:'env',t:'The envelope checks it: allow',d:'<code>before_tool_callback</code>: speed stays within 0.30–0.45 m/s (the swept range), at most one change a minute, no change bigger than 15%. All true.',hos:4},
+         {from:'env',to:'mqtt',t:'cell/conveyor/set 0.38 m/s',d:'The arrow back: the virtual side acting on the physical one. That\'s what makes this a twin, not a shadow.',hos:1,out:{bot:'Conveyor 0.42 → 0.38 m/s · allowed · reason: predicted cold jaw'}},
+         {from:'env',to:'log',t:'Logged with inputs, state, verdict and reason',d:'One JSON line in <code>logs/actions.jsonl</code>, whether the action was allowed or not.',hos:4,out:{sys:'action 0031 logged'}}]},
+    {time:'~1:30', title:'A what-if, then a lying sensor', say:'"Before we let the agent touch the line, we asked the twin what happens if the heater sticks on during a jam. Alone, each is fine. Together, past two minutes, the film scorches. So the envelope has a stop rule. Now watch: I freeze jaw sensor A. The PINN says the jaw is heating fast; the sensor says it isn\'t. The twin doesn\'t guess. It stops and tells the operator."',
+     ev:[{from:'sim',to:'sim',t:'The sweep the envelope came from',d:'SimPy runs of the cell with jam length × heater fault × line speed, 10 seeds each. The arm\'s side was trained in MuJoCo, and the pick detector on 1,800 synthetic images from BlenderProc, tested on held-out worlds.',hos:3,extra:SWEEP},
+         {from:'sens',to:'twin',t:'Inject: jaw sensor A sticks at 176.0 °C',d:'The fault from HOS 1, during a simulated jam with the heater stuck on.',hos:1,warn:true,out:{user:'▶ fault injected: temp_a stuck'}},
+         {from:'pinn',to:'env',t:'Sensor and prediction disagree by 31 °C',d:'The PINN, driven by sensor B and the heater state, predicts 207 °C and rising. Sensor A still says 176 °C.',hos:2,warn:true},
+         {from:'env',to:'log',t:'Stop and alert: the agent is paused',d:'The stop-and-alert rule: a disagreement over 10 °C, or a reading unchanged for 30 s while the heater is on. The agent\'s next proposal is held, and the line is left to the operator.',hos:4,warn:true,out:{notif:'Operator alert · cell-01 · jaw sensor A disagrees with the twin by 31 °C · agent paused'}}]},
+    {time:'~0:30', title:'The numbers', say:'"One replayed eight-hour shift. Sensor to twin in under half a second. Between the jaw\'s sensors the PINN is within a degree, where a data-only model is off by almost five. The envelope blocked three proposals that turned out to be fine. That\'s the cost of the rate limit, and we kept it."',
+     ev:[{from:'log',to:'log',t:'Show the results table',d:'Not just what worked: what the envelope cost, and how the data-only model compares.',hos:4,extra:NUM}]},
+    {time:'~0:30', title:'What didn\'t make it, and next', say:'"Two things didn\'t make it: the arm\'s policy only runs in simulation, not on the twin\'s live data, and the envelope only covers conveyor speed. Next we\'d add the heater setpoint to the envelope, with its own sweep, before anyone let the agent touch it."',
+     ev:[{from:'twin',to:'twin',t:'Close on an honest slide',d:'A sprint review, not a sales pitch. Name what\'s out of scope and what it would take. It\'s the Integration Debate synthesis in practice.',hos:4,out:{sys:'Not yet: live arm policy · heater setpoint in the envelope'}}]}
+  ];
+  var cur=0, idx=-1, seen={};
+
+  function laneReset(){ ['sens','mqtt','twin','pinn','sim','agent','env','log'].forEach(function(l){ $('L-'+l).className='lane'; }); }
+  function bubble(cls,html){ var d=document.createElement('div'); d.className='bub '+cls; d.innerHTML=html; $('screen').appendChild(d); $('screen').scrollTop=$('screen').scrollHeight; }
+  function outFor(e){
+    var p=e.out; if(!p) return;
+    if(p.user) bubble('user',p.user); if(p.bot) bubble('bot',p.bot); if(p.sys) bubble('sys',p.sys);
+    if(p.notif){ $('notifText').textContent=p.notif; $('notif').classList.add('show'); }
+  }
+  function pickHtml(){
+    $('pick').innerHTML=STEPS.map(function(s,i){ return '<button type="button" aria-pressed="'+(i===cur)+'" class="'+(seen[i]?'seen':'')+'" data-i="'+i+'"><span class="tm">Step '+(i+1)+' · '+s.time+'</span><b>'+s.title+'</b></button>'; }).join('');
+    [].slice.call($('pick').querySelectorAll('button')).forEach(function(b){ b.addEventListener('click',function(){ load(+b.dataset.i); }); });
+  }
+  function load(i){
+    cur=i; idx=-1; $('screen').innerHTML=''; $('notif').classList.remove('show'); $('extra').innerHTML='';
+    // replay the phone history of earlier steps so the chat reads as one conversation
+    for(var k=0;k<i;k++) STEPS[k].ev.forEach(function(e){ if(e.out && !e.out.notif) outFor(e); });
+    if(!$('screen').children.length) $('screen').innerHTML='<p class="console-empty">Press Next ▸ to start the demo.</p>';
+    $('sayText').textContent=STEPS[i].say; pickHtml(); render();
+  }
+  function render(){
+    var s=STEPS[cur]; laneReset();
+    $('events').innerHTML=s.ev.map(function(e,i){ return '<li class="'+(i===idx?'cur':i<idx?'past':'')+'"><span class="n">'+(i+1)+'</span><span>'+e.t+' <span class="tag hos'+e.hos+'">'+HOS[e.hos]+'</span></span></li>'; }).join('');
+    var done=idx===s.ev.length-1;
+    $('next').textContent= done ? (cur<STEPS.length-1 ? 'Next demo step ▸' : 'Start over ▸') : 'Next ▸';
+    $('toEnd').disabled=done;
+    if(idx<0){ $('stepbox').className='stepbox'; $('stepbox').innerHTML='<span class="k">Step '+(cur+1)+' of '+STEPS.length+' · '+s.time+'</span><p style="margin:2px 0 0"><b>'+s.title+'</b></p><p class="small" style="margin:4px 0 0">Press <b>Next ▸</b> to play the first event.</p>'; return; }
+    var e=s.ev[idx];
+    $('L-'+e.from).classList.add('from'); if(e.to!==e.from) $('L-'+e.to).classList.add(e.warn?'err':'to'); else if(e.warn) $('L-'+e.to).classList.add('err');
+    $('stepbox').className='stepbox'+(e.warn?' warn':'');
+    $('stepbox').innerHTML='<span class="k">Event '+(idx+1)+' of '+s.ev.length+' · <span class="tag hos'+e.hos+'">'+HOS[e.hos]+'</span></span><p style="margin:4px 0 0"><b>'+e.t+'</b></p><p class="small" style="margin:4px 0 0">'+e.d+'</p>';
+    $('live').textContent='Event '+(idx+1)+' of '+s.ev.length+': '+e.t.replace(/<[^>]+>/g,'');
+    if(done){ seen[cur]=true; pickHtml(); }
+  }
+  function step(){
+    var s=STEPS[cur];
+    if(idx>=s.ev.length-1){ load(cur<STEPS.length-1?cur+1:0); return; }
+    if(idx<0 && $('screen').querySelector('.console-empty')) $('screen').innerHTML='';
+    idx++; var e=s.ev[idx]; outFor(e); if(e.extra) $('extra').innerHTML=e.extra; render();
+  }
+  $('next').addEventListener('click',step);
+  $('toEnd').addEventListener('click',function(){ var s=STEPS[cur]; while(idx<s.ev.length-1) step(); });
+  $('replay').addEventListener('click',function(){ load(cur); });
+  load(0);
+})();
+
+/* section nav highlight */
+(function(){
+  var links=[].slice.call(document.querySelectorAll('.secnav a')); var map={};
+  links.forEach(function(a){ map[a.getAttribute('href').slice(1)]=a; });
+  if(!('IntersectionObserver' in window)) return;
+  var io=new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){ links.forEach(function(l){l.classList.remove('active');}); var a=map[e.target.id]; if(a){ a.classList.add('active'); var c=a.parentElement, ar=a.getBoundingClientRect(), cr=c.getBoundingClientRect(); c.scrollLeft+=ar.left-cr.left-cr.width/2+ar.width/2; } } }); },{rootMargin:'-30% 0px -60% 0px'});
+  Object.keys(map).forEach(function(id){ var s=document.getElementById(id); if(s) io.observe(s); });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="AI 440 account setup: a GitHub account for Week 1 and a free Gemini API key for HOS 4, plus the tools that need no account.">
+<title>AI 440 — Account &amp; Service Setup</title>
+<link rel="stylesheet" href="../assets/course.css">
+<style>
+.intro-box { background:var(--blue-bg); border-left:5px solid var(--blue); padding:15px 18px; margin:18px 0; border-radius:0 6px 6px 0; font-size:0.92rem; }
+        .intro-box h4 { margin:0 0 6px; color:var(--blue); font-size:0.95rem; }
+
+        table.map-table { width:100%; border-collapse:collapse; margin:14px 0 6px; font-size:0.85rem; }
+        table.map-table th, table.map-table td { border:1px solid var(--border); padding:9px 12px; text-align:left; vertical-align:top; }
+        table.map-table th { background:var(--surface2); font-size:0.72rem; text-transform:uppercase; letter-spacing:0.03em; color:var(--muted); }
+        table.map-table td.svc-name { font-weight:700; color:var(--accent); white-space:nowrap; }
+        table.map-table a.jump { font-weight:600; text-decoration:none; color:var(--blue); }
+        table.map-table a.jump:hover { text-decoration:underline; }
+
+        .service-head { display:flex; flex-wrap:wrap; align-items:baseline; gap:10px; margin-bottom:6px; }
+        .service-head h2 { margin:0; border-bottom:none; padding-bottom:0; }
+        .service-pills { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:14px; }
+        .svc-pill { font-size:0.74rem; font-weight:700; padding:3px 10px; border-radius:999px; }
+        .svc-pill.when { background:var(--blue-bg); color:var(--violet); }
+        .svc-pill.cost { background:var(--accent-light); color:var(--accent2); }
+        .why-line { font-size:0.92rem; color:var(--text); margin:0 0 18px; }
+        .why-line strong { color:var(--text); }
+
+        ol.steps { padding-left:1.3em; }
+        ol.steps > li { margin-bottom:14px; }
+        pre { background:var(--code-bg); color:var(--code-text); padding:14px 16px; border-radius:6px; overflow-x:auto; font-size:0.8rem; line-height:1.5; }
+        code { font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace; }
+        p code, li code, dd code { background:var(--surface2); color:var(--rose); padding:1px 5px; border-radius:4px; font-size:0.88em; }
+        .explain { background:var(--surface2); border-left:3px solid var(--border); padding:8px 14px; margin:10px 0; font-size:0.9rem; border-radius:0 4px 4px 0; }
+        .explain strong { color:var(--text); }
+        .snag-box { background:var(--amber-bg); border-left:5px solid var(--amber); padding:15px 18px; margin:18px 0 0; border-radius:4px; font-size:0.88rem; }
+        .snag-box h4 { margin:0 0 8px; color:var(--amber); font-size:0.9rem; }
+        .done-box { background:var(--accent-light); border-left:5px solid var(--accent); padding:13px 18px; margin:16px 0 0; border-radius:4px; font-size:0.88rem; }
+        .done-box h4 { margin:0 0 6px; color:var(--accent2); font-size:0.85rem; text-transform:uppercase; letter-spacing:0.03em; }
+        .done-box ul { margin:0; padding-left:20px; }
+        .anatomy-box { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:20px 16px 16px; margin:18px 0; overflow-x:auto; }
+        .anatomy-string { font-family:'SFMono-Regular',Consolas,'Liberation Mono',Menlo,monospace; font-size:0.95rem; white-space:nowrap; text-align:center; margin-bottom:4px; }
+        .anatomy-part { padding:2px 4px; border-radius:3px; }
+        .part-scheme { background:var(--blue-bg); color:var(--violet); }
+        .part-user { background:var(--blue-bg); color:var(--blue); }
+        .part-pass { background:var(--bad-bg); color:var(--bad); }
+        .part-host { background:var(--accent-light); color:var(--accent2); }
+        .part-port { background:var(--amber-bg); color:var(--amber); }
+        .anatomy-legend { display:flex; flex-wrap:wrap; gap:14px; justify-content:center; margin-top:14px; font-size:0.8rem; }
+        .anatomy-legend span.swatch { display:inline-block; width:10px; height:10px; border-radius:2px; margin-right:5px; vertical-align:middle; }
+
+        .glossary-box { background:var(--surface2); border:1px solid var(--border); border-radius:6px; padding:12px 16px; margin:14px 0; font-size:0.85rem; }
+        .glossary-box h5 { margin:0 0 6px; font-size:0.78rem; text-transform:uppercase; letter-spacing:0.04em; color:var(--muted); }
+        .glossary-box dl { margin:0; }
+        .glossary-box dt { font-weight:700; color:var(--text); display:inline; }
+        .glossary-box dd { display:inline; margin:0 0 0 4px; color:var(--muted); }
+        .glossary-box dd::after { content:""; display:block; margin-bottom:4px; }
+
+        .env-example { overflow-x:auto; background:var(--code-bg); color:var(--code-text); padding:16px 18px; border-radius:8px; font-size:0.82rem; line-height:1.7; margin:14px 0; }
+        .env-example .comment { color:var(--code-text); opacity:.6; }
+        .env-example .key { color:#93c5fd; }
+
+        .back-to-top { display:inline-block; margin-top:30px; font-size:0.85rem; color:var(--link); text-decoration:none; font-weight:600; }
+    
+.steps li { margin-bottom:8px; }
+.explain { background:var(--surface2); border-left:3px solid var(--border); padding:10px 14px; margin:12px 0; font-size:.88rem; border-radius:0 4px 4px 0; }
+.done-box { background:var(--ok-bg); border-left:5px solid var(--ok); padding:12px 16px; margin:14px 0 0; border-radius:0 4px 4px 0; font-size:.88rem; }
+.done-box h3 { margin:0 0 6px; font-size:.85rem; color:var(--ok); }
+.done-box ul { margin:0; padding-left:18px; }
+.env-example { background:var(--code-bg); color:var(--code-text); font-family:ui-monospace,Menlo,Consolas,monospace; font-size:.82rem; padding:12px 16px; border-radius:6px; overflow-x:auto; margin:10px 0; }
+.env-example .key { color:var(--accent2); }
+.intro-box h3, .check-box h3, .before-box h3 { margin:0 0 6px; font-size:.95rem; }
+.concept-card h3 { margin:0 0 5px; font-size:0.95rem; color:var(--text); }
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="top">
+  <div class="top-inner">
+    <a class="brand" href="../index.html"><span class="brand-icon">440</span><span><b>AI 440: Digital Twins and Physical AI</b><small>Start here</small></span></a>
+    <div class="top-right"><a class="pill-btn" href="../index.html">Course home</a><button class="pill-btn" id="themeToggle" type="button">🌙 Dark</button></div>
+  </div>
+</header>
+<section class="hero">
+  <div class="hero-inner">
+    <div class="eyebrow">AI 440 · Start here · Before you need each service</div>
+    <h1>Account &amp; Service Setup</h1>
+    <p class="lede">Every external account the course asks you to create, in one place: what to click, what each one is for, and when you first need it. There are two.</p>
+    <div class="chips"><span class="chip">Do this once, before you need it</span><span class="chip">Free tiers only — no credit card anywhere</span><span class="chip">2 services</span></div>
+  </div>
+</section>
+<main id="main">
+<nav class="secnav no-print" aria-label="Page sections">
+  <div class="secnav-inner"><a href="#find">Find your service</a><a href="#github">GitHub</a><a href="#gemini">Gemini key</a><a href="#none">No account needed</a><a href="#together">All together</a></div>
+</nav>
+<section class="module card" id="find">
+  <div class="module-head"><div class="module-icon">🗺️</div><div><h2>Find your service</h2></div></div>
+<div class="intro-box"><h3>What this page is</h3><p style="margin:0">Every account this course asks you to create, with exactly what to click. There are two, both free. Everything else in the course runs inside your Codespace and needs no account at all.</p></div>
+  <div class="table-wrap" tabindex="0"><table class="map-table">
+    <tr><th>Service</th><th>What it's for</th><th>First needed</th><th>Jump</th></tr>
+    <tr><td class="svc-name">GitHub</td><td>Your repo for each HOS and Application Challenge, the Codespace you build in, and GitHub Copilot</td><td>HOS 1 (Week 1)</td><td><a class="jump" href="#github">Read →</a></td></tr>
+    <tr><td class="svc-name">Google AI Studio</td><td>A free Gemini API key for the ADK agent in HOS 4, and in your Term Project if your twin uses an agent</td><td>HOS 4 (Week 7)</td><td><a class="jump" href="#gemini">Read →</a></td></tr>
+  </table></div>
+</section>
+
+<section class="module card" id="github">
+  <div class="module-head"><div class="module-icon">🐙</div><div><h2>GitHub</h2><div class="module-meta"><span class="tag blue">First needed: HOS 1</span><span class="tag">Free — no credit card</span></div></div></div>
+<p class="why-line"><strong>What it's for:</strong> your own repo for each HOS and Application Challenge, created from the invite link in each module, and the Codespace you open from it.</p>
+  <ol class="steps">
+    <li>Go to <a href="https://github.com" target="_blank" rel="noopener">github.com</a> and click <strong>Sign up</strong>.</li>
+    <li>Enter an email, create a password and pick a username. Use something professional: this account is worth keeping for internships and job applications.</li>
+    <li>Verify your email when GitHub sends the confirmation.</li>
+    <li>Recommended: apply for the free <a href="https://education.github.com/pack" target="_blank" rel="noopener">GitHub Student Developer Pack</a>. It adds GitHub Copilot and more Codespaces hours.</li>
+  </ol>
+  <div class="explain"><strong>Already have a GitHub account?</strong> Use that one. One consistent profile is more useful to you later than several scattered ones.</div>
+  <div class="done-box"><h3>You'll know it worked when…</h3><ul><li>You can create a Codespace on any of your repos, and Copilot's chat answers inside it.</li></ul></div>
+</section>
+
+<section class="module card" id="gemini">
+  <div class="module-head"><div class="module-icon">🔑</div><div><h2>Google AI Studio: Gemini API key</h2><div class="module-meta"><span class="tag blue">First needed: HOS 4 (Week 7)</span><span class="tag">Free — no credit card</span></div></div></div>
+<p class="why-line"><strong>What it's for:</strong> the key that lets your HOS 4 agent, built with Google's Agent Development Kit, call Gemini. You get it once and reuse it.</p>
+  <ol class="steps">
+    <li>Go to <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a> and sign in with a <strong>personal</strong> Google account (a Gmail address). School and work accounts may be refused.</li>
+    <li>Click <strong>Create API key</strong>.</li>
+    <li>Copy the long string it gives you. It starts with something like <code>AIza</code>.</li>
+    <li>In your HOS 4 Codespace, copy <code>.env.example</code> to <code>.env</code> and paste the key after <code>GOOGLE_API_KEY=</code>.</li>
+  </ol>
+  <div class="explain"><strong>Treat this like a password.</strong> Never paste it into a file you commit, a chat, an AI assistant's prompt, or a screenshot. The free tier needs no billing account; if a call fails with a rate-limit error (<code>429</code>), wait a minute and try again. The starter sets the model to <code>gemini-3.8-flash</code>, which works with new keys; older model names may not.</div>
+  <div class="done-box"><h3>You'll know it worked when…</h3><ul><li>The HOS 4 agent answers in <code>adk web --allow_origins "*"</code>. A missing or wrong key shows an error on the first message.</li></ul></div>
+</section>
+
+<section class="module card" id="none">
+  <div class="module-head"><div class="module-icon">📦</div><div><h2>No account needed</h2></div></div>
+<p>These all run inside your Codespace, free and open source, with nothing to sign up for:</p>
+  <div class="table-wrap" tabindex="0"><table class="map-table">
+    <tr><th>Tool</th><th>Used in</th><th>What it does</th></tr>
+    <tr><td class="svc-name">Mosquitto, Node-RED, InfluxDB, Grafana</td><td>HOS 1, HOS 4, AC 1</td><td>The MQTT broker, flow editor, time-series database and dashboard, in Docker. Local passwords come from the starter's <code>.env.example</code>.</td></tr>
+    <tr><td class="svc-name">PyTorch (CPU), DeepXDE</td><td>HOS 2, AC 2</td><td>Training physics-informed neural networks.</td></tr>
+    <tr><td class="svc-name">MuJoCo, OpenUSD (<code>usd-core</code>), BlenderProc</td><td>HOS 3, AC 3</td><td>Physics simulation, scene description and synthetic images. BlenderProc downloads Blender on its first run.</td></tr>
+    <tr><td class="svc-name">Gymnasium, Stable-Baselines3</td><td>HOS 3</td><td>Reinforcement-learning environments and training, on CPU.</td></tr>
+    <tr><td class="svc-name">SimPy</td><td>HOS 4, AC 4</td><td>Discrete-event simulation for what-if sweeps.</td></tr>
+  </table></div>
+</section>
+
+<section class="module card" id="together">
+  <div class="module-head"><div class="module-icon">🧩</div><div><h2>Putting it all together</h2></div></div>
+<p style="font-size:0.9rem;color:var(--muted)">Only the HOS 4 repo (and your Term Project, if it uses an agent) needs a key. Its <code>.env</code>, copied from <code>.env.example</code>, holds:</p>
+  <div class="env-example" tabindex="0"><span class="key">GOOGLE_GENAI_USE_VERTEXAI</span>=FALSE<br><span class="key">GOOGLE_API_KEY</span>=AIzaSyD-your-real-key-goes-right-here<br><span class="key">MODEL</span>=gemini-3.8-flash</div>
+  <p style="font-size:0.85rem;color:var(--muted)">This file is excluded from Git by each repo's <code>.gitignore</code>. It stays in your Codespace and is never committed.</p>
+  <a class="back-to-top" href="#find">↑ Back to Find your service</a>
+</section>
+
+</main>
+<footer class="foot">AI 440: Digital Twins and Physical AI · City University of Seattle, School of Technology &amp; Computing<br>Course design &amp; materials: Clark Ngo<br>© 2026 Clark Ngo · Free to reuse and adapt under <a href="https://creativecommons.org/licenses/by/4.0/" rel="license">CC BY 4.0</a>, except where noted · <a href="https://github.com/cityuseattle/ai440/blob/main/LICENSE.md">How to credit</a></footer>
+<script src="../assets/course.js"></script>
+
+</body>
+</html>

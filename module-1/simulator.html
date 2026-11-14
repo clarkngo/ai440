@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="AI 440 Sensor Pipeline Simulator: an interactive browser model that pairs with HOS 1, with a guided tour.">
+<title>AI 440 — Sensor Pipeline Simulator</title>
+<link rel="stylesheet" href="../assets/course.css">
+<style>
+.sim-layout { display:grid; grid-template-columns:minmax(260px,340px) 1fr; gap:16px; align-items:start; }
+@media (max-width:860px){ .sim-layout { grid-template-columns:minmax(0,1fr); } }
+.sim-layout > * { min-width:0; }
+.panel { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:16px 18px; box-shadow:var(--shadow); margin-bottom:16px; min-width:0; }
+.panel h2 { font-size:1.02rem; margin-bottom:10px; }
+.panel h3 { font-size:.9rem; margin:14px 0 6px; }
+.presets { display:flex; flex-wrap:wrap; gap:6px; margin:6px 0 4px; }
+.presets button { font-family:inherit; font-size:.74rem; border:1px solid var(--border); background:var(--surface2); color:var(--text); border-radius:14px; padding:4px 10px; cursor:pointer; }
+.presets button:hover { border-color:var(--accent); }
+.toggle { display:flex; gap:8px; align-items:flex-start; font-size:.85rem; margin:6px 0; cursor:pointer; }
+.toggle input { accent-color:var(--accent); margin-top:4px; }
+.toggle small { display:block; color:var(--muted); font-size:.74rem; }
+.lanes { display:grid; grid-template-columns:repeat(var(--lanes,4),1fr); gap:8px; margin-bottom:12px; }
+.lane { border:2px solid var(--border); border-radius:10px; padding:10px; text-align:center; font-size:.8rem; background:var(--surface2); transition:all .2s; min-width:0; }
+.lane b { display:block; font-size:.86rem; }
+.lane .ic { font-size:1.3rem; display:block; }
+.lane.from { border-color:var(--blue); background:var(--blue-bg); }
+.lane.to { border-color:var(--accent); background:var(--accent-light); box-shadow:0 0 0 3px var(--accent-light); }
+.lane.err { border-color:var(--bad); background:var(--bad-bg); }
+@media (max-width:520px){ .lanes { grid-template-columns:repeat(2,1fr); } }
+.stepbox { border:1px solid var(--border); border-left:5px solid var(--accent); border-radius:8px; padding:10px 14px; background:var(--surface2); margin-bottom:12px; min-height:84px; }
+.stepbox.err { border-left-color:var(--bad); } .stepbox.warn { border-left-color:var(--amber); }
+.stepbox .k { font-size:.7rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); }
+.steps-list { list-style:none; margin:0; padding:0; font-size:.8rem; }
+.steps-list li { padding:5px 8px; border-radius:6px; color:var(--muted); display:flex; gap:8px; }
+.steps-list li.cur { background:var(--accent-light); color:var(--text); font-weight:700; }
+.steps-list li.past { color:var(--text); }
+.steps-list li .n { flex:none; width:20px; text-align:right; }
+.steps-list li.bad { color:var(--bad); }
+.verdict { border-radius:8px; padding:10px 14px; font-size:.86rem; margin-top:10px; }
+.verdict.ok { background:var(--ok-bg); color:var(--ok); } .verdict.bad { background:var(--bad-bg); color:var(--bad); } .verdict.warn { background:var(--amber-bg); color:var(--amber); }
+.kv { display:grid; grid-template-columns:auto 1fr; gap:4px 12px; font-size:.82rem; }
+.kv dt { color:var(--muted); } .kv dd { margin:0; font-weight:600; }
+.bar-row { display:grid; grid-template-columns:70px 1fr 48px; gap:8px; align-items:center; font-size:.78rem; margin-bottom:4px; }
+.bar-track { height:12px; background:var(--surface2); border:1px solid var(--border); border-radius:6px; overflow:hidden; position:relative; }
+.bar-fill { height:100%; background:var(--accent); }
+.project-tip { border:1px dashed var(--accent); border-radius:var(--radius); padding:14px 18px; background:var(--accent-light); font-size:.88rem; }
+.project-tip b.h { display:block; font-size:.72rem; letter-spacing:.08em; text-transform:uppercase; color:var(--accent2); margin-bottom:4px; }
+
+.stepcard { border:1px solid var(--border); border-left:4px solid var(--accent); border-radius:8px; padding:8px 12px; margin-bottom:6px; font-size:.84rem; background:var(--surface); }
+.stepcard .k { font-size:.68rem; font-weight:800; letter-spacing:.07em; text-transform:uppercase; color:var(--muted); }
+.stepcard.tool { border-left-color:var(--blue); } .stepcard.final { border-left-color:var(--ok); } .stepcard.stop { border-left-color:var(--amber); } .stepcard.bad { border-left-color:var(--bad); background:var(--bad-bg); }
+.stepcard.pick { cursor:pointer; } .stepcard.pick:hover { box-shadow:0 0 0 2px var(--accent-light); } .stepcard.chosen { box-shadow:0 0 0 3px var(--accent); }
+.metrics { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin:10px 0; }
+@media (max-width:560px){ .metrics { grid-template-columns:repeat(2,1fr); } }
+.metric { border:1px solid var(--border); border-radius:8px; padding:8px; text-align:center; background:var(--surface2); }
+.metric b { display:block; font-size:1.2rem; } .metric span { font-size:.72rem; color:var(--muted); }
+.seg { display:inline-flex; border:1px solid var(--border); border-radius:8px; overflow:hidden; flex-wrap:wrap; }
+.seg button { font-family:inherit; font-size:.8rem; font-weight:700; padding:6px 12px; border:none; background:var(--surface2); color:var(--text); cursor:pointer; }
+.seg button[aria-pressed="true"] { background:var(--accent); color:var(--on-accent); }
+.tbl { width:100%; border-collapse:collapse; font-size:.8rem; }
+.tbl th, .tbl td { border:1px solid var(--border); padding:5px 8px; text-align:left; }
+.tbl th { background:var(--surface2); font-size:.7rem; text-transform:uppercase; color:var(--muted); }
+.ok { color:var(--ok); font-weight:700; } .no { color:var(--bad); font-weight:700; }
+
+.chart { width:100%; height:auto; display:block; }
+.chart text { font-size:11px; fill:var(--muted); }
+.legend { display:flex; flex-wrap:wrap; gap:12px; font-size:.76rem; color:var(--muted); margin:4px 0 8px; }
+.legend i { display:inline-block; width:18px; height:0; border-top:3px solid; vertical-align:middle; margin-right:4px; }
+.legend i.dash { border-top-style:dashed; }
+.hm { display:grid; gap:2px; font-size:.7rem; }
+.hm div { padding:6px 2px; text-align:center; border-radius:3px; }
+.hm .h { color:var(--muted); font-weight:700; }
+.hm-wrap { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; }
+@media (max-width:560px){ .hm-wrap { grid-template-columns:minmax(0,1fr); } }
+.v-allow { color:var(--ok); font-weight:700; } .v-block { color:var(--bad); font-weight:700; } .v-stop { color:var(--amber); font-weight:700; }
+.range-v { font-weight:700; color:var(--accent2); }
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="top">
+  <div class="top-inner">
+    <a class="brand" href="../index.html"><span class="brand-icon">440</span><span><b>AI 440: Digital Twins and Physical AI</b><small>Simulators</small></span></a>
+    <div class="top-right"><a class="pill-btn" href="../index.html">Course home</a><button class="pill-btn" id="themeToggle" type="button">🌙 Dark</button></div>
+  </div>
+</header>
+<section class="hero">
+  <div class="hero-inner">
+    <div class="eyebrow">Simulator 1 · Pairs with HOS 1 (Weeks 1–2)</div>
+    <h1>Sensor Pipeline Simulator</h1>
+    <p class="lede">Stream simulated sensor readings from one room through a broker, a flow, a database and a dashboard into the virtual entity. Inject faults, slow the hops down, and switch on the arrow back to see what a twin does with a bad reading.</p>
+    <div class="chips"><span class="chip">CO1 · CO3</span><span class="chip">Shadow vs. twin</span><span class="chip">MQTT pipeline</span><span class="chip">Latency</span><span class="chip">Sensor faults</span></div>
+  </div>
+</section>
+<main id="main">
+<div class="row no-print" style="margin-bottom:16px"><span class="small muted"><b>Simulators:</b></span><span class="tag">1 · Sensor Pipeline</span><a class="tag blue" href="../module-2/simulator.html" style="text-decoration:none">2 · Wall Heat PINN</a><a class="tag blue" href="../module-3/simulator.html" style="text-decoration:none">3 · Sim-to-Real Lab</a><a class="tag blue" href="../module-4/simulator.html" style="text-decoration:none">4 · What-If &amp; Safety Envelope</a></div>
+<section class="card tour" id="tour" aria-label="Guided tour"><p class="small muted" style="margin:0">Guided tour loading…</p></section>
+<div class="sim-layout">
+  <div>
+    <div class="panel">
+      <h2>1 · The room and the pipeline</h2>
+      <p class="small muted">Floor 3, room r2, on a cold morning. Each reading stands for one minute.</p>
+      <label class="field" for="fault">Sensor fault (from reading 15)</label>
+      <select id="fault"><option value="none">None</option><option value="stuck">Stuck: repeats one value</option><option value="spike">Spikes: an occasional reading 8 °C too high</option><option value="dropout">Dropout: 12 minutes with no messages</option></select>
+      <label class="toggle"><input type="checkbox" id="twin"><span>Twin mode<small>On = twin/control.py sets the heater from the twin's state. Off = a digital shadow; the building's own thermostat runs the heater.</small></span></label>
+      <label class="toggle"><input type="checkbox" id="validate"><span>Validate readings<small>The Week 2 data-quality check: stuck, jump and stale readings mark the room unknown, and control leaves it alone.</small></span></label>
+      <label class="field" for="delay">Delay per pipeline hop: <span class="range-v" id="delayV"></span></label>
+      <input type="range" id="delay" min="0" max="8" value="1" step="1">
+      <div class="row" style="margin-top:10px"><button class="btn" id="run60" type="button">Run 60 readings</button><button class="btn secondary" id="step" type="button">Step one reading</button><button class="btn secondary" id="reset" type="button">Reset</button></div>
+    </div>
+    <div class="panel">
+      <h2>The twin's state for r2</h2>
+      <dl class="kv" id="state"></dl>
+    </div>
+  </div>
+  <div>
+    <div class="panel">
+      <h2>2 · Where each reading goes</h2>
+      <div class="lanes" style="--lanes:3" id="lanes"></div>
+      <div class="metrics"><div class="metric"><b id="mTrue">—</b><span>true temp now</span></div><div class="metric"><b id="mRep">—</b><span>twin believes</span></div><div class="metric"><b id="mMax">—</b><span>warmest so far</span></div><div class="metric"><b id="mLat">—</b><span>sensor → Grafana</span></div></div>
+      <div class="legend"><span><i style="border-color:var(--ok)"></i>true temperature</span><span><i class="dash" style="border-color:var(--accent)"></i>what the twin reports</span><span><i style="border-color:var(--amber)"></i>heater on</span></div>
+      <div id="chart"></div>
+      <div id="verdict"></div>
+    </div>
+  </div>
+</div>
+<div class="card"><h2>What this teaches</h2><ul><li><b>The arrow back is the difference.</b> The same stuck sensor is harmless in a shadow and expensive in a twin.</li><li><b>A stuck value looks like a calm reading.</b> Neither the dashboard nor the twin notices unless something checks.</li><li><b>Latency adds up hop by hop</b>, and a twin acting on old readings overshoots.</li><li><b>Validation is a design decision:</b> how long unchanged is "stuck", how fast is "impossible", how old is "stale".</li></ul>
+<p class="small muted">This is a simplified browser model for building intuition, not the real build: there is no real broker, database or dashboard, each reading stands for one minute of room time, and the room's physics is simplified. Your HOS 1 build in Codespaces is the real thing. Back to the <a href="index.html">Module 1 lesson</a> · <a href="hos-guide.html">HOS 1 guide</a>.</p></div>
+<div class="project-tip"><b class="h">For your Term Project</b>Write down, for your own twin, every hop a reading takes and the delay your use case can tolerate. Then decide which action, if any, the twin may take on its own, and what it should do when a reading can't be trusted.</div>
+</main>
+<footer class="foot">AI 440: Digital Twins and Physical AI · City University of Seattle, School of Technology &amp; Computing<br>Course design &amp; materials: Clark Ngo · Simulators are illustrative HTML models — no real sensors, models, simulators or network calls.<br>© 2026 Clark Ngo · Free to reuse and adapt under <a href="https://creativecommons.org/licenses/by/4.0/" rel="license">CC BY 4.0</a>, except where noted · <a href="https://github.com/cityuseattle/ai440/blob/main/LICENSE.md">How to credit</a></footer>
+<script src="../assets/course.js"></script>
+<script>
+var $=function(i){return document.getElementById(i);};
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');}
+/* line chart: series=[{pts:[[x,y]...], color, dash, w, dots}], opts {x0,x1,y0,y1,label,xt,yt,shade:[a,b],hline:[{y,color,label}],vline} */
+function chart(series,o){
+  var W=600,H=230,L=42,R=10,T=10,B=28;
+  function X(x){return L+(x-o.x0)/(o.x1-o.x0)*(W-L-R);} function Y(y){return T+(o.y1-y)/(o.y1-o.y0)*(H-T-B);}
+  var s='<svg class="chart" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="'+esc(o.label)+'">';
+  if(o.shade) s+='<rect x="'+X(o.shade[0])+'" y="'+T+'" width="'+(X(o.shade[1])-X(o.shade[0]))+'" height="'+(H-T-B)+'" style="fill:var(--accent-light)"/>';
+  (o.yt||[]).forEach(function(v){ s+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+Y(v)+'" y2="'+Y(v)+'" style="stroke:var(--border)"/><text x="'+(L-6)+'" y="'+(Y(v)+4)+'" text-anchor="end">'+v+'</text>'; });
+  (o.xt||[]).forEach(function(v){ s+='<text x="'+X(v[0])+'" y="'+(H-8)+'" text-anchor="middle">'+v[1]+'</text>'; });
+  (o.hline||[]).forEach(function(h){ s+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+Y(h.y)+'" y2="'+Y(h.y)+'" style="stroke:'+h.color+';stroke-dasharray:2 4"/>'+(h.label?'<text x="'+(W-R-4)+'" y="'+(Y(h.y)-4)+'" text-anchor="end">'+h.label+'</text>':''); });
+  if(o.vline!=null) s+='<line x1="'+X(o.vline)+'" x2="'+X(o.vline)+'" y1="'+T+'" y2="'+(H-B)+'" style="stroke:var(--muted);stroke-dasharray:3 3"/>';
+  series.forEach(function(se){
+    if(se.dots){ se.pts.forEach(function(p){ if(p[1]!=null) s+='<circle cx="'+X(p[0]).toFixed(1)+'" cy="'+Y(Math.max(o.y0,Math.min(o.y1,p[1]))).toFixed(1)+'" r="2.6" style="fill:'+se.color+'"/>'; }); return; }
+    var d='',pen=false;
+    se.pts.forEach(function(p){ if(p[1]==null){pen=false;return;} var y=Math.max(o.y0-50,Math.min(o.y1+50,p[1])); d+=(pen?'L':'M')+X(p[0]).toFixed(1)+' '+Y(y).toFixed(1); pen=true; });
+    s+='<path d="'+d+'" style="fill:none;stroke:'+se.color+';stroke-width:'+(se.w||2.4)+(se.dash?';stroke-dasharray:6 4':'')+'"/>';
+  });
+  s+='<rect x="'+L+'" y="'+T+'" width="'+(W-L-R)+'" height="'+(H-T-B)+'" style="fill:none;stroke:var(--border)"/>';
+  return s+'</svg>';
+}
+function seg(id,cb){ var g=$(id); [].slice.call(g.querySelectorAll('button')).forEach(function(b){ b.addEventListener('click',function(){ [].slice.call(g.querySelectorAll('button')).forEach(function(x){x.setAttribute('aria-pressed',x===b?'true':'false');}); cb(b.dataset.v); }); }); }
+function rng(seed){ return function(){ seed=(seed*16807)%2147483647; return (seed-1)/2147483646; }; }
+
+var DELAYS=[0.05,0.2,1,5,15,30,45,60,90], SP=21, N=60, FAULT_AT=15;
+var cur=0;
+function fmtD(s){ return s<1?Math.round(s*1000)+' ms':s+' s'; }
+function opts(){ return {fault:$('fault').value, twin:$('twin').checked, val:$('validate').checked, delay:DELAYS[+$('delay').value]}; }
+function simulate(o){
+  var r=rng(11), T=17.5, heat=false, rows=[], sens=[], stuckV=null, alertAt=-1, lag=Math.floor(2*o.delay/60);
+  for(var k=0;k<N;k++){
+    var v=T+(r()-0.5)*0.2, sent=true;
+    if(k>=FAULT_AT){
+      if(o.fault==='stuck'){ if(stuckV===null) stuckV=v; v=stuckV; }
+      if(o.fault==='spike' && k%9===0) v=T+8;
+      if(o.fault==='dropout' && k<FAULT_AT+12) sent=false;
+    }
+    sens.push(sent?Math.round(v*10)/10:null);
+    var idx=k-lag, rep=null, age=null, j;
+    for(j=idx;j>=0;j--){ if(sens[j]!==null){ rep=sens[j]; age=(k-j)*60+2*o.delay; break; } }
+    var status='ok';
+    if(o.val && idx>=0){
+      var w=sens.slice(Math.max(0,idx-5),idx+1).filter(function(x){return x!==null;});
+      if(w.length>=6 && w.every(function(x){return x===w[0];})) status='stuck';
+      else if(rep!==null && j>0 && sens[j-1]!=null && Math.abs(rep-sens[j-1])>1.5) status='jump';
+      else if(age!==null && age>180) status='stale';
+      if(status!=='ok' && alertAt<0) alertAt=k;
+    }
+    var basis = (o.twin && status==='ok' && rep!==null) ? rep : T;   /* unknown room: the local thermostat takes over */
+    if(basis<SP-0.5) heat=true; else if(basis>SP+0.5) heat=false;
+    rows.push({T:T, rep:rep, sensor:sens[k], heat:heat, status:status, age:age, seq:sent?k:null});
+    T += (heat?0.35:0) - 0.02*(T-12);
+  }
+  return {rows:rows, alertAt:alertAt, lag:lag};
+}
+function draw(){
+  var o=opts(); $('delayV').textContent=fmtD(o.delay);
+  var res=simulate(o), rows=res.rows.slice(0,cur), last=rows[rows.length-1];
+  var lat=4*o.delay+0.15;
+  $('mLat').textContent=lat<1?Math.round(lat*1000)+' ms':(lat<60?lat.toFixed(1)+' s':(lat/60).toFixed(1)+' min');
+  var faultNow = cur>FAULT_AT && o.fault!=='none';
+  var lanes=[['📡','Sensor',faultNow?'err':'from', o.fault==='none'?'publishes every reading':'fault: '+o.fault],['📨','Mosquitto broker','', fmtD(o.delay)],['🔀','Node-RED',  '', fmtD(o.delay)],['🗄️','InfluxDB','',fmtD(o.delay)],['📊','Grafana','',fmtD(o.delay)],['🧠','Twin (floor.py)',last&&last.status!=='ok'?'err':'to', o.twin?(o.val?'controls · validates':'controls the heater'):'shadow: watches only']];
+  $('lanes').style.setProperty('--lanes',6);
+  $('lanes').innerHTML=lanes.map(function(l){return '<div class="lane '+l[2]+'"><span class="ic" aria-hidden="true">'+l[0]+'</span><b>'+l[1]+'</b>'+l[3]+'</div>';}).join('');
+  if(!rows.length){ $('chart').innerHTML='<p class="small muted">Press <b>Run 60 readings</b> or <b>Step one reading</b>.</p>'; $('verdict').innerHTML=''; $('state').innerHTML='<dt>status</dt><dd>no readings yet</dd>'; ['mTrue','mRep','mMax'].forEach(function(i){$(i).textContent='—';}); return; }
+  var maxT=Math.max.apply(null,rows.map(function(r){return r.T;}));
+  $('mTrue').textContent=last.T.toFixed(1)+' °C'; $('mRep').textContent=last.rep==null?'—':last.rep.toFixed(1)+' °C'; $('mMax').textContent=maxT.toFixed(1)+' °C';
+  var heatPts=rows.map(function(r,i){return [i, r.heat?13:null];});
+  $('chart').innerHTML=chart([{pts:heatPts,color:'var(--amber)',w:5},{pts:rows.map(function(r,i){return [i,r.T];}),color:'var(--ok)'},{pts:rows.map(function(r,i){return [i,r.rep];}),color:'var(--accent)',dash:1}],
+    {x0:0,x1:N-1,y0:12,y1:31,yt:[15,18,21,24,27,30],xt:[[0,'0 min'],[15,'15'],[30,'30'],[45,'45'],[59,'60 min']],hline:[{y:SP,color:'var(--muted)',label:'setpoint 21 °C'}],vline:o.fault!=='none'?FAULT_AT:null,
+     label:'Room r2 over '+rows.length+' minutes: true temperature ends at '+last.T.toFixed(1)+' °C, the twin reports '+(last.rep==null?'nothing':last.rep.toFixed(1)+' °C')+'.'});
+  $('state').innerHTML='<dt>temp</dt><dd>'+(last.rep==null?'—':last.rep.toFixed(1)+' °C')+'</dd><dt>age_s</dt><dd>'+(last.age==null?'—':Math.round(last.age)+' s')+'</dd><dt>seq</dt><dd>'+(last.seq==null?'(missing)':last.seq)+'</dd><dt>status</dt><dd class="'+(last.status==='ok'?'ok':'no')+'">'+(last.status==='ok'?'ok':'unknown ('+last.status+')')+'</dd><dt>heater</dt><dd>'+(last.heat?'on':'off')+'</dd>';
+  var v, cls;
+  if(cur<N){ v='Reading '+cur+' of '+N+'.'; cls='warn'; }
+  else if(o.twin && maxT>25){ v='<b>The twin overheated the room.</b> It acted on what it believed ('+(last.rep==null?'nothing':last.rep.toFixed(1)+' °C')+') while the room reached '+maxT.toFixed(1)+' °C. '+(o.fault!=='none'?'A bad reading became a bad action: that\'s the new failure the arrow back makes possible.':'The readings were late: it kept heating on old news.'); cls='bad'; }
+  else if(o.val && res.alertAt>=0){ v='<b>The check caught it at minute '+res.alertAt+'.</b> r2 was marked unknown'+(o.twin?' and control left it to the local thermostat':' on the dashboard, so nobody trusts a value that\'s wrong')+'. Warmest: '+maxT.toFixed(1)+' °C.'; cls='ok'; }
+  else if(!o.twin && o.fault!=='none'){ v='<b>Looks fine, and isn\'t.</b> '+(o.fault==='stuck'?'Since minute '+FAULT_AT+' the sensor has sent the same '+(last.rep==null?'value':last.rep.toFixed(1)+' °C')+' while the room is at '+last.T.toFixed(1)+' °C.':o.fault==='spike'?'Impossible jumps of 8 °C reached the dashboard as if they were real.':'Twelve readings never arrived, and the twin kept showing its last value as current.')+' In shadow mode nothing acts on it, so the harm is that nobody knows.'; cls='warn'; }
+  else if(o.fault!=='none' && !o.val){ v='<b>No harm this time, by luck.</b> Nothing noticed the '+o.fault+' fault: the twin acted on every reading it got. Turn on validation before you trust it.'; cls='warn'; }
+  else if(o.twin && maxT>SP+0.9){ v='<b>Overshoot.</b> The twin sees each reading '+res.lag+' min late, so the heater runs past the setpoint: the room reached '+maxT.toFixed(1)+' °C. Fine for a room, maybe; not for a process with a tight limit.'; cls='warn'; }
+  else { v='<b>Healthy.</b> The twin tracks the room within '+Math.abs((last.rep||0)-last.T).toFixed(1)+' °C, and the room stays near 21 °C.'; cls='ok'; }
+  $('verdict').innerHTML='<div class="verdict '+cls+'">'+v+'</div>';
+}
+['fault','twin','validate','delay'].forEach(function(id){ $(id).addEventListener('input',draw); $(id).addEventListener('change',draw); });
+$('run60').addEventListener('click',function(){ cur=N; draw(); });
+$('step').addEventListener('click',function(){ if(cur<N) cur++; draw(); });
+$('reset').addEventListener('click',function(){ cur=0; draw(); });
+draw();
+</script>
+<script>window.SIM_TOUR=[
+ {title:'1 · A healthy digital shadow',
+  'do':'Press <b>Set this up for me</b>. It runs 60 readings with no fault, twin mode off and a short delay per hop.',
+  watch:'The two lines in panel 2, the hop delays and <b>sensor → Grafana</b>.',
+  expect:'The twin\'s line follows the true temperature closely, and a reading reaches Grafana in well under a second.',
+  why:'This is HOS 1 Create: the physical entity, the data connection and the virtual entity, with data flowing one way.',
+  setup:function(h){ h.set('fault','none'); h.set('twin',false); h.set('validate',false); h.set('delay',1); h.click('run60'); }},
+ {title:'2 · A stuck sensor in shadow mode',
+  'do':'Press <b>Set this up for me</b>. The sensor sticks at reading 15; the twin is still a shadow.',
+  watch:'The dashed line after the vertical marker, and the verdict.',
+  expect:'After the marker the dashed line goes flat while the real room keeps moving. The verdict warns; the dashboard doesn\'t. Nothing breaks, and nobody knows.',
+  why:'A stuck value passes for a real reading. HOS 1 Evaluate asks what, if anything, notices it.',
+  setup:function(h){ h.set('fault','stuck'); h.set('twin',false); h.set('validate',false); h.set('delay',1); h.click('run60'); }},
+ {title:'3 · The same stuck sensor in twin mode',
+  'do':'Press <b>Set this up for me</b>. Same fault, but now the twin controls the heater.',
+  watch:'The heater bar and the true temperature.',
+  expect:'The twin believes the room is cold, so the heater never turns off and the room climbs toward 29 °C.',
+  why:'The arrow back is what makes a twin, and it turns a wrong reading into a wrong action. That\'s Evaluate test 4.',
+  setup:function(h){ h.set('fault','stuck'); h.set('twin',true); h.set('validate',false); h.set('delay',1); h.click('run60'); }},
+ {title:'4 · Validation on: the twin notices',
+  'do':'Press <b>Set this up for me</b>. It turns on <b>Validate readings</b>. Then try the spike and dropout faults yourself.',
+  watch:'The state panel\'s <b>status</b> and the verdict.',
+  expect:'After six identical readings r2 is marked unknown, control steps back, and the room stays near 21 °C.',
+  why:'This is your Week 2 Understand &amp; Refine build: <code>twin/quality.py</code>, written by hand.',
+  setup:function(h){ h.set('fault','stuck'); h.set('twin',true); h.set('validate',true); h.set('delay',1); h.click('run60'); }},
+ {title:'5 · Slow hops: a twin acting on old news',
+  'do':'Press <b>Set this up for me</b>. No fault, twin mode on, and 90 seconds per hop.',
+  watch:'The gap between the two lines, and the warmest temperature.',
+  expect:'The twin sees each reading three minutes late, so the heater runs past the setpoint and the room overshoots.',
+  why:'"Real-time" is a number per use case. Measure each hop in Evaluate, and decide what your twin can tolerate.',
+  setup:function(h){ h.set('fault','none'); h.set('twin',true); h.set('validate',false); h.set('delay',8); h.click('run60'); }}
+];</script>
+<script src="../assets/sim-tour.js"></script>
+</body>
+</html>
