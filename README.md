@@ -2,7 +2,7 @@
 
 The interactive lessons, hands-on guides, simulators and reference pages for **AI 440: Digital Twins and Physical AI** (City University of Seattle, School of Technology & Computing).
 
-**Live site:** https://cityuseattle.github.io/ai440/
+**Live site:** https://clarkngo.github.io/ai440/
 
 Students reach these pages from Brightspace. Graded work is submitted in Brightspace, except the HOS: each HOS is graded straight from the student's GitHub Classroom repository. Every build runs in GitHub Codespaces, on CPU, using free tiers.
 
