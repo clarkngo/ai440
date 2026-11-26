@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="robots" content="noindex">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="AI 440 HOS 4 hands-on guide: What-If Testing and Safe Autonomous Decisions, stage by stage (Create, Evaluate, Analyze, Understand and Refine) in GitHub Codespaces.">
+<title>AI 440 — HOS 4 Hands-On Guide: What-If Testing and Safe Autonomous Decisions</title>
+<link rel="stylesheet" href="../assets/course.css">
+<style>
+.needs-list li { margin-bottom:6px; }
+.stage-tagline { color:var(--muted); font-size:0.85rem; margin:0 0 14px; }
+.not-graded { background:var(--surface2); border-left:3px solid var(--border); padding:8px 14px; margin:10px 0; font-size:0.85rem; border-radius:0 4px 4px 0; color:var(--muted); }
+.submit-box { background:var(--accent-light); border-left:5px solid var(--accent); padding:14px 18px; margin:14px 0 0; border-radius:0 4px 4px 0; font-size:0.9rem; }
+.submit-box h3 { margin:0 0 8px; color:var(--accent2); font-size:0.85rem; text-transform:uppercase; letter-spacing:0.03em; }
+.submit-box ul { margin:0; padding-left:20px; }
+.snag-box { background:var(--amber-bg); border-left:5px solid var(--amber); padding:15px 18px; margin:20px 0; border-radius:4px; }
+.ref-box { background:var(--surface2); border:1px solid var(--border); padding:12px 16px; margin:16px 0; border-radius:6px; font-size:0.9rem; }
+.ref-box h3 { margin:0 0 6px; font-size:0.9rem; }
+.option { border:1px solid var(--border); border-radius:8px; padding:12px 16px; margin:10px 0; background:var(--surface); }
+.option h3 { margin:0 0 6px; font-size:1rem; }
+.option ul { margin:0; }
+.guide-nav { display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-top:30px; padding-top:16px; border-top:1px solid var(--border); font-size:0.9rem; }
+.guide-nav a { color:var(--link); text-decoration:none; font-weight:600; }
+</style>
+</head>
+<body>
+<div role="note" style="background:#fff7ed;border-bottom:2px solid #ea580c;color:#7c2d12;padding:10px 16px;font:600 15px/1.4 system-ui,sans-serif;text-align:center">Archived page: Version 1.0: HOS, Application Challenges and Muddiest Point (before the Nov 2026 revamp). Kept for reference and no longer current. <a href="../../../module-4/hos-guide.html" style="color:#9a3412">Open the current version</a> · <a href="../../index.html" style="color:#9a3412">All versions</a></div>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="top">
+  <div class="top-inner">
+    <a class="brand" href="../index.html"><span class="brand-icon">440</span><span><b>AI 440: Digital Twins and Physical AI</b><small>Course guides</small></span></a>
+    <div class="top-right"><a class="pill-btn" href="../index.html">Course home</a><button class="pill-btn" id="themeToggle" type="button">🌙 Dark</button></div>
+  </div>
+</header>
+<section class="hero">
+  <div class="hero-inner">
+    <div class="eyebrow">AI 440 · Module 4 · Hands-On Skill (HOS) guide</div>
+    <h1>HOS 4: What-If Testing &amp; Safe Autonomous Decisions</h1>
+    <p class="lede">Run what-if sweeps on a simulated floor during a heat wave, find the combined failure the single tests miss, let an ADK agent change setpoints over MQTT, then write the safety envelope it can't break, from your own sweep results.</p>
+    <div class="chips"><span class="chip">Est. 5–6 hrs</span><span class="chip">CO5</span><span class="chip">Module 4 · Weeks 7–8</span><span class="chip">10% of final grade</span></div>
+  </div>
+</section>
+<main id="main">
+<nav class="secnav no-print" aria-label="Page sections">
+  <div class="secnav-inner"><a href="#before">Before you start</a><a href="#create">Create</a><a href="#evaluate">Evaluate</a><a href="#analyze">Analyze</a><a href="#refine">Understand &amp; Refine</a><a href="#snags">Common snags</a></div>
+</nav>
+<section class="module card" id="before">
+  <div class="module-head"><div class="module-icon">🧭</div><div><h2>Before you start</h2></div></div>
+<ol>
+    <li><b>Know the concepts.</b> Read <a href="../reference/concept-companion.html#module-4">Concept Companion → Module 4</a> and try its self-check before you open the starter code.</li>
+    <li><b>Rehearse it.</b> The <a href="simulator.html">What-If &amp; Safety Envelope Simulator</a> plays the finished build in your browser; its guided tour takes about 15 minutes.</li>
+  </ol>
+  <h3>What you'll need</h3>
+  <ul class="needs-list">
+    <li><strong>Starter code:</strong> your own <b>HOS 4</b> repo, opened in GitHub Codespaces. <span class="tag amber">Planned</span> The HOS 4 starter repository and its GitHub Classroom invite are being built and tested; the invite link goes here when they are published. Not sure what a file does? See the <a href="../reference/starter-code-walkthrough.html#hos4">starter code walkthrough for this HOS</a>.</li>
+    <li>A <a href="../start-here/accounts.html#github">GitHub account</a> and a free <a href="../start-here/accounts.html#gemini">Gemini API key</a> from Google AI Studio (no credit card). It goes in <code>.env</code> as <code>GOOGLE_API_KEY</code>.</li><li>The default 2-core Codespace. The sweep (480 runs) takes a few minutes; only the Mosquitto container runs this time.</li>
+  </ul>
+  <div class="ref-box"><h3>Reference reading (optional, before you start)</h3><ul>
+    <li><a href="https://simpy.readthedocs.io/en/latest/simpy_intro/index.html" target="_blank" rel="noopener">SimPy in 10 minutes</a>: processes, events and timeouts, as <code>twin/floor_sim.py</code> uses them.</li><li><a href="https://google.github.io/adk-docs/callbacks/types-of-callbacks/" target="_blank" rel="noopener">ADK: types of callbacks</a>: what <code>before_tool_callback</code> receives, and what returning a dict does.</li><li><a href="https://www.nist.gov/itl/ai-risk-management-framework" target="_blank" rel="noopener">NIST AI Risk Management Framework</a>: the vocabulary of risk, oversight and accountability your Analyze can borrow.</li>
+  </ul></div>
+  <p>This HOS is graded across four stages instead of on code correctness alone: <strong>Engagement</strong> (Create/Scaffold) is 20% of the HOS grade, and <strong>Skills</strong> is 80%: Evaluate, Analyze, Apply (the change you make by hand in Understand &amp; Refine) and Understand (your own explanation of it), 20% each. Each stage below says exactly what to submit. Everything goes in your Module 4 GitHub Classroom repo: written work under the matching heading in <code>NOTES.md</code>, screenshots in <code>screenshots/</code>. Commit and push as you go. By the end of Week 8, push your final work: your repo is your submission, so there is nothing to submit in Brightspace, and your last push before the deadline is what counts.</p>
+</section>
+<section class="module card" id="create">
+  <div class="module-head"><div class="module-icon">🛠️</div><div><h2>1 · Create / Scaffold</h2><div class="module-meta"><span class="tag blue">Week 7 · Wed–Thu</span></div></div></div>
+<p class="stage-tagline">Graded as Engagement: 20% of this HOS. The AI-built starting point, not the deliverable.</p>
+  <p>Get a what-if sweep running on the floor model, with an AI coding assistant's help, and an ADK agent reading the twin and proposing setpoint changes over MQTT through a safety check that allows everything. The floor model, the agent's two tools and the logging are in the starter. This is the starting point, not the deliverable; whether it's safe is what Evaluate is for.</p>
+  <ol>
+    <li>Open your own <b>HOS 4</b> repo in GitHub Codespaces. Copy <code>.env.example</code> to <code>.env</code> and paste your free Gemini API key. <span class="tag amber">Planned</span> The HOS 4 starter repository and its GitHub Classroom invite are being built and tested; the invite link goes here when they are published.</li>
+    <li>Run one afternoon to see the model: <code>python -m twin.floor_sim --outside 34 --capacity 1.0 --people 40</code> prints each room's temperature every 15 minutes.</li>
+    <li>Give your assistant the prompt below, then run <code>python -m whatif.sweep</code> and open <code>plots/sweep_heatmap.png</code>.</li>
+    <li>Start the broker and the agent: <code>docker compose up -d mosquitto</code>, then <code>adk web --allow_origins "*"</code>, open the forwarded port, pick <code>hvac_agent</code> and ask it to keep Floor 3 comfortable through the afternoon.</li>
+  </ol>
+  <h3>The prompt</h3>
+  <p>Use an AI coding assistant in Agent mode (GitHub Copilot is free for students in Codespaces). Give it this prompt as written, and read what it changed before you run anything:</p>
+  <pre tabindex="0"><code>In THIS existing workspace (the starter-code folder that&#x27;s already open),
+edit files here; do not create a new workspace or project.
+In whatif/sweep.py, write a what-if sweep over the SimPy floor model
+(run_afternoon() in twin/floor_sim.py):
+- Factors: outside peak 30, 34, 38, 42 °C; HVAC capacity 1.0, 0.75,
+  0.5, 0.0 (0.5 = one of two units failed at 14:00); occupancy
+  20, 60, 100 people. 10 seeds per combination.
+- For each run record each room&#x27;s maximum temperature and the
+  minutes above COMFORT_MAX (from twin/config.py).
+- Write every run to results/sweep.csv and, per combination, the
+  worst room&#x27;s worst seed to results/sweep_worst.csv.
+- Draw plots/sweep_heatmap.png: outside temperature x capacity, one
+  panel per occupancy, colored by minutes above COMFORT_MAX.
+- Add a --combined flag that also sticks r2&#x27;s sensor at its 13:30
+  reading (use stuck_sensor() from twin/faults.py).
+It must finish in under 5 minutes on a 2-core Codespace (CPU only).
+Make pytest pass. Do not change agent/envelope.py.</code></pre>
+  <p class="small"><b>Gotchas to expect:</b> (1) The assistant may build in a <em>new</em> workspace instead of your starter folder; use Agent mode and say "this existing workspace". (2) Plain <code>adk web</code> returns 403 errors in Codespaces; always use <code>adk web --allow_origins "*"</code>. (3) The starter's <code>.env.example</code> names <code>gemini-3.8-flash</code>; older model names return errors for new free keys. (4) If the assistant "helpfully" adds limits to <code>agent/envelope.py</code>, undo them: writing the envelope from your own sweep is your Week 8 work.</p>
+  <div class="submit-box"><h3>Submit (Engagement)</h3><ul><li>Paste the prompt you gave your AI assistant under <b>Create</b> in <code>NOTES.md</code>, add <code>plots/sweep_heatmap.png</code> and a screenshot of the agent's first actions in <code>adk web</code> to <code>screenshots/</code>, then commit and push to your Module 4 repo.</li></ul></div>
+</section>
+<section class="module card" id="evaluate">
+  <div class="module-head"><div class="module-icon">🔍</div><div><h2>2 · Evaluate</h2><div class="module-meta"><span class="tag blue">Week 7 · Fri–Sun</span></div></div></div>
+<p class="stage-tagline">The critical gate — is the AI-built result actually right?</p>
+  <p>Does the sweep find the real failures, and what does the agent do when nothing stops it? <code>python -m agent.scenarios</code> replays five scripted afternoons through the agent with the permissive envelope: a heat wave, a failed unit, a stuck sensor, a request to set every room to 16 °C, and a noisy sensor. Run each of these and write down what happened:</p>
+  <ul><li><b>Where it fails:</b> from <code>results/sweep_worst.csv</code>, which combinations push a room past comfort, and which room? Check one cell by hand against <code>twin.floor_sim</code>.</li><li><b>Combined failure:</b> run <code>python -m whatif.sweep --combined</code>. Which cells get worse with a stuck sensor added, and why does the floor model alone not show it?</li><li><b>Unsafe actions:</b> run <code>python -m agent.scenarios</code>. List every action the agent took that you would block, and the scenario it came from.</li><li><b>The log:</b> open <code>logs/actions.jsonl</code>. For one bad action, can you tell from the log alone which layer failed: the sensor, the model, the envelope or the agent? What's missing?</li></ul>
+  <div class="submit-box"><h3>Submit</h3><ul><li>Paste this note under <b>Evaluate</b> in <code>NOTES.md</code>, add the heatmaps and the scenario output to <code>screenshots/</code>, then commit and push by the end of Week 7. Your commit history is your Week 7 checkpoint.</li></ul></div>
+</section>
+<section class="module card" id="analyze">
+  <div class="module-head"><div class="module-icon">🔬</div><div><h2>3 · Analyze</h2><div class="module-meta"><span class="tag blue">Week 8 · Mon–Tue</span></div></div></div>
+<p class="stage-tagline">Why does this work, mechanically?</p>
+  <p>Pick <strong>one</strong> of these and explain it in your own words. Depth beats breadth: one mechanism explained well scores higher than a tour of every file. Your instructor may ask a follow-up about one line, so write it so you could answer.</p>
+  <div class="option"><h3>The sweep</h3><p class="small muted">What it ran, what it skipped, and where the boundary is least certain.</p><ul><li>Which combinations did your sweep run, and which plausible ones did it skip? Why those?</li><li>Where on the heatmap is the boundary between safe and unsafe least certain, and what would make it sharper?</li><li>Explain, from <code>twin/floor_sim.py</code>, why the combined failure is worse than either failure alone.</li></ul></div>
+  <div class="option"><h3>The callback and the envelope</h3><p class="small muted">How before_tool_callback stops a tool call before it reaches MQTT.</p><ul><li>Trace one <code>set_setpoint</code> call from the agent through <code>check_envelope</code> to the MQTT publish. Quote the lines where it could be stopped.</li><li>What does returning a dict from the callback do, and what does the agent see?</li><li>Why does this check belong in a callback rather than in the agent's instruction?</li></ul></div>
+  <div class="option"><h3>The action log</h3><p class="small muted">Trace one bad outcome back to the layer that failed.</p><ul><li>Take one unsafe action from your scenarios. Using only <code>logs/actions.jsonl</code>, which layer failed?</li><li>Who should fix that layer, and what would the fix be?</li><li>Name one field missing from the log that would have made the answer certain.</li></ul></div>
+  <div class="submit-box"><h3>Submit</h3><ul><li>A short written walkthrough of the one you chose, under <b>Analyze</b> in <code>NOTES.md</code>, quoting the lines you explain, with a screenshot of the run you describe in <code>screenshots/</code>.</li></ul></div>
+</section>
+<section class="module card" id="refine">
+  <div class="module-head"><div class="module-icon">✋</div><div><h2>4 · Understand &amp; Refine</h2><div class="module-meta"><span class="tag blue">Week 8 · Wed–Thu</span><span class="tag bad">No AI assistant for this part</span></div></div></div>
+<p class="stage-tagline">The mastery check — by hand, no AI assistance for this stage.</p>
+  <div class="not-graded">By hand this time. Turn off your AI assistant (Copilot: the status-bar icon, then <b>Disable completions</b>) and close its chat. Docs, the lecture and your own Week 7 code are fine.</div>
+  <p>The permissive stub in <code>agent/envelope.py</code> allows everything. Write the real envelope by hand, from your own sweep results: every number in it should point to something you tested.</p>
+  <ol><li>Write two sentences: which sweep results your limits come from, and one situation your envelope can't protect against.</li><li>By hand, write <code>check(args, state)</code> in <code>agent/envelope.py</code> with three rules: a <b>state limit</b> (the setpoint range your sweep showed safe), a <b>rate limit</b> (how often and how far a setpoint may change), and a <b>stop-and-alert</b> condition (for example, a sensor that hasn't changed in 20 minutes during a heat wave, or capacity below the level where your sweep failed). Return <code>("allow" | "block" | "stop_alert", reason)</code>.</li><li>Run <code>pytest tests/test_envelope.py</code>, then rerun <code>python -m agent.scenarios</code>.</li><li>Compare the agent's actions with your Week 7 run: what was blocked, what got through, and what stopped and alerted. Screenshot both runs.</li><li>Explain in 3–4 sentences what your envelope costs on a normal afternoon (blocked actions that were fine) and what it still lets through.</li></ol>
+  <div class="submit-box"><h3>Submit</h3><ul>
+    <li><b>Apply:</b> The envelope you wrote by hand in <code>agent/envelope.py</code> is committed, <code>tests/test_envelope.py</code> passes and <code>agent.scenarios</code> runs.</li>
+    <li><b>Understand:</b> your own explanation under <b>Understand &amp; Refine</b> in <code>NOTES.md</code>, with its screenshots in <code>screenshots/</code>.</li>
+    <li>Then push by the end of Week 8. Your repo is the submission; the last push before the deadline counts.</li>
+  </ul></div>
+</section>
+<section class="module card" id="snags">
+  <div class="module-head"><div class="module-icon">🧯</div><div><h2>Common snags</h2></div></div>
+<div class="snag-box">
+    <ul><li><strong><code>adk web</code> opens a blank page with <code>403 Forbidden</code></strong> — in Codespaces, start it as <code>adk web --allow_origins "*"</code> and hard-refresh. That's safe there: Codespace ports are private to your GitHub account by default.</li><li><strong><code>502 Bad Gateway</code>, a 404 or "model not found"</strong> — almost always the model name. Assistants default to older names, such as <code>gemini-2.5-flash</code>, that new keys can't use. Set it back to <code>gemini-3.8-flash</code>, as in <code>.env.example</code>.</li><li><strong><code>429 RESOURCE_EXHAUSTED</code></strong> — the free tier's per-minute limit. Wait a minute; <code>agent.scenarios --pause 5</code> spaces out the five afternoons.</li><li><strong>The callback never runs</strong> — it must be passed as <code>before_tool_callback=</code> on the <code>Agent</code> that owns the tools, and its signature is <code>(tool, args, tool_context)</code>. A typo in the name raises no error; the agent just runs without it.</li><li><strong>The sweep heatmap is all one color</strong> — the metric is wrong, not the model: check that <code>COMFORT_MAX</code> comes from <code>twin/config.py</code> and that minutes above it are summed per room, not per floor.</li>
+      <li><strong>The assistant created a new folder or project</strong> — it built in a new workspace instead of your starter. Delete what it made, reopen the repo folder, and say "this existing workspace" in Agent mode.</li>
+    </ul>
+    <p class="small" style="margin:10px 0 0">Most snags trace back to a concept. If one doesn't make sense, see <a href="../reference/concept-companion.html#module-4">Concept Companion → Module 4</a>.</p>
+  </div>
+</section>
+
+<div class="guide-nav"><a href="../module-3/hos-guide.html">← HOS 3 guide</a><a href="index.html">Module 4 lesson →</a></div>
+</main>
+<footer class="foot">AI 440: Digital Twins and Physical AI · City University of Seattle, School of Technology &amp; Computing<br>Course design &amp; materials: Clark Ngo · Simulators are illustrative HTML models — no real sensors, models, simulators or network calls.<br>© 2026 Clark Ngo · Free to reuse and adapt under <a href="https://creativecommons.org/licenses/by/4.0/" rel="license">CC BY 4.0</a>, except where noted · <a href="https://github.com/clarkngo/ai440/blob/main/LICENSE.md">How to credit</a></footer>
+<script src="../assets/course.js"></script>
+
+</body>
+</html>

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="AI 440 What-If and Safety Envelope Simulator: an interactive browser model that pairs with HOS 4, with a guided tour.">
+<meta name="description" content="AI 440 What-If and Safety Envelope Simulator: an interactive browser model that pairs with AIC 4, with a guided tour.">
 <title>AI 440 — What-If and Safety Envelope Simulator</title>
 <link rel="stylesheet" href="../assets/course.css">
 <style>
@@ -86,7 +86,7 @@
 </header>
 <section class="hero">
   <div class="hero-inner">
-    <div class="eyebrow">Simulator 4 · Pairs with HOS 4 (Weeks 7–8)</div>
+    <div class="eyebrow">Simulator 4 · Pairs with AIC 4 (Weeks 7–8)</div>
     <h1>What-If &amp; Safety Envelope Simulator</h1>
     <p class="lede">Sweep a heat-wave afternoon on Floor 3 to find where it fails, then let an agent change setpoints with and without a safety envelope. Tighten the envelope, count what it costs, and give it a lying sensor.</p>
     <div class="chips"><span class="chip">CO5</span><span class="chip">What-if sweep</span><span class="chip">Combined failures</span><span class="chip">Safety envelope</span><span class="chip">Action log</span></div>
@@ -100,7 +100,7 @@
     <div class="panel">
       <h2>1 · The what-if sweep</h2>
       <p class="small muted">Floor 3 on a heat-wave afternoon. Each cell: minutes the worst room spends above 27 °C (worst of 10 seeds).</p>
-      <label class="toggle"><input type="checkbox" id="combined"><span>Add a stuck sensor in r2<small>A combined failure: HOS 1's fault inside HOS 4's sweep.</small></span></label>
+      <label class="toggle"><input type="checkbox" id="combined"><span>Add a stuck sensor in r2<small>A combined failure: AIC 1's fault inside AIC 4's sweep.</small></span></label>
       <div class="row" style="margin-top:6px"><button class="btn" id="sweep" type="button">Run the sweep</button></div>
     </div>
     <div class="panel">
@@ -135,7 +135,7 @@
   </div>
 </div>
 <div class="card"><h2>What this teaches</h2><ul><li><b>Failures combine.</b> Each factor alone is survivable; together they aren't. Sweep, don't spot-check.</li><li><b>An envelope is code, outside the agent:</b> state limits, rate limits and stop-and-alert conditions.</li><li><b>Every limit has a cost.</b> Count the fine actions it blocks as well as the unsafe ones it stops.</li><li><b>An envelope inherits its model's blind spots.</b> Checking that the twin still matches the building is part of the envelope.</li></ul>
-<p class="small muted">This is a simplified browser model for building intuition, not the real build: the floor is a simple thermal formula, and the "agent" is a scripted list of proposals, not a language model. Your HOS 4 build in Codespaces is the real thing. Back to the <a href="index.html">Module 4 lesson</a> · <a href="hos-guide.html">HOS 4 guide</a>.</p></div>
+<p class="small muted">This is a simplified browser model for building intuition, not the real build: the floor is a simple thermal formula, and the "agent" is a scripted list of proposals, not a language model. Your AIC 4 build in Codespaces is the real thing. Back to the <a href="index.html">Module 4 lesson</a> · <a href="hos-guide.html">AIC 4 build guide</a>.</p></div>
 <div class="project-tip"><b class="h">For your Term Project</b>For your twin, write the one action it may take on its own, the limits your what-if tests support, and the condition that makes it stop and tell a person. Then log every proposal, allowed or not.</div>
 </main>
 <footer class="foot">AI 440: Digital Twins and Physical AI · City University of Seattle, School of Technology &amp; Computing<br>Course design &amp; materials: Clark Ngo · Simulators are illustrative HTML models — no real sensors, models, simulators or network calls.<br>© 2026 Clark Ngo · Free to reuse and adapt under <a href="https://creativecommons.org/licenses/by/4.0/" rel="license">CC BY 4.0</a>, except where noted · <a href="https://github.com/clarkngo/ai440/blob/main/LICENSE.md">How to credit</a></footer>
@@ -192,7 +192,7 @@ function drawLog(){
     var t=p[0],room=p[1],prev=p[2],sp=p[3],fine=!!p[4];
     var trueT = 23.2+t/120 + (S.fail&&t>=120?1.8:0) + (S.lie&&room==='r2'?Math.min(4.5,t/50):0);
     var sensor = (S.lie&&room==='r2') ? 22.0 : trueT+($('scen').value==='noisy'&&room==='r1'?((t/5)%2?0.9:-0.9):0);
-    var pred = trueT;  /* the physics-informed prediction (HOS 2) */
+    var pred = trueT;  /* the physics-informed prediction (AIC 2) */
     var verdict='allow', why='inside the envelope';
     if(o.env){
       if(stopped[room]){ verdict='stop'; why='held: this room is stopped until a person checks it'; }
@@ -225,13 +225,13 @@ drawLog();
   'do':'Press <b>Set this up for me</b>. It runs the sweep with no combined failure.',
   watch:'The three heatmaps in panel 3.',
   expect:'With 60 people, a 38 °C day at full capacity or one failed unit at 34 °C: 0 minutes above 27 °C. A full floor, a failed unit and 38 °C together: over three hours.',
-  why:'Single-failure tests all pass; the combination fails. That\'s why HOS 4 sweeps instead of spot-checking.',
+  why:'Single-failure tests all pass; the combination fails. That\'s why AIC 4 sweeps instead of spot-checking.',
   setup:function(h){ h.set('combined',false); h.click('sweep'); }},
  {title:'2 · A combined failure the sweep missed',
   'do':'Press <b>Set this up for me</b>. It adds a stuck sensor in r2 to every run.',
   watch:'Which cells change color.',
   expect:'More cells fail, including some with all units working: the controller under-cools a room it believes is cool.',
-  why:'Your Evaluate runs <code>sweep --combined</code> for exactly this. A HOS 1 fault inside a HOS 4 question.',
+  why:'Your Evaluate runs <code>sweep --combined</code> for exactly this. An AIC 1 fault inside an AIC 4 question.',
   setup:function(h){ h.set('combined',true); h.click('sweep'); }},
  {title:'3 · An agent with no envelope',
   'do':'Press <b>Set this up for me</b>. A unit fails at 14:00; the envelope is off.',

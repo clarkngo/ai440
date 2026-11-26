@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="robots" content="noindex">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="AI 440 Application Challenge 4: A greenhouse that needs a safety envelope. Spec, steps, open decision and rubric.">
+<title>AI 440 — Application Challenge 4: A greenhouse that needs a safety envelope</title>
+<link rel="stylesheet" href="../assets/course.css">
+<style>
+.rules-box { background:var(--surface2); border-left:3px solid var(--border); padding:8px 14px; margin:0 0 18px; font-size:0.85rem; border-radius:0 4px 4px 0; color:var(--muted); }
+.scenario { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:16px 20px; margin:12px 0; }
+.scenario p:last-child { margin-bottom:0; }
+.decision-box { background:var(--violet-bg); border:1px solid var(--border); border-left:5px solid var(--violet); padding:15px 18px; margin:14px 0; border-radius:4px; }
+.decision-box h3 { margin:0 0 6px; color:var(--violet); font-size:1rem; }
+.stage-block { border:1px solid var(--border); border-radius:8px; padding:18px 22px; margin-bottom:14px; }
+.stage-block h3 { margin:0 0 6px; font-size:1.02rem; }
+.stage-num { display:inline-block; width:26px; height:26px; border-radius:50%; background:var(--accent-light); color:var(--accent2); font-weight:700; font-size:0.85rem; text-align:center; line-height:26px; margin-right:8px; }
+p code, li code, td code { overflow-wrap:anywhere; }
+table.mini { width:100%; border-collapse:collapse; font-size:0.86rem; margin:10px 0; }
+table.mini th, table.mini td { border:1px solid var(--border); padding:8px 10px; text-align:left; vertical-align:top; }
+table.mini th { background:var(--surface2); font-size:0.75rem; text-transform:uppercase; letter-spacing:0.03em; color:var(--muted); }
+table.mini td.wt { white-space:nowrap; font-weight:700; color:var(--accent); }
+table.rubric { min-width:760px; }
+table.rubric td:nth-child(n+4) { width:22%; }
+.submit-box { background:var(--accent-light); border-left:5px solid var(--accent); padding:14px 18px; margin:14px 0 0; border-radius:0 4px 4px 0; font-size:0.9rem; }
+.submit-box h3 { margin:0 0 8px; color:var(--accent2); font-size:0.85rem; text-transform:uppercase; letter-spacing:0.03em; }
+.submit-box ul { margin:0; padding-left:20px; }
+.snag-box { background:var(--amber-bg); border-left:5px solid var(--amber); padding:15px 18px; margin:20px 0; border-radius:4px; }
+.guide-nav { display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-top:30px; padding-top:16px; border-top:1px solid var(--border); font-size:0.9rem; }
+.guide-nav a { color:var(--link); text-decoration:none; font-weight:600; }
+</style>
+</head>
+<body>
+<div role="note" style="background:#fff7ed;border-bottom:2px solid #ea580c;color:#7c2d12;padding:10px 16px;font:600 15px/1.4 system-ui,sans-serif;text-align:center">Archived page: Version 1.0: HOS, Application Challenges and Muddiest Point (before the Nov 2026 revamp). Kept for reference and no longer current. <a href="../../../module-4/application-challenge.html" style="color:#9a3412">Open the current version</a> · <a href="../../index.html" style="color:#9a3412">All versions</a></div>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="top">
+  <div class="top-inner">
+    <a class="brand" href="../index.html"><span class="brand-icon">440</span><span><b>AI 440: Digital Twins and Physical AI</b><small>Course guides</small></span></a>
+    <div class="top-right"><a class="pill-btn" href="../index.html">Course home</a><button class="pill-btn" id="themeToggle" type="button">🌙 Dark</button></div>
+  </div>
+</header>
+<section class="hero">
+  <div class="hero-inner">
+    <div class="eyebrow">AI 440 · Module 4 · Application Challenge 4</div>
+    <h1>Application Challenge 4: A greenhouse that needs a safety envelope</h1>
+    <p class="lede">A greenhouse's twin controls its vents, heaters and misting, and an agent with no limits wants to run them overnight. Run the what-ifs, write the safety envelope until the provided tests pass, decide how conservative it should be, and say which actions should always go to a person.</p>
+    <div class="chips"><span class="chip">60–90 min</span><span class="chip">CO5</span><span class="chip">Module 4 · Week 8</span><span class="chip">5% of final grade</span><span class="chip">AI assistant allowed — disclose it</span></div>
+  </div>
+</section>
+<main id="main">
+<nav class="secnav no-print" aria-label="Page sections">
+  <div class="secnav-inner"><a href="#rules">Ground rules</a><a href="#scenario">Scenario</a><a href="#spec">Spec</a><a href="#second">Which actions always go to a person?</a><a href="#steps">Steps</a><a href="#grading">Grading</a><a href="#snags">Common snags</a></div>
+</nav>
+<section class="module card" id="rules">
+  <div class="module-head"><div class="module-icon">📏</div><div><h2>Ground rules</h2></div></div>
+<div class="rules-box">Everything here runs in GitHub Codespaces on CPU, on free tools, with no credit card and no API key. You may use an AI assistant for any part; say what it did in <code>DECISIONS.md</code>. See the <a href="../start-here/ai-use.html">AI Use Guide</a>.</div><p class="small"><b>Starter code:</b> <span class="tag amber">Planned</span> The AC 4 starter repository and its GitHub Classroom invite are being built and tested; the invite link goes here when they are published.</p>
+</section>
+
+<section class="module card" id="scenario">
+  <div class="module-head"><div class="module-icon">🌱</div><div><h2>The scenario</h2></div></div>
+<div class="scenario"><p><strong>Evergreen Growers</strong> (fictional) grows tomatoes in a 2,000 m² greenhouse in Skagit County. Its twin models air temperature and humidity from the weather, the roof vents (0–100% open), two heaters and the misting line. The owner wants an agent to run them overnight to save energy, because the night grower costs more than the heating. Tomatoes are damaged below 10 °C and above 32 °C.</p>
+<p>The starter has the twin (<code>greenhouse/twin.py</code>), a what-if harness, a scripted energy-saving agent and a permissive <code>greenhouse/envelope.py</code> that allows everything. Two things to know:</p>
+<ul><li><strong>No API key is needed.</strong> The agent is a scripted stand-in that proposes the same actions every run, so the tests are repeatable.</li><li><strong>The harness has three what-ifs</strong>: a heat spike after a sunny afternoon, a vent motor that sticks open, and a frost night down to −4 °C outside.</li></ul></div>
+</section>
+
+<section class="module card" id="spec">
+  <div class="module-head"><div class="module-icon">📐</div><div><h2>The spec</h2></div></div>
+<p>Every requirement below is checked by a provided test.</p>
+<div class="table-wrap" tabindex="0"><table class="mini"><tr><th>Part</th><th>Must do</th><th>Must not do</th></tr><tr><td><code>check(action, state)</code> in <code>greenhouse/envelope.py</code></td><td>Returns <code>("allow" | "block" | "stop_alert", reason)</code> for every proposed action, with at least one state limit, one rate limit and one stop-and-alert condition.</td><td>Let an action through that the agent's own reasoning justified but your tests never covered.</td></tr><tr><td>Crop safety</td><td>With your envelope, the crop stays between 10 and 32 °C in all three what-ifs.</td><td>Keep the crop safe by blocking every action.</td></tr><tr><td>Stuck vent</td><td>When the vent's reported position disagrees with its last command by more than 15% for five minutes, the envelope stops the agent and alerts the grower.</td><td>Keep commanding a vent that isn't moving.</td></tr><tr><td>The log</td><td>Every proposal is written to <code>logs/actions.jsonl</code> with the twin's state, the verdict and the reason.</td><td>Log only the actions that were allowed.</td></tr></table></div>
+<div class="decision-box"><h3>The open decision: how conservative should the envelope be?</h3><p style="margin-bottom:0">The owner's only instruction: <em>"The heating bill matters, but one frozen crop is the whole year."</em> A tight envelope blocks energy-saving actions that were fine; a loose one lets the frost night get close. The provided tests check crop safety and the stuck vent, not how much energy you save. You choose the limits, prove what they cost with your own tests, and defend them in <code>DECISIONS.md</code>.</p></div>
+</section>
+
+<section class="module card" id="second">
+  <div class="module-head"><div class="module-icon">🙋</div><div><h2>Which actions always go to a person?</h2></div></div>
+<p>You <strong>don't build these</strong>. In your memo, decide for each action whether the agent may take it inside the envelope, only with a person's approval, or never, and why.</p><ol><li>Opening the roof vents fully when a windstorm warning is issued.</li><li>Turning both heaters off overnight because the forecast is mild.</li><li>Switching to the backup heater when the main one faults.</li><li>Restarting the misting line after a pump pressure alarm.</li><li>Overriding a grower's manual lockout on a vent.</li></ol>
+</section>
+
+<section class="module card" id="steps">
+  <div class="module-head"><div class="module-icon">🪜</div><div><h2>Steps &amp; what to submit</h2></div></div>
+<div class="stage-block"><h3><span class="stage-num">1</span>Open it and run the tests</h3><p>Open your own AC 4 repo in GitHub Codespaces, then run:</p><pre tabindex="0">pytest</pre><p>The crop-safety and stuck-vent tests fail: the permissive envelope lets the agent close every vent during the heat spike and turn the heaters down on the frost night.</p></div>
+  <div class="stage-block"><h3><span class="stage-num">2</span>Run the what-ifs</h3><p>See what the agent does without limits, and where the crop gets into trouble:</p><pre tabindex="0">python -m greenhouse.whatif --all</pre><p>Each what-if prints the crop temperature through the night and every proposal the agent made.</p></div>
+  <div class="stage-block"><h3><span class="stage-num">3</span>Write the envelope</h3><p>Fill in <code>greenhouse/envelope.py</code> until the provided tests pass. You may use an AI assistant; tell it to work in this existing workspace and not to change the tests, the twin or the agent, and read what it writes. Then write at least two tests in <code>tests/test_my_rules.py</code>: one for a limit you chose, and one for the edge you think is most likely to go wrong.</p></div>
+  <div class="stage-block"><h3><span class="stage-num">4</span>Run the night with your envelope</h3><p>Run the three what-ifs again and the normal night, and record what was blocked:</p><pre tabindex="0">python -m greenhouse.whatif --all --envelope
+python -m greenhouse.whatif --normal --envelope</pre><p>Add the crop temperatures, the blocked and stopped actions, and the energy used to <code>RUNS.md</code>.</p></div>
+  <div class="stage-block"><h3><span class="stage-num">5</span>Write the memo</h3><p>Fill in <code>DECISIONS.md</code>, about one page: how conservative your envelope is and why, what it blocked that was fine, your call on each of the five actions, and what your AI assistant wrote, got wrong or missed.</p></div>
+  <div class="submit-box"><h3>Submit (in Brightspace)</h3><ul>
+      <li><code>greenhouse/envelope.py</code> and <code>tests/test_my_rules.py</code></li>
+      <li>The output of <code>pytest</code>, all tests passing (including yours)</li>
+      <li><code>RUNS.md</code>: the what-if results your limits come from, and the overnight run with your envelope</li>
+      <li><code>DECISIONS.md</code>: how conservative your envelope is and why, what it blocked that was fine, and which actions always go to a person</li>
+    </ul></div>
+</section>
+
+<section class="module card" id="grading">
+  <div class="module-head"><div class="module-icon">📊</div><div><h2>How it's graded</h2></div></div>
+<p>Each criterion is graded on one part of your submission, at one of three levels.</p>
+<div class="table-wrap" tabindex="0"><table class="mini rubric"><tr><th>Criterion</th><th>Weight</th><th>Graded on</th><th>Full</th><th>Partial</th><th>Missing</th></tr><tr><td><strong>Application</strong></td><td class="wt">10%</td><td><code>RUNS.md</code></td><td>The what-ifs and the normal night run with your envelope, and you say what it cost in energy and blocked actions.</td><td>They run, but one result is unexplained.</td><td>It restates the HOS 4 floor envelope, or doesn't run.</td></tr><tr><td><strong>Analysis</strong></td><td class="wt">20%</td><td><code>DECISIONS.md</code>, section 2 (five actions)</td><td>For each action you weigh how reversible it is, how often it's needed and what a wrong call costs.</td><td>A verdict for each, with generic reasons.</td><td>No breakdown.</td></tr><tr><td><strong>Evaluation</strong></td><td class="wt">30%</td><td><code>DECISIONS.md</code>, section 1 (how conservative)</td><td>Clear limits, each tied to a what-if result and judged against stated criteria (crop vs. heating bill), with an alternative you rejected and why.</td><td>Limits with reasons, but no criteria or no rejected alternative.</td><td>No limits, or no justification.</td></tr><tr><td><strong>Design</strong></td><td class="wt">40%</td><td><code>greenhouse/envelope.py</code>, your tests and the <code>pytest</code> output</td><td>All provided tests pass, and your own tests check your limits, including an edge case.</td><td>Most provided tests pass, or your tests cover only the easy case.</td><td>It doesn't run, or you wrote no tests of your own.</td></tr></table></div>
+<p class="small muted">How this differs from HOS 4's Understand &amp; Refine: there you extended code you already understood, by hand, with no AI. Here the business, the code and the decisions are new, AI help is allowed, and half the grade (Analysis and Evaluation) is for the calls you make, not the typing.</p>
+</section>
+
+<section class="module card" id="snags">
+  <div class="module-head"><div class="module-icon">🧯</div><div><h2>Common snags</h2></div></div>
+<div class="snag-box"><ul><li><strong>The frost-night test still fails</strong> — a state limit on the heater isn't enough if the vents stay open. Check combined actions, not each one alone.</li><li><strong>The stuck-vent test never triggers</strong> — compare the vent's reported position (<code>state["vent_pos"]</code>) with your last <em>command</em>, over time; one reading isn't enough.</li><li><strong>The log is missing blocked actions</strong> — write the log entry before you return the verdict, whatever it is.</li><li><strong>The assistant changed a test to make it pass</strong> — undo it with <code>git checkout tests/</code>. The provided tests are the spec.</li></ul></div>
+</section>
+
+<div class="guide-nav"><a href="hos-guide.html">← HOS 4 guide</a><a href="index.html">Module 4 lesson →</a></div>
+</main>
+<footer class="foot">AI 440: Digital Twins and Physical AI · City University of Seattle, School of Technology &amp; Computing<br>Course design &amp; materials: Clark Ngo · Simulators are illustrative HTML models — no real sensors, models, simulators or network calls.<br>© 2026 Clark Ngo · Free to reuse and adapt under <a href="https://creativecommons.org/licenses/by/4.0/" rel="license">CC BY 4.0</a>, except where noted · <a href="https://github.com/clarkngo/ai440/blob/main/LICENSE.md">How to credit</a></footer>
+<script src="../assets/course.js"></script>
+
+</body>
+</html>

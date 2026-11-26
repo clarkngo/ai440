@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="robots" content="noindex">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="AI 440 Application Challenge 1: A cold-storage warehouse's data connection. Spec, steps, open decision and rubric.">
+<title>AI 440 — Application Challenge 1: A cold-storage warehouse's data connection</title>
+<link rel="stylesheet" href="../assets/course.css">
+<style>
+.rules-box { background:var(--surface2); border-left:3px solid var(--border); padding:8px 14px; margin:0 0 18px; font-size:0.85rem; border-radius:0 4px 4px 0; color:var(--muted); }
+.scenario { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:16px 20px; margin:12px 0; }
+.scenario p:last-child { margin-bottom:0; }
+.decision-box { background:var(--violet-bg); border:1px solid var(--border); border-left:5px solid var(--violet); padding:15px 18px; margin:14px 0; border-radius:4px; }
+.decision-box h3 { margin:0 0 6px; color:var(--violet); font-size:1rem; }
+.stage-block { border:1px solid var(--border); border-radius:8px; padding:18px 22px; margin-bottom:14px; }
+.stage-block h3 { margin:0 0 6px; font-size:1.02rem; }
+.stage-num { display:inline-block; width:26px; height:26px; border-radius:50%; background:var(--accent-light); color:var(--accent2); font-weight:700; font-size:0.85rem; text-align:center; line-height:26px; margin-right:8px; }
+p code, li code, td code { overflow-wrap:anywhere; }
+table.mini { width:100%; border-collapse:collapse; font-size:0.86rem; margin:10px 0; }
+table.mini th, table.mini td { border:1px solid var(--border); padding:8px 10px; text-align:left; vertical-align:top; }
+table.mini th { background:var(--surface2); font-size:0.75rem; text-transform:uppercase; letter-spacing:0.03em; color:var(--muted); }
+table.mini td.wt { white-space:nowrap; font-weight:700; color:var(--accent); }
+table.rubric { min-width:760px; }
+table.rubric td:nth-child(n+4) { width:22%; }
+.submit-box { background:var(--accent-light); border-left:5px solid var(--accent); padding:14px 18px; margin:14px 0 0; border-radius:0 4px 4px 0; font-size:0.9rem; }
+.submit-box h3 { margin:0 0 8px; color:var(--accent2); font-size:0.85rem; text-transform:uppercase; letter-spacing:0.03em; }
+.submit-box ul { margin:0; padding-left:20px; }
+.snag-box { background:var(--amber-bg); border-left:5px solid var(--amber); padding:15px 18px; margin:20px 0; border-radius:4px; }
+.guide-nav { display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-top:30px; padding-top:16px; border-top:1px solid var(--border); font-size:0.9rem; }
+.guide-nav a { color:var(--link); text-decoration:none; font-weight:600; }
+</style>
+</head>
+<body>
+<div role="note" style="background:#fff7ed;border-bottom:2px solid #ea580c;color:#7c2d12;padding:10px 16px;font:600 15px/1.4 system-ui,sans-serif;text-align:center">Archived page: Version 1.0: HOS, Application Challenges and Muddiest Point (before the Nov 2026 revamp). Kept for reference and no longer current. <a href="../../../module-1/application-challenge.html" style="color:#9a3412">Open the current version</a> · <a href="../../index.html" style="color:#9a3412">All versions</a></div>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="top">
+  <div class="top-inner">
+    <a class="brand" href="../index.html"><span class="brand-icon">440</span><span><b>AI 440: Digital Twins and Physical AI</b><small>Course guides</small></span></a>
+    <div class="top-right"><a class="pill-btn" href="../index.html">Course home</a><button class="pill-btn" id="themeToggle" type="button">🌙 Dark</button></div>
+  </div>
+</header>
+<section class="hero">
+  <div class="hero-inner">
+    <div class="eyebrow">AI 440 · Module 1 · Application Challenge 1</div>
+    <h1>Application Challenge 1: A cold-storage warehouse's data connection</h1>
+    <p class="lede">Build the data connection for a warehouse's six freezers: recorded sensor streams flow into a virtual model of each freezer that flags late, missing and impossible readings. Decide when the model should stop trusting a sensor, and which requested feature would turn the warehouse's shadow into a twin.</p>
+    <div class="chips"><span class="chip">60–90 min</span><span class="chip">CO1 · CO3</span><span class="chip">Module 1 · Week 2</span><span class="chip">5% of final grade</span><span class="chip">AI assistant allowed — disclose it</span></div>
+  </div>
+</section>
+<main id="main">
+<nav class="secnav no-print" aria-label="Page sections">
+  <div class="secnav-inner"><a href="#rules">Ground rules</a><a href="#scenario">Scenario</a><a href="#spec">Spec</a><a href="#second">The owner's three requests</a><a href="#steps">Steps</a><a href="#grading">Grading</a><a href="#snags">Common snags</a></div>
+</nav>
+<section class="module card" id="rules">
+  <div class="module-head"><div class="module-icon">📏</div><div><h2>Ground rules</h2></div></div>
+<div class="rules-box">Everything here runs in GitHub Codespaces on CPU, on free tools, with no credit card and no API key. You may use an AI assistant for any part; say what it did in <code>DECISIONS.md</code>. See the <a href="../start-here/ai-use.html">AI Use Guide</a>.</div><p class="small"><b>Starter code:</b> <span class="tag amber">Planned</span> The AC 1 starter repository and its GitHub Classroom invite are being built and tested; the invite link goes here when they are published.</p>
+</section>
+
+<section class="module card" id="scenario">
+  <div class="module-head"><div class="module-icon">❄️</div><div><h2>The scenario</h2></div></div>
+<div class="scenario"><p><strong>Northgate Cold Storage</strong> (fictional) keeps frozen food in six walk-in freezers, F1 to F6, each held at −20 °C. Every freezer reports its air temperature every 30 seconds and a door event whenever its door opens or closes. Last winter a sensor in F4 froze at −20.1 °C for nine hours while the freezer warmed to −6 °C, and nobody noticed until a delivery was refused. The owner wants a virtual model of each freezer that knows what it doesn't know.</p>
+<p>The starter has a recorded night (<code>data/night.jsonl</code>, 8 hours, every message with its sensor timestamp and sequence number), a replay tool, and an empty <code>coldstore/connection.py</code>. Two things to know:</p>
+<ul><li><strong>No broker is needed for the tests.</strong> The replay feeds messages straight to your code, in the order and at the times they arrived. <code>--mqtt</code> sends them through Mosquitto in your Codespace instead, for the live run.</li><li><strong>The recorded night contains faults on purpose</strong>: a late burst, a gap in one freezer's sequence numbers, an impossible jump and one sensor that stops changing.</li></ul></div>
+</section>
+
+<section class="module card" id="spec">
+  <div class="module-head"><div class="module-icon">📐</div><div><h2>The spec</h2></div></div>
+<p>Every requirement below is checked by a provided test.</p>
+<div class="table-wrap" tabindex="0"><table class="mini"><tr><th>Part</th><th>Must do</th><th>Must not do</th></tr><tr><td><code>FreezerModel.on_message(topic, payload)</code></td><td>Accepts <code>coldstore/&lt;freezer&gt;/temp</code> and <code>coldstore/&lt;freezer&gt;/door</code> messages with <code>v</code>, <code>ts</code> and <code>seq</code>, and keeps each freezer's latest temperature, door state and arrival time.</td><td>Trust arrival order, or drop a message silently.</td></tr><tr><td><code>FreezerModel.state(freezer, now)</code></td><td>Returns <code>temp</code>, <code>door</code>, <code>age_s</code> and a list of <code>flags</code>: <code>late</code> (more than 90 s from sensor to arrival), <code>missing</code> (a gap in <code>seq</code>) and <code>impossible</code> (below −40 °C, above +10 °C, or changing faster than 2 °C a minute with the door shut).</td><td>Report a value with no age, or clear a flag before a good reading arrives.</td></tr><tr><td>Unknown state</td><td>Returns <code>status="unknown"</code> for a freezer whose data can no longer be trusted, by your rule (below).</td><td>Report <code>status="ok"</code> for F4 during the recorded stuck period.</td></tr></table></div>
+<div class="decision-box"><h3>The open decision: when does a freezer become unknown?</h3><p style="margin-bottom:0">The owner's only instruction: <em>"I'd rather get a false alarm at 3 a.m. than lose a freezer of fish."</em> A sensor that hasn't changed can be a stuck sensor or a very steady freezer. How long, and under what conditions (door shut? compressor running? other freezers changing?), before you stop trusting it? The provided tests only check that F4 is unknown by the end of its stuck period. You decide the rule, implement it, prove it with your own tests, and defend it in <code>DECISIONS.md</code>.</p></div>
+</section>
+
+<section class="module card" id="second">
+  <div class="module-head"><div class="module-icon">🗂️</div><div><h2>The owner's three requests</h2></div></div>
+<p>The owner also asked for three features. You <strong>don't build these</strong>. In your memo, decide for each whether it makes the system a digital shadow, a digital twin or neither, and what it would let the system control on its own.</p><ol><li>A dashboard of all six freezers that emails the manager when one passes −15 °C.</li><li>Switching a freezer to its backup compressor automatically when the model predicts it can't hold −18 °C.</li><li>A weekly report of door-open minutes per freezer.</li></ol>
+</section>
+
+<section class="module card" id="steps">
+  <div class="module-head"><div class="module-icon">🪜</div><div><h2>Steps &amp; what to submit</h2></div></div>
+<div class="stage-block"><h3><span class="stage-num">1</span>Open it and run the tests</h3><p>Open your own AC 1 repo in GitHub Codespaces, then run:</p><pre tabindex="0">pytest</pre><p>Almost everything fails with <code>NotImplementedError</code>. That's your to-do list.</p></div>
+  <div class="stage-block"><h3><span class="stage-num">2</span>Build the connection</h3><p>Fill in <code>coldstore/connection.py</code> until the provided tests pass. You may use an AI assistant; tell it to work in this existing workspace and not to change the tests, and read what it writes: you'll defend it.</p></div>
+  <div class="stage-block"><h3><span class="stage-num">3</span>Make the unknown-state call</h3><p>Implement your rule. Write at least two tests in <code>tests/test_my_rules.py</code>: one showing your rule on F4, and one showing a steady but healthy freezer is <em>not</em> marked unknown too early.</p></div>
+  <div class="stage-block"><h3><span class="stage-num">4</span>Replay the night</h3><p>Run the whole night through your model and save the timeline:</p><pre tabindex="0">python -m coldstore.replay data/night.jsonl --speed 600 &gt; replay.txt</pre><p>Copy the part around F4 into <code>REPLAY.md</code> and mark the moment it goes unknown. Optional: repeat with <code>docker compose up -d mosquitto</code> and <code>--mqtt</code>.</p></div>
+  <div class="stage-block"><h3><span class="stage-num">5</span>Write the memo</h3><p>Fill in <code>DECISIONS.md</code>, about one page: your unknown-state rule and why, your call on each of the three requests, and what your AI assistant wrote, got wrong or missed.</p></div>
+  <div class="submit-box"><h3>Submit (in Brightspace)</h3><ul>
+      <li><code>coldstore/connection.py</code> and <code>tests/test_my_rules.py</code></li>
+      <li>The output of <code>pytest</code>, all tests passing (including yours)</li>
+      <li><code>REPLAY.md</code>: one replay of the recorded night, with the moment a freezer goes unknown</li>
+      <li><code>DECISIONS.md</code>: your unknown-state rule and why, and your shadow-or-twin call on each of the three features, with what each would let the system control</li>
+    </ul></div>
+</section>
+
+<section class="module card" id="grading">
+  <div class="module-head"><div class="module-icon">📊</div><div><h2>How it's graded</h2></div></div>
+<p>Each criterion is graded on one part of your submission, at one of three levels.</p>
+<div class="table-wrap" tabindex="0"><table class="mini rubric"><tr><th>Criterion</th><th>Weight</th><th>Graded on</th><th>Full</th><th>Partial</th><th>Missing</th></tr><tr><td><strong>Application</strong></td><td class="wt">10%</td><td><code>REPLAY.md</code></td><td>Your model runs on the warehouse's night, and the timeline shows each recorded fault flagged and F4 going unknown.</td><td>It runs, but one fault isn't flagged and you don't explain why.</td><td>It restates the HOS 1 floor twin, or doesn't run.</td></tr><tr><td><strong>Analysis</strong></td><td class="wt">20%</td><td><code>DECISIONS.md</code>, section 2 (three requests)</td><td>For each request you name the arrow it adds: who or what acts on the freezer, and how fast.</td><td>A verdict for each, with generic reasons.</td><td>No breakdown.</td></tr><tr><td><strong>Evaluation</strong></td><td class="wt">30%</td><td><code>DECISIONS.md</code>, section 1 (unknown state)</td><td>A clear rule, judged against stated criteria (false alarms vs. lost stock), with an alternative you rejected and why.</td><td>A rule with a reason, but no criteria or no rejected alternative.</td><td>No rule, or no justification.</td></tr><tr><td><strong>Design</strong></td><td class="wt">40%</td><td><code>coldstore/connection.py</code>, your tests and the <code>pytest</code> output</td><td>All provided tests pass, and your own tests check your rule, including the steady-freezer edge.</td><td>Most provided tests pass, or your tests cover only the easy case.</td><td>It doesn't run, or you wrote no tests of your own.</td></tr></table></div>
+<p class="small muted">How this differs from HOS 1's Understand &amp; Refine: there you extended code you already understood, by hand, with no AI. Here the business, the code and the decisions are new, AI help is allowed, and half the grade (Analysis and Evaluation) is for the calls you make, not the typing.</p>
+</section>
+
+<section class="module card" id="snags">
+  <div class="module-head"><div class="module-icon">🧯</div><div><h2>Common snags</h2></div></div>
+<div class="snag-box"><ul><li><strong><code>missing</code> fires for every message</strong> — compare each <code>seq</code> with the previous one <em>for that freezer and topic</em>, not across all freezers.</li><li><strong><code>late</code> never fires during the replay</strong> — compare the sensor's <code>ts</code> with the replay's arrival time (<code>now</code>), not with <code>time.time()</code>. The replay runs faster than real time.</li><li><strong>A door-open warm-up is flagged impossible</strong> — the 2 °C-a-minute limit applies only with the door shut. Track the door state per freezer.</li><li><strong>The assistant changed a test to make it pass</strong> — undo it with <code>git checkout tests/</code>. The provided tests are the spec.</li></ul></div>
+</section>
+
+<div class="guide-nav"><a href="hos-guide.html">← HOS 1 guide</a><a href="index.html">Module 1 lesson →</a></div>
+</main>
+<footer class="foot">AI 440: Digital Twins and Physical AI · City University of Seattle, School of Technology &amp; Computing<br>Course design &amp; materials: Clark Ngo · Simulators are illustrative HTML models — no real sensors, models, simulators or network calls.<br>© 2026 Clark Ngo · Free to reuse and adapt under <a href="https://creativecommons.org/licenses/by/4.0/" rel="license">CC BY 4.0</a>, except where noted · <a href="https://github.com/clarkngo/ai440/blob/main/LICENSE.md">How to credit</a></footer>
+<script src="../assets/course.js"></script>
+
+</body>
+</html>

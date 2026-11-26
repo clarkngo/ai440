@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="AI 440 example Term Project: Packaging Cell Twin, a fictional digital twin of a packaging line that combines all four HOS, with a step-by-step live demo, three releases and a demo video storyboard.">
+<meta name="description" content="AI 440 example Term Project: Packaging Cell Twin, a fictional digital twin of a packaging line that combines all four AICs, with a step-by-step live demo, three releases and a demo video storyboard.">
 <title>Example Term Project: Packaging Cell Twin</title>
 <link rel="stylesheet" href="../assets/course.css">
 <style>
@@ -79,8 +79,8 @@
   <div class="hero-inner">
     <div class="eyebrow">AI 440 · Module 5 · Example Term Project</div>
     <h1>Example Term Project: Packaging Cell Twin</h1>
-    <p class="lede">A fictional, finished Term Project you can click through: one digital twin of a small packaging line that combines all four HOS, its live demo played step by step with what the presenter says, its three releases, and its demo video storyboard.</p>
-    <div class="chips"><span class="chip">All 4 HOS</span><span class="chip">Group of three</span><span class="chip">Live demo player</span><span class="chip">Three releases</span><span class="chip">Video storyboard</span></div>
+    <p class="lede">A fictional, finished Term Project you can click through: one digital twin of a small packaging line that combines all four AICs, its live demo played step by step with what the presenter says, its three releases, and its demo video storyboard.</p>
+    <div class="chips"><span class="chip">All 4 AICs</span><span class="chip">Group of three</span><span class="chip">Live demo player</span><span class="chip">Three releases</span><span class="chip">Video storyboard</span></div>
   </div>
 </section>
 <main id="main">
@@ -88,10 +88,10 @@
   <div class="secnav-inner"><a href="#overview">The project</a><a href="#demo">Live demo</a><a href="#releases">Three releases</a><a href="#video">Demo video</a><a href="#strong">What makes it strong</a></div>
 </nav>
 
-<p class="sim-note" style="margin-top:18px">⚠ Illustrative example only. Packaging Cell Twin, its team and its numbers are made up, and the demo is a scripted HTML model: no real sensors, models or network calls. Your project doesn't have to look like this. It has to be one functional twin for a targeted use case that combines all four HOS.</p>
+<p class="sim-note" style="margin-top:18px">⚠ Illustrative example only. Packaging Cell Twin, its team and its numbers are made up, and the demo is a scripted HTML model: no real sensors, models or network calls. Your project doesn't have to look like this. It has to be one functional twin for a targeted use case that combines all four AICs.</p>
 
 <section class="module card" id="overview">
-  <div class="module-head"><div class="module-icon">🗂️</div><div><h2>The project at a glance</h2><div class="module-meta"><span class="tag">Group of three</span><span class="tag blue">All 4 HOS</span></div></div></div>
+  <div class="module-head"><div class="module-icon">🗂️</div><div><h2>The project at a glance</h2><div class="module-meta"><span class="tag">Group of three</span><span class="tag blue">All 4 AICs</span></div></div></div>
 <p><strong>The use case.</strong> A small packaging line, a conveyor, a pick-and-place arm and a heat sealer, loses a few percent of its packs to bad seals, mostly after film changes and jams, when the sealer's jaw runs too cold or too hot. Two thermocouples sit at the jaw's edges; nobody can see its core. Packaging Cell Twin monitors the line live, predicts the jaw's core temperature, and may slow the conveyor on its own, only inside limits its what-if tests proved. It's the course description's manufacturing-cell example, cut to a size a team can finish in a Codespace.</p>
   <div class="table-wrap" tabindex="0"><table>
     <thead><tr><th>Decision</th><th>Made by</th><th>Why</th></tr></thead>
@@ -103,12 +103,12 @@
     </tbody>
   </table></div>
   <div class="table-wrap" tabindex="0"><table>
-    <thead><tr><th>HOS</th><th>What it is in Packaging Cell Twin</th><th>Litmus test: why it's really that HOS</th></tr></thead>
+    <thead><tr><th>AIC</th><th>What it is in Packaging Cell Twin</th><th>Litmus test: why it's really that AIC</th></tr></thead>
     <tbody>
-      <tr><td><span class="tag hos1">HOS 1 · pipeline &amp; twin</span></td><td>Recorded sensor traces replayed over MQTT into the twin's state, InfluxDB and a Grafana dashboard, with stuck, jump and stale checks.</td><td>The twin knows each reading's age, and one action travels back to the cell over MQTT.</td></tr>
-      <tr><td><span class="tag hos2">HOS 2 · physics-informed model</span></td><td>A PINN of heat through the jaw, with its diffusivity learned from a week of readings.</td><td>The heat equation is in the loss, and it beats a data-only model between the two sensors.</td></tr>
-      <tr><td><span class="tag hos3">HOS 3 · simulation &amp; synthetic data</span></td><td>The arm's cell in MuJoCo, exported to OpenUSD; a pick detector trained on 1,800 BlenderProc images.</td><td>Both were tested on held-out worlds they weren't built from, and the team reports the gap.</td></tr>
-      <tr><td><span class="tag hos4">HOS 4 · what-if &amp; safe decisions</span></td><td>A SimPy sweep of jams, heater faults and line speeds; an ADK agent that may only set conveyor speed, through an envelope callback; a JSONL action log.</td><td>Every limit points to a sweep result, including a combined failure, and the stop-and-alert rule is shown working.</td></tr>
+      <tr><td><span class="tag hos1">AIC 1 · pipeline &amp; twin</span></td><td>Recorded sensor traces replayed over MQTT into the twin's state, InfluxDB and a Grafana dashboard, with stuck, jump and stale checks.</td><td>The twin knows each reading's age, and one action travels back to the cell over MQTT.</td></tr>
+      <tr><td><span class="tag hos2">AIC 2 · physics-informed model</span></td><td>A PINN of heat through the jaw, with its diffusivity learned from a week of readings.</td><td>The heat equation is in the loss, and it beats a data-only model between the two sensors.</td></tr>
+      <tr><td><span class="tag hos3">AIC 3 · simulation &amp; synthetic data</span></td><td>The arm's cell in MuJoCo, exported to OpenUSD; a pick detector trained on 1,800 BlenderProc images.</td><td>Both were tested on held-out worlds they weren't built from, and the team reports the gap.</td></tr>
+      <tr><td><span class="tag hos4">AIC 4 · what-if &amp; safe decisions</span></td><td>A SimPy sweep of jams, heater faults and line speeds; an ADK agent that may only set conveyor speed, through an envelope callback; a JSONL action log.</td><td>Every limit points to a sweep result, including a combined failure, and the stop-and-alert rule is shown working.</td></tr>
     </tbody>
   </table></div>
   <h3>The team and who owned what</h3>
@@ -116,9 +116,9 @@
   <div class="table-wrap" tabindex="0"><table>
     <thead><tr><th>Member (fictional)</th><th>Owned</th></tr></thead>
     <tbody>
-      <tr><td>Member A</td><td>Sensors, pipeline and the twin's state (HOS 1)</td></tr>
-      <tr><td>Member B</td><td>The jaw PINN and the arm simulation (HOS 2 and 3)</td></tr>
-      <tr><td>Member C</td><td>What-if sweeps, the envelope and agent (HOS 4), and the demo script</td></tr>
+      <tr><td>Member A</td><td>Sensors, pipeline and the twin's state (AIC 1)</td></tr>
+      <tr><td>Member B</td><td>The jaw PINN and the arm simulation (AIC 2 and 3)</td></tr>
+      <tr><td>Member C</td><td>What-if sweeps, the envelope and agent (AIC 4), and the demo script</td></tr>
     </tbody>
   </table></div>
 </section>
@@ -126,7 +126,7 @@
 
 <section class="module card" id="demo">
   <div class="module-head"><div class="module-icon">🎬</div><div><h2>Live demo: play it step by step</h2><div class="module-meta"><span class="tag">Follows the Demo plan</span><span class="tag blue">≈ 5–6 min</span></div></div></div>
-<p>This is the live-demo part of Packaging Cell Twin's presentation, in the order the <a href="index.html#demo">Demo plan</a> suggests. Pick a step, then press <b>Next ▸</b> to play it one event at a time. The operator console shows what the audience sees; <b>Behind the scenes</b> shows what the presenter points at, with the HOS each event belongs to.</p>
+<p>This is the live-demo part of Packaging Cell Twin's presentation, in the order the <a href="index.html#demo">Demo plan</a> suggests. Pick a step, then press <b>Next ▸</b> to play it one event at a time. The operator console shows what the audience sees; <b>Behind the scenes</b> shows what the presenter points at, with the AIC each event belongs to.</p>
   <div class="steps-pick" id="pick" role="group" aria-label="Demo steps"></div>
   <div class="say" id="say"><span class="label">The presenter says</span><span id="sayText"></span></div>
   <div class="demo-layout">
@@ -162,7 +162,7 @@
 <p>Packaging Cell Twin didn't appear in Week 10. Each phase released a working system version and a report, the same as yours will.</p>
   <div class="rel">
     <div class="card"><span class="tag">End of Week 3 · Phase 1</span><h3>System v0.3</h3>
-      <ul><li>Repo <b>AI440 TP T03 Packaging_Cell_Twin</b> with a README, a <code>.gitignore</code>, no keys, and a working <code>.devcontainer</code></li><li>The sensor replay publishing over MQTT, and a first Grafana panel</li><li>A one-page proposal with 3 key references: the use case, the three components, which HOS goes where, and who owns what</li></ul></div>
+      <ul><li>Repo <b>AI440 TP T03 Packaging_Cell_Twin</b> with a README, a <code>.gitignore</code>, no keys, and a working <code>.devcontainer</code></li><li>The sensor replay publishing over MQTT, and a first Grafana panel</li><li>A one-page proposal with 3 key references: the use case, the three components, which AIC goes where, and who owns what</li></ul></div>
     <div class="card"><span class="tag">End of Week 7 · Phase 2</span><h3>System v0.7</h3>
       <ul><li>The twin's state with quality checks, and the jaw PINN reading live data</li><li>The arm cell in MuJoCo and the first synthetic images</li><li>No envelope yet, so the agent wasn't allowed to act. Listed honestly as a known gap.</li><li>A 3–4 page progress report with 12+ references</li></ul></div>
     <div class="card"><span class="tag ok">End of Week 10 · Phase 3</span><h3>System v1.0</h3>
@@ -191,7 +191,7 @@
   <div class="module-head"><div class="module-icon">✅</div><div><h2>What makes this a strong example</h2><div class="module-meta"><span class="tag">Use it as a checklist</span></div></div></div>
 <ul>
     <li><b>The autonomy is narrow and justified.</b> One action, in a tested range, with a named person for everything else.</li>
-    <li><b>Every HOS is real, not a token mention.</b> For each one the team can point to a specific part of the twin and say why it's that HOS (the litmus test in the second table).</li>
+    <li><b>Every AIC is real, not a token mention.</b> For each one the team can point to a specific part of the twin and say why it's that AIC (the litmus test in the second table).</li>
     <li><b>One loop shows all four.</b> The demo follows a reading from a sensor to an action and back, instead of touring features one by one.</li>
     <li><b>It shows a failure on purpose.</b> The frozen sensor proves the stop-and-alert rule earned its place, which is more convincing than a demo where nothing goes wrong.</li>
     <li><b>Its numbers include the cost.</b> The envelope blocked three fine actions, and the presenters say so.</li>
@@ -207,7 +207,7 @@
 <script>
 (function(){
   var $=function(id){return document.getElementById(id);};
-  var HOS={1:'HOS 1 · pipeline & twin',2:'HOS 2 · physics-informed model',3:'HOS 3 · simulation & synthetic data',4:'HOS 4 · what-if & safe decisions'};
+  var HOS={1:'AIC 1 · pipeline & twin',2:'AIC 2 · physics-informed model',3:'AIC 3 · simulation & synthetic data',4:'AIC 4 · what-if & safe decisions'};
   var SWEEP='<h3 style="margin-top:14px">What-if sweep · jam × heater stuck on × line speed (10 seeds)</h3><div class="table-wrap" tabindex="0"><table><thead><tr><th>Jam length</th><th>Heater OK</th><th>Heater stuck on</th></tr></thead><tbody><tr><td>30 s</td><td>jaw max 182 °C · ok</td><td>196 °C · ok</td></tr><tr><td>2 min</td><td>188 °C · ok</td><td><b>231 °C · film scorches</b></td></tr><tr><td>5 min</td><td>191 °C · ok</td><td><b>268 °C · stop the line</b></td></tr></tbody></table></div><p class="small" style="margin-top:8px">Each failure alone is fine. Together, past 2 minutes, they aren\'t. That boundary is where the envelope\'s stop-and-alert rule came from.</p>';
   var NUM='<h3 style="margin-top:14px">Final numbers · one 8-hour replayed shift</h3><div class="table-wrap" tabindex="0"><table><thead><tr><th>What</th><th>Result</th></tr></thead><tbody><tr><td>Sensor → twin latency, p95</td><td>0.4 s</td></tr><tr><td>Jaw core error, PINN vs. data-only (between sensors)</td><td>0.9 °C vs. 4.7 °C</td></tr><tr><td>Pick detector, held-out worlds (1,800 synthetic images)</td><td>91% (fixed-scene images: 64%)</td></tr><tr><td>Agent proposals / allowed / blocked / stopped</td><td>41 / 37 / 3 / 1</td></tr></tbody></table></div><p class="small" style="margin-top:8px">The 3 blocked were all fine in hindsight: the price of the rate limit, and they say so.</p>';
   var STEPS=[
@@ -223,7 +223,7 @@
          {from:'env',to:'log',t:'Logged with inputs, state, verdict and reason',d:'One JSON line in <code>logs/actions.jsonl</code>, whether the action was allowed or not.',hos:4,out:{sys:'action 0031 logged'}}]},
     {time:'~1:30', title:'A what-if, then a lying sensor', say:'"Before we let the agent touch the line, we asked the twin what happens if the heater sticks on during a jam. Alone, each is fine. Together, past two minutes, the film scorches. So the envelope has a stop rule. Now watch: I freeze jaw sensor A. The PINN says the jaw is heating fast; the sensor says it isn\'t. The twin doesn\'t guess. It stops and tells the operator."',
      ev:[{from:'sim',to:'sim',t:'The sweep the envelope came from',d:'SimPy runs of the cell with jam length × heater fault × line speed, 10 seeds each. The arm\'s side was trained in MuJoCo, and the pick detector on 1,800 synthetic images from BlenderProc, tested on held-out worlds.',hos:3,extra:SWEEP},
-         {from:'sens',to:'twin',t:'Inject: jaw sensor A sticks at 176.0 °C',d:'The fault from HOS 1, during a simulated jam with the heater stuck on.',hos:1,warn:true,out:{user:'▶ fault injected: temp_a stuck'}},
+         {from:'sens',to:'twin',t:'Inject: jaw sensor A sticks at 176.0 °C',d:'The fault from AIC 1, during a simulated jam with the heater stuck on.',hos:1,warn:true,out:{user:'▶ fault injected: temp_a stuck'}},
          {from:'pinn',to:'env',t:'Sensor and prediction disagree by 31 °C',d:'The PINN, driven by sensor B and the heater state, predicts 207 °C and rising. Sensor A still says 176 °C.',hos:2,warn:true},
          {from:'env',to:'log',t:'Stop and alert: the agent is paused',d:'The stop-and-alert rule: a disagreement over 10 °C, or a reading unchanged for 30 s while the heater is on. The agent\'s next proposal is held, and the line is left to the operator.',hos:4,warn:true,out:{notif:'Operator alert · cell-01 · jaw sensor A disagrees with the twin by 31 °C · agent paused'}}]},
     {time:'~0:30', title:'The numbers', say:'"One replayed eight-hour shift. Sensor to twin in under half a second. Between the jaw\'s sensors the PINN is within a degree, where a data-only model is off by almost five. The envelope blocked three proposals that turned out to be fine. That\'s the cost of the rate limit, and we kept it."',

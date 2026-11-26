@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="robots" content="noindex">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="AI 440 Application Challenge 2: A bakery oven that cools impossibly. Spec, steps, open decision and rubric.">
+<title>AI 440 — Application Challenge 2: A bakery oven that cools impossibly</title>
+<link rel="stylesheet" href="../assets/course.css">
+<style>
+.rules-box { background:var(--surface2); border-left:3px solid var(--border); padding:8px 14px; margin:0 0 18px; font-size:0.85rem; border-radius:0 4px 4px 0; color:var(--muted); }
+.scenario { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:16px 20px; margin:12px 0; }
+.scenario p:last-child { margin-bottom:0; }
+.decision-box { background:var(--violet-bg); border:1px solid var(--border); border-left:5px solid var(--violet); padding:15px 18px; margin:14px 0; border-radius:4px; }
+.decision-box h3 { margin:0 0 6px; color:var(--violet); font-size:1rem; }
+.stage-block { border:1px solid var(--border); border-radius:8px; padding:18px 22px; margin-bottom:14px; }
+.stage-block h3 { margin:0 0 6px; font-size:1.02rem; }
+.stage-num { display:inline-block; width:26px; height:26px; border-radius:50%; background:var(--accent-light); color:var(--accent2); font-weight:700; font-size:0.85rem; text-align:center; line-height:26px; margin-right:8px; }
+p code, li code, td code { overflow-wrap:anywhere; }
+table.mini { width:100%; border-collapse:collapse; font-size:0.86rem; margin:10px 0; }
+table.mini th, table.mini td { border:1px solid var(--border); padding:8px 10px; text-align:left; vertical-align:top; }
+table.mini th { background:var(--surface2); font-size:0.75rem; text-transform:uppercase; letter-spacing:0.03em; color:var(--muted); }
+table.mini td.wt { white-space:nowrap; font-weight:700; color:var(--accent); }
+table.rubric { min-width:760px; }
+table.rubric td:nth-child(n+4) { width:22%; }
+.submit-box { background:var(--accent-light); border-left:5px solid var(--accent); padding:14px 18px; margin:14px 0 0; border-radius:0 4px 4px 0; font-size:0.9rem; }
+.submit-box h3 { margin:0 0 8px; color:var(--accent2); font-size:0.85rem; text-transform:uppercase; letter-spacing:0.03em; }
+.submit-box ul { margin:0; padding-left:20px; }
+.snag-box { background:var(--amber-bg); border-left:5px solid var(--amber); padding:15px 18px; margin:20px 0; border-radius:4px; }
+.guide-nav { display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-top:30px; padding-top:16px; border-top:1px solid var(--border); font-size:0.9rem; }
+.guide-nav a { color:var(--link); text-decoration:none; font-weight:600; }
+</style>
+</head>
+<body>
+<div role="note" style="background:#fff7ed;border-bottom:2px solid #ea580c;color:#7c2d12;padding:10px 16px;font:600 15px/1.4 system-ui,sans-serif;text-align:center">Archived page: Version 1.0: HOS, Application Challenges and Muddiest Point (before the Nov 2026 revamp). Kept for reference and no longer current. <a href="../../../module-2/application-challenge.html" style="color:#9a3412">Open the current version</a> · <a href="../../index.html" style="color:#9a3412">All versions</a></div>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="top">
+  <div class="top-inner">
+    <a class="brand" href="../index.html"><span class="brand-icon">440</span><span><b>AI 440: Digital Twins and Physical AI</b><small>Course guides</small></span></a>
+    <div class="top-right"><a class="pill-btn" href="../index.html">Course home</a><button class="pill-btn" id="themeToggle" type="button">🌙 Dark</button></div>
+  </div>
+</header>
+<section class="hero">
+  <div class="hero-inner">
+    <div class="eyebrow">AI 440 · Module 2 · Application Challenge 2</div>
+    <h1>Application Challenge 2: A bakery oven that cools impossibly</h1>
+    <p class="lede">A bakery's oven-cooling model fits its measurements and predicts physically impossible temperatures between and beyond them. Add the cooling law to its training loss, decide how much the physics should weigh when the measurements disagree with it, and explain where a physics-informed model still shouldn't be trusted.</p>
+    <div class="chips"><span class="chip">60–90 min</span><span class="chip">CO2</span><span class="chip">Module 2 · Week 4</span><span class="chip">5% of final grade</span><span class="chip">AI assistant allowed — disclose it</span></div>
+  </div>
+</section>
+<main id="main">
+<nav class="secnav no-print" aria-label="Page sections">
+  <div class="secnav-inner"><a href="#rules">Ground rules</a><a href="#scenario">Scenario</a><a href="#spec">Spec</a><a href="#second">Where shouldn't it be trusted?</a><a href="#steps">Steps</a><a href="#grading">Grading</a><a href="#snags">Common snags</a></div>
+</nav>
+<section class="module card" id="rules">
+  <div class="module-head"><div class="module-icon">📏</div><div><h2>Ground rules</h2></div></div>
+<div class="rules-box">Everything here runs in GitHub Codespaces on CPU, on free tools, with no credit card and no API key. You may use an AI assistant for any part; say what it did in <code>DECISIONS.md</code>. See the <a href="../start-here/ai-use.html">AI Use Guide</a>.</div><p class="small"><b>Starter code:</b> <span class="tag amber">Planned</span> The AC 2 starter repository and its GitHub Classroom invite are being built and tested; the invite link goes here when they are published.</p>
+</section>
+
+<section class="module card" id="scenario">
+  <div class="module-head"><div class="module-icon">🥖</div><div><h2>The scenario</h2></div></div>
+<div class="scenario"><p><strong>Rainier Bakehouse</strong> (fictional) switches its deck oven off at 230 °C after the last bake, and wants to know when it will be down to 60 °C, the temperature at which overnight proofing trays can go in on the top deck. A thermocouple logged the first 20 minutes of cooling, every 2 minutes, in a 24 °C kitchen. The model a contractor left behind fits those 11 points well, then predicts the oven dipping below room temperature at minute 70 and warming again by minute 100.</p>
+<p>The starter has the readings (<code>data/cooldown.csv</code>), the contractor's data-only network (<code>oven/data_only.py</code>) and an empty <code>oven/pinn.py</code>. The law is Newton's law of cooling, dT/dt = −k (T − T<sub>room</sub>), with k unknown. Two things to know:</p>
+<ul><li><strong>Everything runs on CPU</strong>, in plain PyTorch, in under two minutes per training run.</li><li><strong>One stretch of the readings breaks the law</strong>: someone opened the oven door for two minutes around minute 12, and the temperature dropped faster than any single k explains.</li></ul></div>
+</section>
+
+<section class="module card" id="spec">
+  <div class="module-head"><div class="module-icon">📐</div><div><h2>The spec</h2></div></div>
+<p>Every requirement below is checked by a provided test.</p>
+<div class="table-wrap" tabindex="0"><table class="mini"><tr><th>Part</th><th>Must do</th><th>Must not do</th></tr><tr><td><code>train(readings, lam, epochs=3000, seed=0)</code></td><td>Trains a small network T(t) with a data term, <code>lam</code> × a physics term (the cooling-law residual at collocation points from 0 to 180 minutes) and the initial condition T(0) = 230 °C. Learns k as a positive parameter.</td><td>Compute the physics term only at the measurement times, or let k go negative.</td></tr><tr><td><code>predict(model, t)</code> and <code>learned_k(model)</code></td><td>Return temperatures at any time up to 180 minutes, and the learned k.</td><td>Predict below the kitchen's temperature, or a rise at any point.</td></tr><tr><td><code>time_to(model, temp)</code></td><td>Returns the minute the prediction first reaches <code>temp</code> (the bakery asks for 60 °C).</td><td>Return a time outside the predicted range without saying so.</td></tr></table></div>
+<div class="decision-box"><h3>The open decision: how much should the physics weigh?</h3><p style="margin-bottom:0">The head baker's only instruction: <em>"Don't tell me the oven's ready when it isn't; proofing dough at 80 °C kills it."</em> The door-opening stretch disagrees with the law. A heavy physics weight ignores it; a light one lets it bend the whole curve. The provided tests only check that the model is physical and close to the reference at 60 and 120 minutes, for one λ of your choosing. You decide the weight (and whether to treat those readings differently), prove it with your own tests, and defend it in <code>DECISIONS.md</code>.</p></div>
+</section>
+
+<section class="module card" id="second">
+  <div class="module-head"><div class="module-icon">🚦</div><div><h2>Where shouldn't it be trusted?</h2></div></div>
+<p>You <strong>don't build these</strong>. In your memo, decide for each situation whether the bakery can trust your model's answer, and what would have to change (the data, the law, or a person checking).</p><ol><li>The oven door is opened halfway through cooling to pull a forgotten tray.</li><li>The bakery buys a second, larger oven of a different model.</li><li>The convection fan is left running after switch-off.</li><li>The baker wants the temperature at the back of the oven, far from the thermocouple.</li><li>The kitchen is 35 °C on a summer night.</li></ol>
+</section>
+
+<section class="module card" id="steps">
+  <div class="module-head"><div class="module-icon">🪜</div><div><h2>Steps &amp; what to submit</h2></div></div>
+<div class="stage-block"><h3><span class="stage-num">1</span>Open it and run the tests</h3><p>Open your own AC 2 repo in GitHub Codespaces, then run:</p><pre tabindex="0">pytest</pre><p>The physics tests fail on the contractor's model, and <code>oven/pinn.py</code> raises <code>NotImplementedError</code>.</p></div>
+  <div class="stage-block"><h3><span class="stage-num">2</span>Build the physics-informed model</h3><p>Fill in <code>oven/pinn.py</code> until the provided tests pass. You may use an AI assistant; tell it to work in this existing workspace, CPU only, and not to change the tests, and read what it writes: you'll defend it.</p></div>
+  <div class="stage-block"><h3><span class="stage-num">3</span>Make the physics-weight call</h3><p>Choose your λ (and any handling of the door readings). Write at least two tests in <code>tests/test_my_rules.py</code>: one for your rule, and one for the edge you think is most likely to go wrong.</p></div>
+  <div class="stage-block"><h3><span class="stage-num">4</span>Run it at two weights</h3><p>Train with your weight and with one extreme, and plot both:</p><pre tabindex="0">python -m oven.compare --lam YOUR_LAMBDA --lam 1000</pre><p>Add both plots and the printed <code>time_to(60)</code> and k to <code>RUNS.md</code>.</p></div>
+  <div class="stage-block"><h3><span class="stage-num">5</span>Write the memo</h3><p>Fill in <code>DECISIONS.md</code>, about one page: your physics weight and why, what happens when the door is opened mid-cool, your call on each of the five situations, and what your AI assistant wrote, got wrong or missed.</p></div>
+  <div class="submit-box"><h3>Submit (in Brightspace)</h3><ul>
+      <li><code>oven/pinn.py</code> and <code>tests/test_my_rules.py</code></li>
+      <li>The output of <code>pytest</code>, all tests passing (including yours)</li>
+      <li><code>RUNS.md</code>: your chosen weight and one extreme weight, each with its plot</li>
+      <li><code>DECISIONS.md</code>: your physics weight and why, what happens when the door is opened mid-cool, and where the model shouldn't be trusted</li>
+    </ul></div>
+</section>
+
+<section class="module card" id="grading">
+  <div class="module-head"><div class="module-icon">📊</div><div><h2>How it's graded</h2></div></div>
+<p>Each criterion is graded on one part of your submission, at one of three levels.</p>
+<div class="table-wrap" tabindex="0"><table class="mini rubric"><tr><th>Criterion</th><th>Weight</th><th>Graded on</th><th>Full</th><th>Partial</th><th>Missing</th></tr><tr><td><strong>Application</strong></td><td class="wt">10%</td><td><code>RUNS.md</code></td><td>Your model runs on the bakery's readings, both plots are there, and you say what the extreme weight did to the time to 60 °C.</td><td>It runs, but one run is unexplained.</td><td>It restates the HOS 2 wall PINN, or doesn't run.</td></tr><tr><td><strong>Analysis</strong></td><td class="wt">20%</td><td><code>DECISIONS.md</code>, section 2 (five situations)</td><td>For each situation you name which assumption of the model breaks, or why none does.</td><td>A verdict for each, with generic reasons.</td><td>No breakdown.</td></tr><tr><td><strong>Evaluation</strong></td><td class="wt">30%</td><td><code>DECISIONS.md</code>, section 1 (physics weight)</td><td>A clear choice, judged against stated criteria (dough lost vs. waiting longer), with an alternative you rejected and why.</td><td>A choice with a reason, but no criteria or no rejected alternative.</td><td>No choice, or no justification.</td></tr><tr><td><strong>Design</strong></td><td class="wt">40%</td><td><code>oven/pinn.py</code>, your tests and the <code>pytest</code> output</td><td>All provided tests pass, and your own tests check your rule, including an edge case.</td><td>Most provided tests pass, or your tests cover only the easy case.</td><td>It doesn't run, or you wrote no tests of your own.</td></tr></table></div>
+<p class="small muted">How this differs from HOS 2's Understand &amp; Refine: there you extended code you already understood, by hand, with no AI. Here the business, the code and the decisions are new, AI help is allowed, and half the grade (Analysis and Evaluation) is for the calls you make, not the typing.</p>
+</section>
+
+<section class="module card" id="snags">
+  <div class="module-head"><div class="module-icon">🧯</div><div><h2>Common snags</h2></div></div>
+<div class="snag-box"><ul><li><strong>The learned k goes negative or explodes</strong> — learn <code>log_k</code> and use <code>k = log_k.exp()</code>, and start it from a sensible guess (the starter's <code>K_GUESS</code>).</li><li><strong>Training is unstable</strong> — scale time to [0, 1] over 180 minutes and temperature to roughly [0, 1], and rescale k with time.</li><li><strong><code>test_never_below_room</code> fails late in the curve</strong> — your collocation points stop at minute 20. Sample them over the whole 0–180 minutes.</li><li><strong>The assistant changed a test to make it pass</strong> — undo it with <code>git checkout tests/</code>. The provided tests are the spec.</li></ul></div>
+</section>
+
+<div class="guide-nav"><a href="hos-guide.html">← HOS 2 guide</a><a href="index.html">Module 2 lesson →</a></div>
+</main>
+<footer class="foot">AI 440: Digital Twins and Physical AI · City University of Seattle, School of Technology &amp; Computing<br>Course design &amp; materials: Clark Ngo · Simulators are illustrative HTML models — no real sensors, models, simulators or network calls.<br>© 2026 Clark Ngo · Free to reuse and adapt under <a href="https://creativecommons.org/licenses/by/4.0/" rel="license">CC BY 4.0</a>, except where noted · <a href="https://github.com/clarkngo/ai440/blob/main/LICENSE.md">How to credit</a></footer>
+<script src="../assets/course.js"></script>
+
+</body>
+</html>

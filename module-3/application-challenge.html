@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="AI 440 Application Challenge 3: A recycling line that misreads dirty items. Spec, steps, open decision and rubric.">
-<title>AI 440 — Application Challenge 3: A recycling line that misreads dirty items</title>
+<meta name="description" content="AI 440 Part B challenge 3: A recycling line that misreads dirty items. Spec, steps, open decision and rubric.">
+<title>AI 440 — AIC 3 Part B Challenge: A recycling line that misreads dirty items</title>
 <link rel="stylesheet" href="../assets/course.css">
 <style>
 .rules-box { background:var(--surface2); border-left:3px solid var(--border); padding:8px 14px; margin:0 0 18px; font-size:0.85rem; border-radius:0 4px 4px 0; color:var(--muted); }
@@ -40,10 +40,10 @@ table.rubric td:nth-child(n+4) { width:22%; }
 </header>
 <section class="hero">
   <div class="hero-inner">
-    <div class="eyebrow">AI 440 · Module 3 · Application Challenge 3</div>
-    <h1>Application Challenge 3: A recycling line that misreads dirty items</h1>
+    <div class="eyebrow">AI 440 · Module 3 · AIC 3 Part B: Apply</div>
+    <h1>AIC 3 Part B Challenge: A recycling line that misreads dirty items</h1>
     <p class="lede">A recycling line's classifier was trained on clean synthetic images and fails on dirty, crushed items under flickering light. Generate a better synthetic training set within a fixed render budget, decide what to randomize and how widely, and explain what synthetic images still can't teach it.</p>
-    <div class="chips"><span class="chip">60–90 min</span><span class="chip">CO4</span><span class="chip">Module 3 · Week 6</span><span class="chip">5% of final grade</span><span class="chip">AI assistant allowed — disclose it</span></div>
+    <div class="chips"><span class="chip">60–90 min</span><span class="chip">CO4</span><span class="chip">Module 3 · Week 6</span><span class="chip">4% of final grade</span><span class="chip">AI assistant allowed — disclose it</span></div>
   </div>
 </section>
 <main id="main">
@@ -52,7 +52,7 @@ table.rubric td:nth-child(n+4) { width:22%; }
 </nav>
 <section class="module card" id="rules">
   <div class="module-head"><div class="module-icon">📏</div><div><h2>Ground rules</h2></div></div>
-<div class="rules-box">Everything here runs in GitHub Codespaces on CPU, on free tools, with no credit card and no API key. You may use an AI assistant for any part; say what it did in <code>DECISIONS.md</code>. See the <a href="../start-here/ai-use.html">AI Use Guide</a>.</div><p class="small"><b>Starter code:</b> <span class="tag amber">Planned</span> The AC 3 starter repository and its GitHub Classroom invite are being built and tested; the invite link goes here when they are published.</p>
+<div class="rules-box">Everything here runs in GitHub Codespaces on CPU, on free tools, with no credit card and no API key. You may use an AI assistant for any part; say what it did in <code>DECISIONS.md</code>. See the <a href="../start-here/ai-use.html">AI Use Guide</a>.</div><p class="small"><b>Starter code:</b> it goes in the <code>challenge/</code> folder of your AIC 3 repo, so there's no separate invite.</p>
 </section>
 
 <section class="module card" id="scenario">
@@ -76,14 +76,14 @@ table.rubric td:nth-child(n+4) { width:22%; }
 
 <section class="module card" id="steps">
   <div class="module-head"><div class="module-icon">🪜</div><div><h2>Steps &amp; what to submit</h2></div></div>
-<div class="stage-block"><h3><span class="stage-num">1</span>Open it and run the tests</h3><p>Open your own AC 3 repo in GitHub Codespaces, then run:</p><pre tabindex="0">pytest</pre><p>The accuracy tests fail with the vendor's clean images, and <code>generate()</code> raises <code>NotImplementedError</code>.</p></div>
+<div class="stage-block"><h3><span class="stage-num">1</span>Open it and run the tests</h3><p>Open your AIC 3 repo in the same Codespace you used for the build, and move into its <code>challenge/</code> folder (<code>cd challenge</code>), then run:</p><pre tabindex="0">pytest</pre><p>The accuracy tests fail with the vendor's clean images, and <code>generate()</code> raises <code>NotImplementedError</code>.</p></div>
   <div class="stage-block"><h3><span class="stage-num">2</span>Generate a better set</h3><p>Fill in <code>recycle/generate.py</code>, train with <code>python -m recycle.train</code> (about a minute on CPU) and iterate until the provided tests pass. You may use an AI assistant; tell it to work in this existing workspace and not to change the tests or the classifier, and read what it writes.</p></div>
   <div class="stage-block"><h3><span class="stage-num">3</span>Make the randomization call</h3><p>Settle your settings. Write at least two tests in <code>tests/test_my_rules.py</code>: one showing a choice of yours matters (accuracy with and without it), and one for the edge you think is most likely to go wrong.</p></div>
   <div class="stage-block"><h3><span class="stage-num">4</span>Run it at two settings</h3><p>Train with your settings and with one deliberately too-wide setting, and record both:</p><pre tabindex="0">python -m recycle.compare --settings mine.json --settings too_wide.json</pre><p>Add the accuracy per class for each to <code>RUNS.md</code>.</p></div>
   <div class="stage-block"><h3><span class="stage-num">5</span>Write the memo</h3><p>Fill in <code>DECISIONS.md</code>, about one page: what you randomized and why, what the budget made you give up, your call on each of the four cases, and what your AI assistant wrote, got wrong or missed.</p></div>
-  <div class="submit-box"><h3>Submit (in Brightspace)</h3><ul>
+  <div class="submit-box"><h3>What goes in <code>challenge/</code> (pushed with your AIC 3 repo)</h3><ul>
       <li><code>recycle/generate.py</code> and <code>tests/test_my_rules.py</code></li>
-      <li>The output of <code>pytest</code>, all tests passing (including yours)</li>
+      <li>The output of <code>pytest</code>, saved as <code>challenge/pytest-output.txt</code>, all tests passing (including yours)</li>
       <li><code>RUNS.md</code>: your randomization settings and one too-wide setting, each with its test accuracy</li>
       <li><code>DECISIONS.md</code>: what you randomized and why, what the 3,000-image budget made you give up, and what synthetic images can't teach this classifier</li>
     </ul></div>
@@ -91,9 +91,10 @@ table.rubric td:nth-child(n+4) { width:22%; }
 
 <section class="module card" id="grading">
   <div class="module-head"><div class="module-icon">📊</div><div><h2>How it's graded</h2></div></div>
-<p>Each criterion is graded on one part of your submission, at one of three levels.</p>
-<div class="table-wrap" tabindex="0"><table class="mini rubric"><tr><th>Criterion</th><th>Weight</th><th>Graded on</th><th>Full</th><th>Partial</th><th>Missing</th></tr><tr><td><strong>Application</strong></td><td class="wt">10%</td><td><code>RUNS.md</code></td><td>Both runs are there, per class, and you say what the too-wide setting cost.</td><td>Both runs, but one result is unexplained.</td><td>It restates the HOS 3 pushing policy, or doesn't run.</td></tr><tr><td><strong>Analysis</strong></td><td class="wt">20%</td><td><code>DECISIONS.md</code>, section 2 (four cases)</td><td>For each case you say what the renderer can and can't represent, and what would cover the rest.</td><td>A verdict for each, with generic reasons.</td><td>No breakdown.</td></tr><tr><td><strong>Evaluation</strong></td><td class="wt">30%</td><td><code>DECISIONS.md</code>, section 1 (randomization)</td><td>Clear settings, judged against stated criteria (a can in the bale vs. lost accuracy elsewhere), with an alternative you rejected and why.</td><td>Settings with reasons, but no criteria or no rejected alternative.</td><td>No settings, or no justification.</td></tr><tr><td><strong>Design</strong></td><td class="wt">40%</td><td><code>recycle/generate.py</code>, your tests and the <code>pytest</code> output</td><td>All provided tests pass, and your own tests show a choice matters, including an edge case.</td><td>Most provided tests pass, or your tests cover only the easy case.</td><td>It doesn't run, or you wrote no tests of your own.</td></tr></table></div>
-<p class="small muted">How this differs from HOS 3's Understand &amp; Refine: there you extended code you already understood, by hand, with no AI. Here the business, the code and the decisions are new, AI help is allowed, and half the grade (Analysis and Evaluation) is for the calls you make, not the typing.</p>
+<p>The challenge is the <b>Challenge half of the AIC 3 grade: 40 of its 100 points</b>, graded with the build at the end of Week 6. It has four criteria, weighted as in the syllabus: Application 4, Analysis 8, Evaluation 12 and Design 16. Each is graded on part of what you push.</p>
+        <p>When the challenge is done, finish AIC 3 with the <a href="index.html#postmortem"><b>Post Mortem</b></a>: three short answers in <code>NOTES.md</code>, written without AI and graded under the build's Understand criterion. Your instructor answers the most common "still unclear" points at the start of the next module.</p>
+<div class="table-wrap" tabindex="0"><table class="mini rubric"><tr><th>Criterion</th><th>Weight</th><th>Graded on</th><th>Full</th><th>Partial</th><th>Missing</th></tr><tr><td><strong>Application</strong></td><td class="wt">4 pts</td><td><code>RUNS.md</code></td><td>Both runs are there, per class, and you say what the too-wide setting cost.</td><td>Both runs, but one result is unexplained.</td><td>It restates the AIC 3 pushing policy, or doesn't run.</td></tr><tr><td><strong>Analysis</strong></td><td class="wt">8 pts</td><td><code>DECISIONS.md</code>, section 2 (four cases)</td><td>For each case you say what the renderer can and can't represent, and what would cover the rest.</td><td>A verdict for each, with generic reasons.</td><td>No breakdown.</td></tr><tr><td><strong>Evaluation</strong></td><td class="wt">12 pts</td><td><code>DECISIONS.md</code>, section 1 (randomization)</td><td>Clear settings, judged against stated criteria (a can in the bale vs. lost accuracy elsewhere), with an alternative you rejected and why.</td><td>Settings with reasons, but no criteria or no rejected alternative.</td><td>No settings, or no justification.</td></tr><tr><td><strong>Design</strong></td><td class="wt">16 pts</td><td><code>recycle/generate.py</code>, your tests and the <code>pytest</code> output</td><td>All provided tests pass, and your own tests show a choice matters, including an edge case.</td><td>Most provided tests pass, or your tests cover only the easy case.</td><td>It doesn't run, or you wrote no tests of your own.</td></tr></table></div>
+<p class="small muted">How this differs from AIC 3's Understand &amp; Refine: there you extended code you already understood, by hand, with no AI. Here the business, the code and the decisions are new, AI help is allowed, and half the challenge grade (Analysis and Evaluation, 20 of the 40 points) is for the calls you make, not the typing.</p>
 </section>
 
 <section class="module card" id="snags">
@@ -101,7 +102,7 @@ table.rubric td:nth-child(n+4) { width:22%; }
 <div class="snag-box"><ul><li><strong>Accuracy jumps between runs</strong> — something isn't seeded. Pass one <code>numpy.random.Generator</code> through <code>generate()</code> into every render call.</li><li><strong>One class collapses below 75%</strong> — check the class balance in <code>data/settings.csv</code>, and whether one property (crushing, for cans) is randomized so widely that cans stop looking like cans.</li><li><strong>Rendering takes minutes, not seconds</strong> — motion blur and occlusion are the slow properties. Render at the starter's 64 × 64; don't raise the resolution.</li><li><strong>The assistant changed a test to make it pass</strong> — undo it with <code>git checkout tests/</code>. The provided tests are the spec.</li></ul></div>
 </section>
 
-<div class="guide-nav"><a href="hos-guide.html">← HOS 3 guide</a><a href="index.html">Module 3 lesson →</a></div>
+<div class="guide-nav"><a href="hos-guide.html">← AIC 3 build guide</a><a href="index.html">Module 3 lesson →</a></div>
 </main>
 <footer class="foot">AI 440: Digital Twins and Physical AI · City University of Seattle, School of Technology &amp; Computing<br>Course design &amp; materials: Clark Ngo · Simulators are illustrative HTML models — no real sensors, models, simulators or network calls.<br>© 2026 Clark Ngo · Free to reuse and adapt under <a href="https://creativecommons.org/licenses/by/4.0/" rel="license">CC BY 4.0</a>, except where noted · <a href="https://github.com/clarkngo/ai440/blob/main/LICENSE.md">How to credit</a></footer>
 <script src="../assets/course.js"></script>
