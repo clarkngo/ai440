@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="AI 440 Wall Heat PINN Simulator: an interactive browser model that pairs with HOS 2, with a guided tour.">
+<meta name="description" content="AI 440 Wall Heat PINN Simulator: an interactive browser model that pairs with AIC 2, with a guided tour.">
 <title>AI 440 — Wall Heat PINN Simulator</title>
 <link rel="stylesheet" href="../assets/course.css">
 <style>
@@ -86,7 +86,7 @@
 </header>
 <section class="hero">
   <div class="hero-inner">
-    <div class="eyebrow">Simulator 2 · Pairs with HOS 2 (Weeks 3–4)</div>
+    <div class="eyebrow">Simulator 2 · Pairs with AIC 2 (Weeks 3–4)</div>
     <h1>Wall Heat PINN Simulator</h1>
     <p class="lede">Predict the temperature through a building wall during a cold snap from three buried sensors. Compare a data-only model with a physics-informed one between the sensors and nine hours past the data, then give the physics the wrong diffusivity.</p>
     <div class="chips"><span class="chip">CO2</span><span class="chip">Heat equation</span><span class="chip">Physics weight λ</span><span class="chip">Extrapolation</span><span class="chip">Wrong physics</span></div>
@@ -132,7 +132,7 @@
   </div>
 </div>
 <div class="card"><h2>What this teaches</h2><ul><li><b>Error at the sensors says little.</b> Compare models between the sensors and past the data, where the twin is used.</li><li><b>Physics rules out the impossible:</b> nothing in the wall can be colder than the outside surface.</li><li><b>λ is a balance.</b> At 0 you have a data-only network; very high, the physics wins even when it's wrong.</li><li><b>Wrong physics is confidently wrong.</b> Learning the uncertain parameter from the data is often the fix.</li></ul>
-<p class="small muted">This is a simplified browser model for building intuition, not the real build: the "PINN" is a physics-shaped fit rather than a trained network, and the wall is idealized (one material, no moisture). Your HOS 2 build in Codespaces is the real thing. Back to the <a href="index.html">Module 2 lesson</a> · <a href="hos-guide.html">HOS 2 guide</a>.</p></div>
+<p class="small muted">This is a simplified browser model for building intuition, not the real build: the "PINN" is a physics-shaped fit rather than a trained network, and the wall is idealized (one material, no moisture). Your AIC 2 build in Codespaces is the real thing. Back to the <a href="index.html">Module 2 lesson</a> · <a href="hos-guide.html">AIC 2 build guide</a>.</p></div>
 <div class="project-tip"><b class="h">For your Term Project</b>Name the law that governs your system and mark each parameter you only know from a spec sheet. Then ask where your sensors leave gaps, and whether a decision depends on them: that's where a physics-informed model earns its place.</div>
 </main>
 <footer class="foot">AI 440: Digital Twins and Physical AI · City University of Seattle, School of Technology &amp; Computing<br>Course design &amp; materials: Clark Ngo · Simulators are illustrative HTML models — no real sensors, models, simulators or network calls.<br>© 2026 Clark Ngo · Free to reuse and adapt under <a href="https://creativecommons.org/licenses/by/4.0/" rel="license">CC BY 4.0</a>, except where noted · <a href="https://github.com/clarkngo/ai440/blob/main/LICENSE.md">How to credit</a></footer>
@@ -236,7 +236,7 @@ draw();
   'do':'Press <b>Set this up for me</b>. It sets the physics weight to 0.',
   watch:'The solid line.',
   expect:'It falls onto the dashed line: with no physics term, a PINN is just a data-only network.',
-  why:'λ is the balance in your HOS 2 loss. Lecture Part 2 asks what each extreme does.',
+  why:'λ is the balance in your AIC 2 loss. Lecture Part 2 asks what each extreme does.',
   setup:function(h){ h.set('hours',3); h.set('noise',1); h.set('lam',0); h.set('alpha',5); h.set('learn',false); h.set('time',9); }},
  {title:'4 · Wrong physics, heavily weighted',
   'do':'Press <b>Set this up for me</b>. The model assumes a diffusivity 50% too high, with λ = 1000. Then tick <b>Learn α from the readings</b>.',

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="AI 440 Starter Code Walkthrough: the planned layout of each HOS starter repository, what every file does, and how to run it in GitHub Codespaces.">
+<meta name="description" content="AI 440 Starter Code Walkthrough: the planned layout of each AIC starter repository, what every file does, and how to run it in GitHub Codespaces.">
 <title>AI 440 — Starter Code Walkthrough</title>
 <link rel="stylesheet" href="../assets/course.css">
 <style>
@@ -60,32 +60,32 @@
 </header>
 <section class="hero">
   <div class="hero-inner">
-    <div class="eyebrow">AI 440 · Reference · Read as you start each HOS</div>
+    <div class="eyebrow">AI 440 · Reference · Read as you start each AIC</div>
     <h1>Starter Code Walkthrough</h1>
-    <p class="lede">What every file in each HOS's starter code does, and how data moves through it. Read the section for the HOS you're starting, not the ones after it.</p>
+    <p class="lede">What every file in each AIC's starter code does, and how data moves through it. Read the section for the AIC you're starting, not the ones after it.</p>
     <div class="chips"><span class="chip">Reference — read as you go, not up front</span><span class="chip">GitHub Codespaces, CPU only</span><span class="chip">Free tiers only</span></div>
   </div>
 </section>
 <main id="main">
 <nav class="secnav no-print" aria-label="Page sections">
-  <div class="secnav-inner"><a href="#overview">How to use</a><a href="#hos1">HOS 1</a><a href="#hos2">HOS 2</a><a href="#hos3">HOS 3</a><a href="#hos4">HOS 4</a><a href="#run">Run it</a><a href="#reading">Reading code</a></div>
+  <div class="secnav-inner"><a href="#overview">How to use</a><a href="#hos1">AIC 1</a><a href="#hos2">AIC 2</a><a href="#hos3">AIC 3</a><a href="#hos4">AIC 4</a><a href="#run">Run it</a><a href="#reading">Reading code</a></div>
 </nav>
 <section class="module card" id="overview">
   <div class="module-head"><div class="module-icon">🧭</div><div><h2>How to use this page</h2></div></div>
-<div class="rule-box"><strong>Course rules this page follows:</strong> everything below runs in a GitHub Codespace on its free monthly hours, on CPU, and needs no credit card. Mosquitto, Node-RED, InfluxDB, Grafana, PyTorch, DeepXDE, MuJoCo, OpenUSD, BlenderProc and SimPy are free and need no account. Only HOS 4 uses an API key, on Gemini's free tier.</div>
+<div class="rule-box"><strong>Course rules this page follows:</strong> everything below runs in a GitHub Codespace on its free monthly hours, on CPU, and needs no credit card. Mosquitto, Node-RED, InfluxDB, Grafana, PyTorch, DeepXDE, MuJoCo, OpenUSD, BlenderProc and SimPy are free and need no account. Only AIC 4 uses an API key, on Gemini's free tier.</div>
   <div class="intro-box">
     <h3>What "starter code" means in this course</h3>
-    <p>Each HOS has a starter-code template repository on GitHub. You get your own copy by accepting that HOS's GitHub Classroom invite, linked from its lesson, and that copy is also your submission. Each HOS starts from its own small project, so you don't carry bugs from one HOS to the next. Your first job in each HOS is reading working code you didn't type. This page explains that code, one HOS at a time.</p>
+    <p>Each AIC has a starter-code template repository on GitHub. You get your own copy by accepting that AIC's GitHub Classroom invite, linked from its lesson, and that copy is also your submission. Each AIC starts from its own small project, so you don't carry bugs from one AIC to the next. Your first job in each AIC is reading working code you didn't type. This page explains that code, one AIC at a time.</p>
   </div>
-  <div class="spoiler-box"><strong>Planned, and subject to change.</strong> The starter repositories are being built and tested. This page describes the layout they're being built to; if a file name differs in your repo, your repo is right. <strong>Don't read ahead</strong> either: each section can give away the previous HOS's answers.</div>
+  <div class="spoiler-box"><strong>Planned, and subject to change.</strong> The starter repositories are being built and tested. This page describes the layout they're being built to; if a file name differs in your repo, your repo is right. <strong>Don't read ahead</strong> either: each section can give away the previous AIC's answers.</div>
   <div class="table-wrap" tabindex="0"><table class="jump-table">
-    <tr><th>You're starting…</th><th>The repo hands you</th><th>Jump</th></tr><tr><td class="hos">HOS 1</td><td>Simulated sensors, the four-service stack, a twin that believes everything, and empty quality checks</td><td><a href="#hos1">Read →</a></td></tr><tr><td class="hos">HOS 2</td><td>Wall readings, a data-only baseline, a PINN missing its physics term, and a scoreboard</td><td><a href="#hos2">Read →</a></td></tr><tr><td class="hos">HOS 3</td><td>A MuJoCo cell, a CPU training script, held-out worlds, an OpenUSD scene and a renderer</td><td><a href="#hos3">Read →</a></td></tr><tr><td class="hos">HOS 4</td><td>A SimPy floor, a what-if sweep, an ADK agent and an empty safety envelope</td><td><a href="#hos4">Read →</a></td></tr>
+    <tr><th>You're starting…</th><th>The repo hands you</th><th>Jump</th></tr><tr><td class="hos">AIC 1</td><td>Simulated sensors, the four-service stack, a twin that believes everything, and empty quality checks</td><td><a href="#hos1">Read →</a></td></tr><tr><td class="hos">AIC 2</td><td>Wall readings, a data-only baseline, a PINN missing its physics term, and a scoreboard</td><td><a href="#hos2">Read →</a></td></tr><tr><td class="hos">AIC 3</td><td>A MuJoCo cell, a CPU training script, held-out worlds, an OpenUSD scene and a renderer</td><td><a href="#hos3">Read →</a></td></tr><tr><td class="hos">AIC 4</td><td>A SimPy floor, a what-if sweep, an ADK agent and an empty safety envelope</td><td><a href="#hos4">Read →</a></td></tr>
     <tr><td class="hos">Any</td><td>Running it, and how to read code you didn't write</td><td><a href="#run">Run →</a> · <a href="#reading">Read →</a></td></tr>
   </table></div>
 </section>
 
 <section class="module card" id="hos1">
-  <div class="module-head"><div class="module-icon">1️⃣</div><div><h2>Starting HOS 1: Digital Shadows, Twins &amp; Real-Time Pipelines</h2><div class="module-meta"><span class="tag amber">Planned layout</span></div></div></div>
+  <div class="module-head"><div class="module-icon">1️⃣</div><div><h2>Starting AIC 1: Digital Shadows, Twins &amp; Real-Time Pipelines</h2><div class="module-meta"><span class="tag amber">Planned layout</span></div></div></div>
 <span class="hos-tag">Sensors, a broker and an empty twin</span>
   <p>A simulated floor of sensors, the Mosquitto–Node-RED–InfluxDB–Grafana stack in one compose file, and a twin that subscribes but doesn't check anything yet. The data-quality rules and the arrow back are yours.</p>
   <details class="file-block">
@@ -94,7 +94,7 @@
 </details>
 <details class="file-block">
   <summary>docker-compose.yml <span class="role">— the data connection</span></summary>
-  <div class="file-body"><p>Four services: <b>Mosquitto</b> (the broker, on port 1883), <b>Node-RED</b> (routing, 1880), <b>InfluxDB</b> (storage, 8086) and <b>Grafana</b> (the dashboard, 3000). <code>docker compose up -d</code> starts them; Codespaces offers each port in the Ports tab. The Node-RED flow and the Grafana dashboard are already provisioned, so a fresh stack shows data in about a minute.</p><div class="watch"><strong>Watch out:</strong> stopping a service (<code>docker compose stop mosquitto</code>) is how the HOS tests a dropout. Start it again before you move on.</div></div>
+  <div class="file-body"><p>Four services: <b>Mosquitto</b> (the broker, on port 1883), <b>Node-RED</b> (routing, 1880), <b>InfluxDB</b> (storage, 8086) and <b>Grafana</b> (the dashboard, 3000). <code>docker compose up -d</code> starts them; Codespaces offers each port in the Ports tab. The Node-RED flow and the Grafana dashboard are already provisioned, so a fresh stack shows data in about a minute.</p><div class="watch"><strong>Watch out:</strong> stopping a service (<code>docker compose stop mosquitto</code>) is how the AIC tests a dropout. Start it again before you move on.</div></div>
 </details>
 <details class="file-block">
   <summary>sensors/simulate.py <span class="role">— the physical entity, simulated</span></summary>
@@ -122,15 +122,15 @@
 </details>
 <details class="file-block">
   <summary>tests/ <span class="role">— the checks that grade your rules</span></summary>
-  <div class="file-body"><p>A few tests come with the starter and pass already; the HOS asks you to add your own. <code>pytest</code> from the top folder runs them all.</p></div>
+  <div class="file-body"><p>A few tests come with the starter and pass already; the AIC asks you to add your own. <code>pytest</code> from the top folder runs them all.</p></div>
 </details>
 <details class="file-block">
   <summary>NOTES.md + screenshots/ <span class="role">— your evidence</span></summary>
-  <div class="file-body"><p>The Engagement section of the HOS: what you ran, what you saw, and what you decided, with a screenshot for each claim. It's graded from your repo, so write it as you go, not on the last night.</p></div>
+  <div class="file-body"><p>The Create section of the AIC: what you ran, what you saw, and what you decided, with a screenshot for each claim. It's graded from your repo, so write it as you go, not on the last night.</p></div>
 </details>
 </section>
 <section class="module card" id="hos2">
-  <div class="module-head"><div class="module-icon">2️⃣</div><div><h2>Starting HOS 2: Physics-Informed Neural Networks</h2><div class="module-meta"><span class="tag amber">Planned layout</span></div></div></div>
+  <div class="module-head"><div class="module-icon">2️⃣</div><div><h2>Starting AIC 2: Physics-Informed Neural Networks</h2><div class="module-meta"><span class="tag amber">Planned layout</span></div></div></div>
 <span class="hos-tag">Wall data and a data-only baseline</span>
   <p>Readings from three sensors in a wall during a cold snap, a finished data-only model to beat, and a PINN with its physics term still to write.</p>
   <details class="file-block">
@@ -143,7 +143,7 @@
 </details>
 <details class="file-block">
   <summary>models/data_only.py <span class="role">— the baseline</span></summary>
-  <div class="file-body"><p>A small network fit to the readings alone. It looks good at the sensors; the HOS has you check it between them and past the data.</p></div>
+  <div class="file-body"><p>A small network fit to the readings alone. It looks good at the sensors; the AIC has you check it between them and past the data.</p></div>
 </details>
 <details class="file-block">
   <summary>models/pinn_torch.py <span class="role">— yours (Create): the physics term</span></summary>
@@ -159,15 +159,15 @@
 </details>
 <details class="file-block">
   <summary>tests/ <span class="role">— the checks that grade your rules</span></summary>
-  <div class="file-body"><p>A few tests come with the starter and pass already; the HOS asks you to add your own. <code>pytest</code> from the top folder runs them all.</p></div>
+  <div class="file-body"><p>A few tests come with the starter and pass already; the AIC asks you to add your own. <code>pytest</code> from the top folder runs them all.</p></div>
 </details>
 <details class="file-block">
   <summary>NOTES.md + screenshots/ <span class="role">— your evidence</span></summary>
-  <div class="file-body"><p>The Engagement section of the HOS: what you ran, what you saw, and what you decided, with a screenshot for each claim. It's graded from your repo, so write it as you go, not on the last night.</p></div>
+  <div class="file-body"><p>The Create section of the AIC: what you ran, what you saw, and what you decided, with a screenshot for each claim. It's graded from your repo, so write it as you go, not on the last night.</p></div>
 </details>
 </section>
 <section class="module card" id="hos3">
-  <div class="module-head"><div class="module-icon">3️⃣</div><div><h2>Starting HOS 3: Simulation, Synthetic Data &amp; Sim-to-Real</h2><div class="module-meta"><span class="tag amber">Planned layout</span></div></div></div>
+  <div class="module-head"><div class="module-icon">3️⃣</div><div><h2>Starting AIC 3: Simulation, Synthetic Data &amp; Sim-to-Real</h2><div class="module-meta"><span class="tag amber">Planned layout</span></div></div></div>
 <span class="hos-tag">A cell in MuJoCo, a scene and a renderer</span>
   <p>A small pushing task in MuJoCo with a training script that already runs on CPU, its scene in OpenUSD, and a BlenderProc script for synthetic images. Where the randomization ranges come from, and the honest evaluation, are yours.</p>
   <details class="file-block">
@@ -184,7 +184,7 @@
 </details>
 <details class="file-block">
   <summary>train.py <span class="role">— PPO on CPU</span></summary>
-  <div class="file-body"><p><code>python train.py</code> trains a Stable-Baselines3 PPO policy for a set number of steps (around ten minutes on two cores) and saves it. Keep the step count the HOS gives you so runs are comparable.</p></div>
+  <div class="file-body"><p><code>python train.py</code> trains a Stable-Baselines3 PPO policy for a set number of steps (around ten minutes on two cores) and saves it. Keep the step count the AIC gives you so runs are comparable.</p></div>
 </details>
 <details class="file-block">
   <summary>evaluate.py <span class="role">— held-out worlds</span></summary>
@@ -200,15 +200,15 @@
 </details>
 <details class="file-block">
   <summary>tests/ <span class="role">— the checks that grade your rules</span></summary>
-  <div class="file-body"><p>A few tests come with the starter and pass already; the HOS asks you to add your own. <code>pytest</code> from the top folder runs them all.</p></div>
+  <div class="file-body"><p>A few tests come with the starter and pass already; the AIC asks you to add your own. <code>pytest</code> from the top folder runs them all.</p></div>
 </details>
 <details class="file-block">
   <summary>NOTES.md + screenshots/ <span class="role">— your evidence</span></summary>
-  <div class="file-body"><p>The Engagement section of the HOS: what you ran, what you saw, and what you decided, with a screenshot for each claim. It's graded from your repo, so write it as you go, not on the last night.</p></div>
+  <div class="file-body"><p>The Create section of the AIC: what you ran, what you saw, and what you decided, with a screenshot for each claim. It's graded from your repo, so write it as you go, not on the last night.</p></div>
 </details>
 </section>
 <section class="module card" id="hos4">
-  <div class="module-head"><div class="module-icon">4️⃣</div><div><h2>Starting HOS 4: What-If Testing &amp; Safe Autonomous Decisions</h2><div class="module-meta"><span class="tag amber">Planned layout</span></div></div></div>
+  <div class="module-head"><div class="module-icon">4️⃣</div><div><h2>Starting AIC 4: What-If Testing &amp; Safe Autonomous Decisions</h2><div class="module-meta"><span class="tag amber">Planned layout</span></div></div></div>
 <span class="hos-tag">A building model, a sweep and an agent with no limits</span>
   <p>A SimPy model of one floor, a what-if sweep, and an ADK agent that can change setpoints with nothing to stop it. The envelope, and the log that proves it works, are yours.</p>
   <details class="file-block">
@@ -219,7 +219,7 @@
   <summary>.env.example <span class="role">— where your API key goes</span></summary>
   <div class="file-body"><pre tabindex="0"># Your free Gemini API key — https://aistudio.google.com/apikey
 GOOGLE_API_KEY=paste-your-key-here
-GOOGLE_GENAI_USE_VERTEXAI=FALSE</pre><p>Copy it to <code>.env</code> and put your real key there; <code>.env</code> is git-ignored. HOS 4 is the only HOS that needs a key: see the <a href="../start-here/accounts.html#gemini">Account Setup Guide</a>.</p></div>
+GOOGLE_GENAI_USE_VERTEXAI=FALSE</pre><p>Copy it to <code>.env</code> and put your real key there; <code>.env</code> is git-ignored. AIC 4 is the only AIC that needs a key: see the <a href="../start-here/accounts.html#gemini">Account Setup Guide</a>.</p></div>
 </details>
 <details class="file-block">
   <summary>twin/floor_sim.py + config.py <span class="role">— the building, in SimPy</span></summary>
@@ -243,35 +243,35 @@ GOOGLE_GENAI_USE_VERTEXAI=FALSE</pre><p>Copy it to <code>.env</code> and put you
 </details>
 <details class="file-block">
   <summary>tests/ <span class="role">— the checks that grade your rules</span></summary>
-  <div class="file-body"><p>A few tests come with the starter and pass already; the HOS asks you to add your own. <code>pytest</code> from the top folder runs them all.</p></div>
+  <div class="file-body"><p>A few tests come with the starter and pass already; the AIC asks you to add your own. <code>pytest</code> from the top folder runs them all.</p></div>
 </details>
 <details class="file-block">
   <summary>NOTES.md + screenshots/ <span class="role">— your evidence</span></summary>
-  <div class="file-body"><p>The Engagement section of the HOS: what you ran, what you saw, and what you decided, with a screenshot for each claim. It's graded from your repo, so write it as you go, not on the last night.</p></div>
+  <div class="file-body"><p>The Create section of the AIC: what you ran, what you saw, and what you decided, with a screenshot for each claim. It's graded from your repo, so write it as you go, not on the last night.</p></div>
 </details>
 </section>
 
 <section class="module card" id="run">
   <div class="module-head"><div class="module-icon">▶️</div><div><h2>Running it</h2></div></div>
-<p><b>In your Codespace:</b> accept the HOS invite, open your repo, then Code → Codespaces → Create codespace on main. The devcontainer installs everything, which takes a few minutes the first time. Then, from the repo's top folder:</p>
-<pre tabindex="0"># HOS 1: start the stack, then the sensors and the twin (separate terminals)
+<p><b>In your Codespace:</b> accept the AIC invite, open your repo, then Code → Codespaces → Create codespace on main. The devcontainer installs everything, which takes a few minutes the first time. Then, from the repo's top folder:</p>
+<pre tabindex="0"># AIC 1: start the stack, then the sensors and the twin (separate terminals)
 docker compose up -d
 python -m sensors.simulate
 python -m twin.floor
 
-# HOS 2: train and compare both models
+# AIC 2: train and compare both models
 python compare.py --model both
 
-# HOS 3: train, test on held-out worlds, render a few images
+# AIC 3: train, test on held-out worlds, render a few images
 python train.py
 python evaluate.py --worlds heldout
 blenderproc run synth/render_parts.py --n 20
 
-# HOS 4: sweep, then run the agent's developer UI
+# AIC 4: sweep, then run the agent's developer UI
 python -m whatif.sweep --combined
 adk web --allow_origins "*"
 
-# Any HOS: run the tests
+# Any AIC: run the tests
 pytest</pre>
   <p>Ports (Grafana on 3000, Node-RED on 1880, the ADK UI on 8000) open from the Ports tab; plain <code>adk web</code> shows a blank page in a Codespace, which is why the command above has <code>--allow_origins "*"</code>. The full setup, with a first run, is in <a href="../start-here/tools.html#first-run">Tools you'll use all term</a>.</p>
   <p><b>Stop your Codespace when you're done</b> (Code → Codespaces → ⋯ → Stop codespace), because free hours are limited, and a running Docker stack uses them while you're away.</p>
@@ -280,12 +280,12 @@ pytest</pre>
 <section class="module card" id="reading">
   <div class="module-head"><div class="module-icon">🔎</div><div><h2>How to read code you didn't write</h2></div></div>
 <ol class="flow-list">
-    <li><strong>Start at the entry point.</strong> That's <code>sensors/simulate.py</code>, <code>compare.py</code>, <code>train.py</code> or <code>whatif/sweep.py</code>, depending on the HOS.</li>
+    <li><strong>Start at the entry point.</strong> That's <code>sensors/simulate.py</code>, <code>compare.py</code>, <code>train.py</code> or <code>whatif/sweep.py</code>, depending on the AIC.</li>
     <li><strong>Follow one reading end to end.</strong> Pick one sensor value, one training point or one afternoon, and trace it file by file before you read anything else.</li>
     <li><strong>Run it before you change it.</strong> Watch the normal case, then a fault. Real behavior beats guessing.</li>
     <li><strong>Break it on purpose.</strong> Stop the broker, set a wrong α, widen a range to absurd values, ask the agent for 30 °C. Knowing how it fails is how you know you understand it.</li>
   </ol>
-  <p>This is the same habit the Evaluate and Analyze stages of every HOS are training.</p>
+  <p>This is the same habit the Evaluate and Analyze stages of every AIC are training.</p>
 </section>
 
 <div class="guide-nav">

@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="robots" content="noindex">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="AI 440 Sim-to-Real Lab: an interactive browser model that pairs with HOS 3, with a guided tour.">
+<title>AI 440 — Sim-to-Real Lab</title>
+<link rel="stylesheet" href="../assets/course.css">
+<style>
+.sim-layout { display:grid; grid-template-columns:minmax(260px,340px) 1fr; gap:16px; align-items:start; }
+@media (max-width:860px){ .sim-layout { grid-template-columns:minmax(0,1fr); } }
+.sim-layout > * { min-width:0; }
+.panel { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:16px 18px; box-shadow:var(--shadow); margin-bottom:16px; min-width:0; }
+.panel h2 { font-size:1.02rem; margin-bottom:10px; }
+.panel h3 { font-size:.9rem; margin:14px 0 6px; }
+.presets { display:flex; flex-wrap:wrap; gap:6px; margin:6px 0 4px; }
+.presets button { font-family:inherit; font-size:.74rem; border:1px solid var(--border); background:var(--surface2); color:var(--text); border-radius:14px; padding:4px 10px; cursor:pointer; }
+.presets button:hover { border-color:var(--accent); }
+.toggle { display:flex; gap:8px; align-items:flex-start; font-size:.85rem; margin:6px 0; cursor:pointer; }
+.toggle input { accent-color:var(--accent); margin-top:4px; }
+.toggle small { display:block; color:var(--muted); font-size:.74rem; }
+.lanes { display:grid; grid-template-columns:repeat(var(--lanes,4),1fr); gap:8px; margin-bottom:12px; }
+.lane { border:2px solid var(--border); border-radius:10px; padding:10px; text-align:center; font-size:.8rem; background:var(--surface2); transition:all .2s; min-width:0; }
+.lane b { display:block; font-size:.86rem; }
+.lane .ic { font-size:1.3rem; display:block; }
+.lane.from { border-color:var(--blue); background:var(--blue-bg); }
+.lane.to { border-color:var(--accent); background:var(--accent-light); box-shadow:0 0 0 3px var(--accent-light); }
+.lane.err { border-color:var(--bad); background:var(--bad-bg); }
+@media (max-width:520px){ .lanes { grid-template-columns:repeat(2,1fr); } }
+.stepbox { border:1px solid var(--border); border-left:5px solid var(--accent); border-radius:8px; padding:10px 14px; background:var(--surface2); margin-bottom:12px; min-height:84px; }
+.stepbox.err { border-left-color:var(--bad); } .stepbox.warn { border-left-color:var(--amber); }
+.stepbox .k { font-size:.7rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); }
+.steps-list { list-style:none; margin:0; padding:0; font-size:.8rem; }
+.steps-list li { padding:5px 8px; border-radius:6px; color:var(--muted); display:flex; gap:8px; }
+.steps-list li.cur { background:var(--accent-light); color:var(--text); font-weight:700; }
+.steps-list li.past { color:var(--text); }
+.steps-list li .n { flex:none; width:20px; text-align:right; }
+.steps-list li.bad { color:var(--bad); }
+.verdict { border-radius:8px; padding:10px 14px; font-size:.86rem; margin-top:10px; }
+.verdict.ok { background:var(--ok-bg); color:var(--ok); } .verdict.bad { background:var(--bad-bg); color:var(--bad); } .verdict.warn { background:var(--amber-bg); color:var(--amber); }
+.kv { display:grid; grid-template-columns:auto 1fr; gap:4px 12px; font-size:.82rem; }
+.kv dt { color:var(--muted); } .kv dd { margin:0; font-weight:600; }
+.bar-row { display:grid; grid-template-columns:70px 1fr 48px; gap:8px; align-items:center; font-size:.78rem; margin-bottom:4px; }
+.bar-track { height:12px; background:var(--surface2); border:1px solid var(--border); border-radius:6px; overflow:hidden; position:relative; }
+.bar-fill { height:100%; background:var(--accent); }
+.project-tip { border:1px dashed var(--accent); border-radius:var(--radius); padding:14px 18px; background:var(--accent-light); font-size:.88rem; }
+.project-tip b.h { display:block; font-size:.72rem; letter-spacing:.08em; text-transform:uppercase; color:var(--accent2); margin-bottom:4px; }
+
+.stepcard { border:1px solid var(--border); border-left:4px solid var(--accent); border-radius:8px; padding:8px 12px; margin-bottom:6px; font-size:.84rem; background:var(--surface); }
+.stepcard .k { font-size:.68rem; font-weight:800; letter-spacing:.07em; text-transform:uppercase; color:var(--muted); }
+.stepcard.tool { border-left-color:var(--blue); } .stepcard.final { border-left-color:var(--ok); } .stepcard.stop { border-left-color:var(--amber); } .stepcard.bad { border-left-color:var(--bad); background:var(--bad-bg); }
+.stepcard.pick { cursor:pointer; } .stepcard.pick:hover { box-shadow:0 0 0 2px var(--accent-light); } .stepcard.chosen { box-shadow:0 0 0 3px var(--accent); }
+.metrics { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin:10px 0; }
+@media (max-width:560px){ .metrics { grid-template-columns:repeat(2,1fr); } }
+.metric { border:1px solid var(--border); border-radius:8px; padding:8px; text-align:center; background:var(--surface2); }
+.metric b { display:block; font-size:1.2rem; } .metric span { font-size:.72rem; color:var(--muted); }
+.seg { display:inline-flex; border:1px solid var(--border); border-radius:8px; overflow:hidden; flex-wrap:wrap; }
+.seg button { font-family:inherit; font-size:.8rem; font-weight:700; padding:6px 12px; border:none; background:var(--surface2); color:var(--text); cursor:pointer; }
+.seg button[aria-pressed="true"] { background:var(--accent); color:var(--on-accent); }
+.tbl { width:100%; border-collapse:collapse; font-size:.8rem; }
+.tbl th, .tbl td { border:1px solid var(--border); padding:5px 8px; text-align:left; }
+.tbl th { background:var(--surface2); font-size:.7rem; text-transform:uppercase; color:var(--muted); }
+.ok { color:var(--ok); font-weight:700; } .no { color:var(--bad); font-weight:700; }
+
+.chart { width:100%; height:auto; display:block; }
+.chart text { font-size:11px; fill:var(--muted); }
+.legend { display:flex; flex-wrap:wrap; gap:12px; font-size:.76rem; color:var(--muted); margin:4px 0 8px; }
+.legend i { display:inline-block; width:18px; height:0; border-top:3px solid; vertical-align:middle; margin-right:4px; }
+.legend i.dash { border-top-style:dashed; }
+.hm { display:grid; gap:2px; font-size:.7rem; }
+.hm div { padding:6px 2px; text-align:center; border-radius:3px; }
+.hm .h { color:var(--muted); font-weight:700; }
+.hm-wrap { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; }
+@media (max-width:560px){ .hm-wrap { grid-template-columns:minmax(0,1fr); } }
+.v-allow { color:var(--ok); font-weight:700; } .v-block { color:var(--bad); font-weight:700; } .v-stop { color:var(--amber); font-weight:700; }
+.range-v { font-weight:700; color:var(--accent2); }
+</style>
+</head>
+<body>
+<div role="note" style="background:#fff7ed;border-bottom:2px solid #ea580c;color:#7c2d12;padding:10px 16px;font:600 15px/1.4 system-ui,sans-serif;text-align:center">Archived page: Version 1.0: HOS, Application Challenges and Muddiest Point (before the Nov 2026 revamp). Kept for reference and no longer current. <a href="../../../module-3/simulator.html" style="color:#9a3412">Open the current version</a> · <a href="../../index.html" style="color:#9a3412">All versions</a></div>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="top">
+  <div class="top-inner">
+    <a class="brand" href="../index.html"><span class="brand-icon">440</span><span><b>AI 440: Digital Twins and Physical AI</b><small>Simulators</small></span></a>
+    <div class="top-right"><a class="pill-btn" href="../index.html">Course home</a><button class="pill-btn" id="themeToggle" type="button">🌙 Dark</button></div>
+  </div>
+</header>
+<section class="hero">
+  <div class="hero-inner">
+    <div class="eyebrow">Simulator 3 · Pairs with HOS 3 (Weeks 5–6)</div>
+    <h1>Sim-to-Real Lab</h1>
+    <p class="lede">Train a pushing policy in a simulated cell with and without randomized physics, then test it on held-out worlds it never saw. Widen the ranges until it stops learning, and see what photorealism costs on two CPU cores.</p>
+    <div class="chips"><span class="chip">CO4</span><span class="chip">Sim-to-real gap</span><span class="chip">Domain randomization</span><span class="chip">Held-out worlds</span><span class="chip">Render budget</span></div>
+  </div>
+</section>
+<main id="main">
+<div class="row no-print" style="margin-bottom:16px"><span class="small muted"><b>Simulators:</b></span><a class="tag blue" href="../module-1/simulator.html" style="text-decoration:none">1 · Sensor Pipeline</a><a class="tag blue" href="../module-2/simulator.html" style="text-decoration:none">2 · Wall Heat PINN</a><span class="tag">3 · Sim-to-Real Lab</span><a class="tag blue" href="../module-4/simulator.html" style="text-decoration:none">4 · What-If &amp; Safety Envelope</a></div>
+<section class="card tour" id="tour" aria-label="Guided tour"><p class="small muted" style="margin:0">Guided tour loading…</p></section>
+<div class="sim-layout">
+  <div>
+    <div class="panel">
+      <h2>1 · Train a pushing policy</h2>
+      <svg class="chart" viewBox="0 0 300 110" role="img" aria-label="The simulated cell: a two-link arm on the left pushes a carton across a table toward a target square on the right.">
+        <rect x="0" y="80" width="300" height="10" style="fill:var(--surface2);stroke:var(--border)"/>
+        <circle cx="30" cy="70" r="9" style="fill:var(--accent)"/><line x1="30" y1="70" x2="80" y2="40" style="stroke:var(--accent);stroke-width:7;stroke-linecap:round"/><line x1="80" y1="40" x2="128" y2="66" style="stroke:var(--accent2);stroke-width:6;stroke-linecap:round"/>
+        <rect x="132" y="58" width="22" height="22" style="fill:var(--amber-bg);stroke:var(--amber);stroke-width:2"/>
+        <rect x="236" y="58" width="26" height="22" style="fill:none;stroke:var(--ok);stroke-width:2;stroke-dasharray:4 3"/>
+        <text x="143" y="52" text-anchor="middle" style="font-size:10px;fill:var(--muted)">carton</text><text x="249" y="52" text-anchor="middle" style="font-size:10px;fill:var(--muted)">target</text>
+      </svg>
+      <label class="field" for="fr">Friction range (× the spec value)</label>
+      <select id="fr"><option value="0">Fixed at 1.0</option><option value="1">Narrow: 0.8 – 1.2</option><option value="2">Medium: 0.6 – 1.6</option><option value="3">Wide: 0.4 – 2.2</option><option value="4">Too wide: 0.1 – 3.0</option></select>
+      <label class="toggle"><input type="checkbox" id="mass"><span>Randomize mass<small>0.6 – 1.8 × the spec carton.</small></span></label>
+      <label class="toggle"><input type="checkbox" id="motor"><span>Randomize motor strength<small>0.7 – 1.4 ×. The Week 6 Understand &amp; Refine build.</small></span></label>
+      <label class="field" for="worlds">Test worlds</label>
+      <select id="worlds"><option value="heldout">Held-out (6 worlds)</option><option value="plus">Held-out plus (9 worlds, motor strength varies too)</option></select>
+      <div class="row" style="margin-top:10px"><button class="btn" id="train" type="button">Train</button></div>
+    </div>
+    <div class="panel">
+      <h2>Render budget (synthetic images)</h2>
+      <label class="field" for="res">Resolution</label>
+      <select id="res"><option value="64">64 × 64</option><option value="128">128 × 128</option><option value="256" selected>256 × 256</option><option value="512">512 × 512</option></select>
+      <label class="field" for="spp">Render samples per pixel</label>
+      <select id="spp"><option value="8">8 (noisy)</option><option value="16" selected>16</option><option value="64">64</option><option value="256">256 (clean)</option></select>
+      <label class="field" for="nimg">Images: <span class="range-v" id="nimgV"></span></label>
+      <input type="range" id="nimg" min="50" max="2000" value="200" step="50">
+      <label class="toggle"><input type="checkbox" id="rlight" checked><span>Randomize lighting and textures</span></label>
+      <div id="render"></div>
+    </div>
+  </div>
+  <div>
+    <div class="panel">
+      <h2>2 · Training</h2>
+      <div class="metrics"><div class="metric"><b id="mTime">—</b><span>training, 2 cores</span></div><div class="metric"><b id="mHome">—</b><span>success at home</span></div><div class="metric"><b id="mWorst">—</b><span>worst test world</span></div><div class="metric"><b id="mAvg">—</b><span>average, test worlds</span></div></div>
+      <div class="legend"><span><i style="border-color:var(--muted)"></i>fixed-world policy</span><span><i style="border-color:var(--accent)"></i>your policy</span></div>
+      <div id="curve"><p class="small muted">Choose the ranges and press <b>Train</b>.</p></div>
+    </div>
+    <div class="panel">
+      <h2>3 · Test worlds: success over 50 episodes</h2>
+      <div id="bars"><p class="small muted">Train a policy first.</p></div>
+      <div id="verdict"></div>
+    </div>
+  </div>
+</div>
+<div class="card"><h2>What this teaches</h2><ul><li><b>Success at home isn't success.</b> A fixed-world policy learns the simulator; held-out worlds show the gap.</li><li><b>Randomization trades a little for a lot:</b> a few points at home for robustness everywhere else.</li><li><b>Too wide is worse than none.</b> If no single behavior works across the range, nothing is learned.</li><li><b>Realism is a budget.</b> Varied images usually beat beautiful ones, and cost far less CPU time.</li></ul>
+<p class="small muted">This is a simplified browser model for building intuition, not the real build: no physics engine or policy runs; the success rates come from a simple model of how training ranges cover test worlds, and render times are estimates for two CPU cores. Your HOS 3 build in Codespaces is the real thing. Back to the <a href="index.html">Module 3 lesson</a> · <a href="hos-guide.html">HOS 3 guide</a>.</p></div>
+<div class="project-tip"><b class="h">For your Term Project</b>List what your real system varies (materials, loads, lighting, sensor noise) and what you can measure. Randomize what varies, measure what you can, and keep a few test worlds back that your model never trains on.</div>
+</main>
+<footer class="foot">AI 440: Digital Twins and Physical AI · City University of Seattle, School of Technology &amp; Computing<br>Course design &amp; materials: Clark Ngo · Simulators are illustrative HTML models — no real sensors, models, simulators or network calls.<br>© 2026 Clark Ngo · Free to reuse and adapt under <a href="https://creativecommons.org/licenses/by/4.0/" rel="license">CC BY 4.0</a>, except where noted · <a href="https://github.com/clarkngo/ai440/blob/main/LICENSE.md">How to credit</a></footer>
+<script src="../assets/course.js"></script>
+<script>
+var $=function(i){return document.getElementById(i);};
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');}
+/* line chart: series=[{pts:[[x,y]...], color, dash, w, dots}], opts {x0,x1,y0,y1,label,xt,yt,shade:[a,b],hline:[{y,color,label}],vline} */
+function chart(series,o){
+  var W=600,H=230,L=42,R=10,T=10,B=28;
+  function X(x){return L+(x-o.x0)/(o.x1-o.x0)*(W-L-R);} function Y(y){return T+(o.y1-y)/(o.y1-o.y0)*(H-T-B);}
+  var s='<svg class="chart" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="'+esc(o.label)+'">';
+  if(o.shade) s+='<rect x="'+X(o.shade[0])+'" y="'+T+'" width="'+(X(o.shade[1])-X(o.shade[0]))+'" height="'+(H-T-B)+'" style="fill:var(--accent-light)"/>';
+  (o.yt||[]).forEach(function(v){ s+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+Y(v)+'" y2="'+Y(v)+'" style="stroke:var(--border)"/><text x="'+(L-6)+'" y="'+(Y(v)+4)+'" text-anchor="end">'+v+'</text>'; });
+  (o.xt||[]).forEach(function(v){ s+='<text x="'+X(v[0])+'" y="'+(H-8)+'" text-anchor="middle">'+v[1]+'</text>'; });
+  (o.hline||[]).forEach(function(h){ s+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+Y(h.y)+'" y2="'+Y(h.y)+'" style="stroke:'+h.color+';stroke-dasharray:2 4"/>'+(h.label?'<text x="'+(W-R-4)+'" y="'+(Y(h.y)-4)+'" text-anchor="end">'+h.label+'</text>':''); });
+  if(o.vline!=null) s+='<line x1="'+X(o.vline)+'" x2="'+X(o.vline)+'" y1="'+T+'" y2="'+(H-B)+'" style="stroke:var(--muted);stroke-dasharray:3 3"/>';
+  series.forEach(function(se){
+    if(se.dots){ se.pts.forEach(function(p){ if(p[1]!=null) s+='<circle cx="'+X(p[0]).toFixed(1)+'" cy="'+Y(Math.max(o.y0,Math.min(o.y1,p[1]))).toFixed(1)+'" r="2.6" style="fill:'+se.color+'"/>'; }); return; }
+    var d='',pen=false;
+    se.pts.forEach(function(p){ if(p[1]==null){pen=false;return;} var y=Math.max(o.y0-50,Math.min(o.y1+50,p[1])); d+=(pen?'L':'M')+X(p[0]).toFixed(1)+' '+Y(y).toFixed(1); pen=true; });
+    s+='<path d="'+d+'" style="fill:none;stroke:'+se.color+';stroke-width:'+(se.w||2.4)+(se.dash?';stroke-dasharray:6 4':'')+'"/>';
+  });
+  s+='<rect x="'+L+'" y="'+T+'" width="'+(W-L-R)+'" height="'+(H-T-B)+'" style="fill:none;stroke:var(--border)"/>';
+  return s+'</svg>';
+}
+function seg(id,cb){ var g=$(id); [].slice.call(g.querySelectorAll('button')).forEach(function(b){ b.addEventListener('click',function(){ [].slice.call(g.querySelectorAll('button')).forEach(function(x){x.setAttribute('aria-pressed',x===b?'true':'false');}); cb(b.dataset.v); }); }); }
+function rng(seed){ return function(){ seed=(seed*16807)%2147483647; return (seed-1)/2147483646; }; }
+
+var FR=[[1,1],[0.8,1.2],[0.6,1.6],[0.4,2.2],[0.1,3.0]];
+var WORLDS=[['Home: the spec carton',1,1,1],['Damp carton',1.3,1,1],['Slippery carton',0.7,1,1],['Heavy carton',1,1.8,1],['Damp and heavy',1.5,1.6,1],['Very sticky',1.9,1,1],['Weak motor',1,1,0.72],['Strong motor',1,1,1.35],['Damp, weak motor',1.3,1,0.8]];
+var trained=null;
+function cfg(){ return {fr:FR[+$('fr').value], mass:$('mass').checked?[0.6,1.8]:[1,1], motor:$('motor').checked?[0.7,1.4]:[1,1]}; }
+function width(r){ return Math.log(r[1]/r[0]); }
+function cover(r,v){ var lv=Math.log(v), d=Math.max(0,Math.log(r[0])-lv,lv-Math.log(r[1])); return Math.exp(-Math.pow(d/0.22,2)); }
+function policy(c){
+  var w=width(c.fr)+0.6*width(c.mass)+0.6*width(c.motor), learns=width(c.fr)<3;
+  var base=learns?0.985-0.045*w:0.18;
+  return {c:c,learns:learns,base:base,succ:function(f,m,g){ var s=base*cover(c.fr,f)*cover(c.mass,m)*cover(c.motor,g); return Math.max(0.04,s); }};
+}
+var FIXED=policy({fr:[1,1],mass:[1,1],motor:[1,1]});
+function pct(x){ return Math.round(x*100)+'%'; }
+function draw(){
+  var n=+$('nimg').value; $('nimgV').textContent=n;
+  var res=+$('res').value, spp=+$('spp').value, secs=0.35*Math.pow(res/256,2)*(spp/16), tot=secs*n, first=180;
+  var acc=Math.min(0.95,0.55+0.12*Math.log10(n/50+1)*($('rlight').checked?1.6:0.9)+0.03*Math.log2(res/64)-(spp<16?0.02:0));
+  var hrs=(tot+first)/3600;
+  $('render').innerHTML='<dl class="kv" style="margin-top:10px"><dt>Per image</dt><dd>'+(secs<1?secs.toFixed(2):secs.toFixed(1))+' s</dd><dt>All images</dt><dd>'+(tot<3600?Math.round(tot/60)+' min':(tot/3600).toFixed(1)+' h')+' (+3 min first-run download)</dd><dt>Detector accuracy (est.)</dt><dd>'+pct(acc)+'</dd></dl><div class="verdict '+(hrs>1?'bad':hrs>0.5?'warn':'ok')+'">'+(hrs>1?'<b>Over budget.</b> Your Codespace would be rendering for '+hrs.toFixed(1)+' hours. Spend realism on what the detector needs.':'Fits an hour on two cores.'+( !$('rlight').checked?' But without randomized lighting and textures, accuracy stalls: more images of the same scene teach little.':''))+'</div>';
+  if(!trained){ return; }
+  var P=policy(trained), W=WORLDS.slice(0,$('worlds').value==='plus'?9:6);
+  var rows=W.map(function(w){ return [w[0],FIXED.succ(w[1],w[2],w[3]),P.succ(w[1],w[2],w[3])]; });
+  $('bars').innerHTML=rows.map(function(r){ return '<div class="bar-row" style="grid-template-columns:minmax(90px,140px) 1fr 44px"><span>'+r[0]+'</span><div><div class="bar-track" title="fixed"><div class="bar-fill" style="width:'+pct(r[1])+';background:var(--muted)"></div></div><div class="bar-track" style="margin-top:2px" title="yours"><div class="bar-fill" style="width:'+pct(r[2])+'"></div></div></div><span>'+pct(r[1])+'<br><b>'+pct(r[2])+'</b></span></div>'; }).join('')+'<p class="small muted">Top bar: the fixed-world policy. Bottom bar: yours.</p>';
+  var test=rows.slice(1), worst=Math.min.apply(null,test.map(function(r){return r[2];})), avg=test.reduce(function(s,r){return s+r[2];},0)/test.length;
+  $('mHome').textContent=pct(rows[0][2]); $('mWorst').textContent=pct(worst); $('mAvg').textContent=pct(avg);
+  var mins=9+2*(trained.mass[0]!==1)+2*(trained.motor[0]!==1)+(trained.fr[0]!==1?1:0);
+  $('mTime').textContent='~'+mins+' min';
+  var pts=[],ptsF=[]; for(var k=0;k<=30;k++){ var s=k/30, lr=1-Math.exp(-s*(P.learns?5:1.2)); pts.push([k*5,P.learns?P.base*lr:0.18*lr+0.02*Math.sin(k)]); ptsF.push([k*5,0.985*(1-Math.exp(-s*6))]); }
+  $('curve').innerHTML=chart([{pts:ptsF,color:'var(--muted)',w:1.6},{pts:pts,color:'var(--accent)'}],{x0:0,x1:150,y0:0,y1:1,yt:[0,0.5,1],xt:[[0,'0'],[75,'75k steps'],[150,'150k steps']],label:'Training curves: success rate over 150,000 steps for the fixed-world policy and yours.'});
+  var fixed=trained.fr[0]===1&&trained.mass[0]===1&&trained.motor[0]===1, v, c;
+  if(!P.learns){ v='<b>Too wide to learn.</b> The same push can\'t work on ice and on rubber, so the policy learns to barely move: '+pct(rows[0][2])+' even at home.'; c='bad'; }
+  else if(fixed){ v='<b>Perfect at home, fragile away.</b> '+pct(rows[0][2])+' on the world it trained in, '+pct(worst)+' on the worst held-out world. It learned the simulator, not the task.'; c=worst<0.6?'bad':'warn'; }
+  else { v='<b>More robust.</b> Worst test world '+pct(worst)+' (fixed policy: '+pct(Math.min.apply(null,test.map(function(r){return r[1];})))+'), at a cost of '+Math.round((rows[0][1]-rows[0][2])*100)+' points at home. '+(worst<0.6?'One world is still outside your ranges: which one?':''); c=worst<0.6?'warn':'ok'; }
+  $('verdict').innerHTML='<div class="verdict '+c+'">'+v+'</div>';
+}
+$('train').addEventListener('click',function(){ trained=cfg(); draw(); });
+['res','spp','nimg','rlight','worlds'].forEach(function(id){ $(id).addEventListener('input',draw); $(id).addEventListener('change',draw); });
+['fr','mass','motor'].forEach(function(id){ $(id).addEventListener('change',function(){ if(trained){ $('verdict').innerHTML='<div class="verdict warn">Settings changed. Press <b>Train</b> to retrain.</div>'; } }); });
+draw();
+</script>
+<script>window.SIM_TOUR=[
+ {title:'1 · Train in a fixed world, test on it',
+  'do':'Press <b>Set this up for me</b>. It trains with friction and mass fixed at their spec values.',
+  watch:'<b>Success at home</b>, and the home row in panel 3.',
+  expect:'Nearly every push lands on the target in the world the policy trained in.',
+  why:'This is what "it works in the simulator" means. It\'s the start of HOS 3 Evaluate, not the end.',
+  setup:function(h){ h.set('fr',0); h.set('mass',false); h.set('motor',false); h.set('worlds','heldout'); h.click('train'); }},
+ {title:'2 · The held-out worlds: the gap appears',
+  'do':'Look at the other rows in panel 3 (same policy).',
+  watch:'The damp, heavy and very sticky cartons.',
+  expect:'Success falls sharply as soon as the carton differs from the one it practiced on.',
+  why:'That drop is the sim-to-real gap, measured the way HOS 3 does without hardware: on altered worlds the policy never saw.',
+  setup:function(h){ h.set('fr',0); h.set('mass',false); h.set('motor',false); h.set('worlds','heldout'); h.click('train'); }},
+ {title:'3 · Randomize friction and mass',
+  'do':'Press <b>Set this up for me</b>. Medium friction range, randomized mass, and train again.',
+  watch:'Both bars in each row, and the home row.',
+  expect:'Much better on the held-out worlds, a few points worse at home.',
+  why:'Domain randomization trades a little home performance for robustness. Evaluate asks whether that trade is worth it.',
+  setup:function(h){ h.set('fr',2); h.set('mass',true); h.set('motor',false); h.set('worlds','heldout'); h.click('train'); }},
+ {title:'4 · Too wide: nothing learned',
+  'do':'Press <b>Set this up for me</b>. Friction from 0.1 to 3.0 ×.',
+  watch:'The training curve and the verdict.',
+  expect:'The curve never rises: the policy fails everywhere, even at home.',
+  why:'Ranges are a design choice. HOS 3 Evaluate\'s <code>--range wide</code> run shows the same thing.',
+  setup:function(h){ h.set('fr',4); h.set('mass',true); h.set('motor',false); h.set('worlds','heldout'); h.click('train'); }},
+ {title:'5 · The render budget',
+  'do':'Press <b>Set this up for me</b>. 2,000 images at 512 × 512 with 256 samples. Then bring them down until it fits.',
+  watch:'The render panel\'s time and estimated accuracy.',
+  expect:'Days of CPU rendering. Fewer, smaller, varied images cost minutes and lose little accuracy; turning randomization off costs more.',
+  why:'"Photorealistic" on two CPU cores is a budget. HOS 3 Analyze asks where realism matters for the task.',
+  setup:function(h){ h.set('res','512'); h.set('spp','256'); h.set('nimg',2000); h.set('rlight',true); }}
+];</script>
+<script src="../assets/sim-tour.js"></script>
+</body>
+</html>

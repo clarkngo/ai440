@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="AI 440 Application Challenge 1: A cold-storage warehouse's data connection. Spec, steps, open decision and rubric.">
-<title>AI 440 — Application Challenge 1: A cold-storage warehouse's data connection</title>
+<meta name="description" content="AI 440 Part B challenge 1: A cold-storage warehouse's data connection. Spec, steps, open decision and rubric.">
+<title>AI 440 — AIC 1 Part B Challenge: A cold-storage warehouse's data connection</title>
 <link rel="stylesheet" href="../assets/course.css">
 <style>
 .rules-box { background:var(--surface2); border-left:3px solid var(--border); padding:8px 14px; margin:0 0 18px; font-size:0.85rem; border-radius:0 4px 4px 0; color:var(--muted); }
@@ -40,10 +40,10 @@ table.rubric td:nth-child(n+4) { width:22%; }
 </header>
 <section class="hero">
   <div class="hero-inner">
-    <div class="eyebrow">AI 440 · Module 1 · Application Challenge 1</div>
-    <h1>Application Challenge 1: A cold-storage warehouse's data connection</h1>
+    <div class="eyebrow">AI 440 · Module 1 · AIC 1 Part B: Apply</div>
+    <h1>AIC 1 Part B Challenge: A cold-storage warehouse's data connection</h1>
     <p class="lede">Build the data connection for a warehouse's six freezers: recorded sensor streams flow into a virtual model of each freezer that flags late, missing and impossible readings. Decide when the model should stop trusting a sensor, and which requested feature would turn the warehouse's shadow into a twin.</p>
-    <div class="chips"><span class="chip">60–90 min</span><span class="chip">CO1 · CO3</span><span class="chip">Module 1 · Week 2</span><span class="chip">5% of final grade</span><span class="chip">AI assistant allowed — disclose it</span></div>
+    <div class="chips"><span class="chip">60–90 min</span><span class="chip">CO1 · CO3</span><span class="chip">Module 1 · Week 2</span><span class="chip">4% of final grade</span><span class="chip">AI assistant allowed — disclose it</span></div>
   </div>
 </section>
 <main id="main">
@@ -52,7 +52,7 @@ table.rubric td:nth-child(n+4) { width:22%; }
 </nav>
 <section class="module card" id="rules">
   <div class="module-head"><div class="module-icon">📏</div><div><h2>Ground rules</h2></div></div>
-<div class="rules-box">Everything here runs in GitHub Codespaces on CPU, on free tools, with no credit card and no API key. You may use an AI assistant for any part; say what it did in <code>DECISIONS.md</code>. See the <a href="../start-here/ai-use.html">AI Use Guide</a>.</div><p class="small"><b>Starter code:</b> <span class="tag amber">Planned</span> The AC 1 starter repository and its GitHub Classroom invite are being built and tested; the invite link goes here when they are published.</p>
+<div class="rules-box">Everything here runs in GitHub Codespaces on CPU, on free tools, with no credit card and no API key. You may use an AI assistant for any part; say what it did in <code>DECISIONS.md</code>. See the <a href="../start-here/ai-use.html">AI Use Guide</a>.</div><p class="small"><b>Starter code:</b> it goes in the <code>challenge/</code> folder of your AIC 1 repo, so there's no separate invite.</p>
 </section>
 
 <section class="module card" id="scenario">
@@ -76,14 +76,14 @@ table.rubric td:nth-child(n+4) { width:22%; }
 
 <section class="module card" id="steps">
   <div class="module-head"><div class="module-icon">🪜</div><div><h2>Steps &amp; what to submit</h2></div></div>
-<div class="stage-block"><h3><span class="stage-num">1</span>Open it and run the tests</h3><p>Open your own AC 1 repo in GitHub Codespaces, then run:</p><pre tabindex="0">pytest</pre><p>Almost everything fails with <code>NotImplementedError</code>. That's your to-do list.</p></div>
+<div class="stage-block"><h3><span class="stage-num">1</span>Open it and run the tests</h3><p>Open your AIC 1 repo in the same Codespace you used for the build, and move into its <code>challenge/</code> folder (<code>cd challenge</code>), then run:</p><pre tabindex="0">pytest</pre><p>Almost everything fails with <code>NotImplementedError</code>. That's your to-do list.</p></div>
   <div class="stage-block"><h3><span class="stage-num">2</span>Build the connection</h3><p>Fill in <code>coldstore/connection.py</code> until the provided tests pass. You may use an AI assistant; tell it to work in this existing workspace and not to change the tests, and read what it writes: you'll defend it.</p></div>
   <div class="stage-block"><h3><span class="stage-num">3</span>Make the unknown-state call</h3><p>Implement your rule. Write at least two tests in <code>tests/test_my_rules.py</code>: one showing your rule on F4, and one showing a steady but healthy freezer is <em>not</em> marked unknown too early.</p></div>
   <div class="stage-block"><h3><span class="stage-num">4</span>Replay the night</h3><p>Run the whole night through your model and save the timeline:</p><pre tabindex="0">python -m coldstore.replay data/night.jsonl --speed 600 &gt; replay.txt</pre><p>Copy the part around F4 into <code>REPLAY.md</code> and mark the moment it goes unknown. Optional: repeat with <code>docker compose up -d mosquitto</code> and <code>--mqtt</code>.</p></div>
   <div class="stage-block"><h3><span class="stage-num">5</span>Write the memo</h3><p>Fill in <code>DECISIONS.md</code>, about one page: your unknown-state rule and why, your call on each of the three requests, and what your AI assistant wrote, got wrong or missed.</p></div>
-  <div class="submit-box"><h3>Submit (in Brightspace)</h3><ul>
+  <div class="submit-box"><h3>What goes in <code>challenge/</code> (pushed with your AIC 1 repo)</h3><ul>
       <li><code>coldstore/connection.py</code> and <code>tests/test_my_rules.py</code></li>
-      <li>The output of <code>pytest</code>, all tests passing (including yours)</li>
+      <li>The output of <code>pytest</code>, saved as <code>challenge/pytest-output.txt</code>, all tests passing (including yours)</li>
       <li><code>REPLAY.md</code>: one replay of the recorded night, with the moment a freezer goes unknown</li>
       <li><code>DECISIONS.md</code>: your unknown-state rule and why, and your shadow-or-twin call on each of the three features, with what each would let the system control</li>
     </ul></div>
@@ -91,9 +91,10 @@ table.rubric td:nth-child(n+4) { width:22%; }
 
 <section class="module card" id="grading">
   <div class="module-head"><div class="module-icon">📊</div><div><h2>How it's graded</h2></div></div>
-<p>Each criterion is graded on one part of your submission, at one of three levels.</p>
-<div class="table-wrap" tabindex="0"><table class="mini rubric"><tr><th>Criterion</th><th>Weight</th><th>Graded on</th><th>Full</th><th>Partial</th><th>Missing</th></tr><tr><td><strong>Application</strong></td><td class="wt">10%</td><td><code>REPLAY.md</code></td><td>Your model runs on the warehouse's night, and the timeline shows each recorded fault flagged and F4 going unknown.</td><td>It runs, but one fault isn't flagged and you don't explain why.</td><td>It restates the HOS 1 floor twin, or doesn't run.</td></tr><tr><td><strong>Analysis</strong></td><td class="wt">20%</td><td><code>DECISIONS.md</code>, section 2 (three requests)</td><td>For each request you name the arrow it adds: who or what acts on the freezer, and how fast.</td><td>A verdict for each, with generic reasons.</td><td>No breakdown.</td></tr><tr><td><strong>Evaluation</strong></td><td class="wt">30%</td><td><code>DECISIONS.md</code>, section 1 (unknown state)</td><td>A clear rule, judged against stated criteria (false alarms vs. lost stock), with an alternative you rejected and why.</td><td>A rule with a reason, but no criteria or no rejected alternative.</td><td>No rule, or no justification.</td></tr><tr><td><strong>Design</strong></td><td class="wt">40%</td><td><code>coldstore/connection.py</code>, your tests and the <code>pytest</code> output</td><td>All provided tests pass, and your own tests check your rule, including the steady-freezer edge.</td><td>Most provided tests pass, or your tests cover only the easy case.</td><td>It doesn't run, or you wrote no tests of your own.</td></tr></table></div>
-<p class="small muted">How this differs from HOS 1's Understand &amp; Refine: there you extended code you already understood, by hand, with no AI. Here the business, the code and the decisions are new, AI help is allowed, and half the grade (Analysis and Evaluation) is for the calls you make, not the typing.</p>
+<p>The challenge is the <b>Challenge half of the AIC 1 grade: 40 of its 100 points</b>, graded with the build at the end of Week 2. It has four criteria, weighted as in the syllabus: Application 4, Analysis 8, Evaluation 12 and Design 16. Each is graded on part of what you push.</p>
+        <p>When the challenge is done, finish AIC 1 with the <a href="index.html#postmortem"><b>Post Mortem</b></a>: three short answers in <code>NOTES.md</code>, written without AI and graded under the build's Understand criterion. Your instructor answers the most common "still unclear" points at the start of the next module.</p>
+<div class="table-wrap" tabindex="0"><table class="mini rubric"><tr><th>Criterion</th><th>Weight</th><th>Graded on</th><th>Full</th><th>Partial</th><th>Missing</th></tr><tr><td><strong>Application</strong></td><td class="wt">4 pts</td><td><code>REPLAY.md</code></td><td>Your model runs on the warehouse's night, and the timeline shows each recorded fault flagged and F4 going unknown.</td><td>It runs, but one fault isn't flagged and you don't explain why.</td><td>It restates the AIC 1 floor twin, or doesn't run.</td></tr><tr><td><strong>Analysis</strong></td><td class="wt">8 pts</td><td><code>DECISIONS.md</code>, section 2 (three requests)</td><td>For each request you name the arrow it adds: who or what acts on the freezer, and how fast.</td><td>A verdict for each, with generic reasons.</td><td>No breakdown.</td></tr><tr><td><strong>Evaluation</strong></td><td class="wt">12 pts</td><td><code>DECISIONS.md</code>, section 1 (unknown state)</td><td>A clear rule, judged against stated criteria (false alarms vs. lost stock), with an alternative you rejected and why.</td><td>A rule with a reason, but no criteria or no rejected alternative.</td><td>No rule, or no justification.</td></tr><tr><td><strong>Design</strong></td><td class="wt">16 pts</td><td><code>coldstore/connection.py</code>, your tests and the <code>pytest</code> output</td><td>All provided tests pass, and your own tests check your rule, including the steady-freezer edge.</td><td>Most provided tests pass, or your tests cover only the easy case.</td><td>It doesn't run, or you wrote no tests of your own.</td></tr></table></div>
+<p class="small muted">How this differs from AIC 1's Understand &amp; Refine: there you extended code you already understood, by hand, with no AI. Here the business, the code and the decisions are new, AI help is allowed, and half the challenge grade (Analysis and Evaluation, 20 of the 40 points) is for the calls you make, not the typing.</p>
 </section>
 
 <section class="module card" id="snags">
@@ -101,7 +102,7 @@ table.rubric td:nth-child(n+4) { width:22%; }
 <div class="snag-box"><ul><li><strong><code>missing</code> fires for every message</strong> — compare each <code>seq</code> with the previous one <em>for that freezer and topic</em>, not across all freezers.</li><li><strong><code>late</code> never fires during the replay</strong> — compare the sensor's <code>ts</code> with the replay's arrival time (<code>now</code>), not with <code>time.time()</code>. The replay runs faster than real time.</li><li><strong>A door-open warm-up is flagged impossible</strong> — the 2 °C-a-minute limit applies only with the door shut. Track the door state per freezer.</li><li><strong>The assistant changed a test to make it pass</strong> — undo it with <code>git checkout tests/</code>. The provided tests are the spec.</li></ul></div>
 </section>
 
-<div class="guide-nav"><a href="hos-guide.html">← HOS 1 guide</a><a href="index.html">Module 1 lesson →</a></div>
+<div class="guide-nav"><a href="hos-guide.html">← AIC 1 build guide</a><a href="index.html">Module 1 lesson →</a></div>
 </main>
 <footer class="foot">AI 440: Digital Twins and Physical AI · City University of Seattle, School of Technology &amp; Computing<br>Course design &amp; materials: Clark Ngo · Simulators are illustrative HTML models — no real sensors, models, simulators or network calls.<br>© 2026 Clark Ngo · Free to reuse and adapt under <a href="https://creativecommons.org/licenses/by/4.0/" rel="license">CC BY 4.0</a>, except where noted · <a href="https://github.com/clarkngo/ai440/blob/main/LICENSE.md">How to credit</a></footer>
 <script src="../assets/course.js"></script>

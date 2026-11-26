@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="AI 440 HOS 3 hands-on guide: Simulation, Synthetic Data and Sim-to-Real, stage by stage (Create, Evaluate, Analyze, Understand and Refine) in GitHub Codespaces.">
-<title>AI 440 — HOS 3 Hands-On Guide: Simulation, Synthetic Data and Sim-to-Real</title>
+<meta name="description" content="AI 440 AIC 3 hands-on guide: Simulation, Synthetic Data and Sim-to-Real, stage by stage (Create, Evaluate, Analyze, Understand and Refine) in GitHub Codespaces.">
+<title>AI 440 — AIC 3 Hands-On Guide: Simulation, Synthetic Data and Sim-to-Real</title>
 <link rel="stylesheet" href="../assets/course.css">
 <style>
 .needs-list li { margin-bottom:6px; }
@@ -33,8 +33,8 @@
 </header>
 <section class="hero">
   <div class="hero-inner">
-    <div class="eyebrow">AI 440 · Module 3 · Hands-On Skill (HOS) guide</div>
-    <h1>HOS 3: Simulation, Synthetic Data &amp; Sim-to-Real</h1>
+    <div class="eyebrow">AI 440 · Module 3 · AI Challenge (AIC) guide</div>
+    <h1>AIC 3: Simulation, Synthetic Data &amp; Sim-to-Real</h1>
     <p class="lede">Build a simulated packaging cell in MuJoCo, export it to OpenUSD, render labeled synthetic images, train a pushing policy with and without randomized physics on CPU, then measure on held-out worlds how each one holds up when the world changes.</p>
     <div class="chips"><span class="chip">Est. 5–6 hrs</span><span class="chip">CO4</span><span class="chip">Module 3 · Weeks 5–6</span><span class="chip">10% of final grade</span></div>
   </div>
@@ -51,20 +51,20 @@
   </ol>
   <h3>What you'll need</h3>
   <ul class="needs-list">
-    <li><strong>Starter code:</strong> your own <b>HOS 3</b> repo, opened in GitHub Codespaces. <span class="tag amber">Planned</span> The HOS 3 starter repository and its GitHub Classroom invite are being built and tested; the invite link goes here when they are published. Not sure what a file does? See the <a href="../reference/starter-code-walkthrough.html#hos3">starter code walkthrough for this HOS</a>.</li>
+    <li><strong>Starter code:</strong> your own <b>AIC 3</b> repo, opened in GitHub Codespaces. <span class="tag amber">Planned</span> The AIC 3 starter repository and its GitHub Classroom invite are being built and tested; the invite link goes here when they are published. Not sure what a file does? See the <a href="../reference/starter-code-walkthrough.html#hos3">starter code walkthrough for this AIC</a>.</li>
     <li>A <a href="../start-here/accounts.html#github">GitHub account</a>. No GPU and no paid service: MuJoCo, <code>usd-core</code>, BlenderProc, Gymnasium and Stable-Baselines3 are free and open source.</li><li>The default 2-core Codespace and some patience: training takes about 10 minutes, the first BlenderProc run downloads Blender (about 400 MB), and each image takes a second or two to render.</li>
   </ul>
   <div class="ref-box"><h3>Reference reading (optional, before you start)</h3><ul>
     <li><a href="https://mujoco.readthedocs.io/en/stable/python.html" target="_blank" rel="noopener">MuJoCo Python bindings</a>: loading a model, stepping it, and changing <code>model</code> arrays at run time.</li><li><a href="https://openusd.org/release/intro.html" target="_blank" rel="noopener">Introduction to OpenUSD</a>: prims, stages and layers, enough to read your <code>.usda</code> file.</li><li><a href="https://stable-baselines3.readthedocs.io/en/master/modules/ppo.html" target="_blank" rel="noopener">Stable-Baselines3: PPO</a>: the algorithm and its settings, and why it runs fine on CPU for small policies.</li>
   </ul></div>
-  <p>This HOS is graded across four stages instead of on code correctness alone: <strong>Engagement</strong> (Create/Scaffold) is 20% of the HOS grade, and <strong>Skills</strong> is 80%: Evaluate, Analyze, Apply (the change you make by hand in Understand &amp; Refine) and Understand (your own explanation of it), 20% each. Each stage below says exactly what to submit. Everything goes in your Module 3 GitHub Classroom repo: written work under the matching heading in <code>NOTES.md</code>, screenshots in <code>screenshots/</code>. Commit and push as you go. By the end of Week 6, push your final work: your repo is your submission, so there is nothing to submit in Brightspace, and your last push before the deadline is what counts.</p>
+  <p>This guide covers the <strong>build</strong>: Part A (Create / Scaffold, Evaluate) and the first half of Part B (Analyze, Understand &amp; Refine). It is graded across those stages instead of on code correctness alone, for <strong>60 of the 100 AIC points</strong>: 12 points each for Create, Evaluate, Analyze, Apply (the change you make by hand in Understand &amp; Refine) and Understand (your own explanation of it, plus the short <a href="index.html#postmortem">Post Mortem</a> you write after the challenge). The other 40 points are the <a href="application-challenge.html">Part B challenge</a>, in the <code>challenge/</code> folder of the same repo. The whole AIC is graded once, at the end of Week 6. Each stage below says exactly what to submit. Everything goes in your Module 3 GitHub Classroom repo: written work under the matching heading in <code>NOTES.md</code>, screenshots in <code>screenshots/</code>. Commit and push as you go. By the end of Week 6, push your final work: your repo is your submission, so there is nothing to submit in Brightspace, and your last push before the deadline is what counts.</p>
 </section>
 <section class="module card" id="create">
   <div class="module-head"><div class="module-icon">🛠️</div><div><h2>1 · Create / Scaffold</h2><div class="module-meta"><span class="tag blue">Week 5 · Wed–Thu</span></div></div></div>
-<p class="stage-tagline">Graded as Engagement: 20% of this HOS. The AI-built starting point, not the deliverable.</p>
+<p class="stage-tagline">Graded under Build: Create, 12 of the 100 AIC points. The AI-built starting point, not the deliverable.</p>
   <p>Get the simulated cell running, its scene description exported, a set of labeled images rendered, and, with an AI coding assistant, two pushing policies trained: one fixed, one randomized. The cell, the exporter and the renderer are in the starter. This is the starting point, not the deliverable; whether it transfers is what Evaluate is for.</p>
   <ol>
-    <li>Open your own <b>HOS 3</b> repo in GitHub Codespaces (its <code>.devcontainer</code> installs MuJoCo, Gymnasium, CPU-only Stable-Baselines3, <code>usd-core</code> and BlenderProc). <span class="tag amber">Planned</span> The HOS 3 starter repository and its GitHub Classroom invite are being built and tested; the invite link goes here when they are published.</li>
+    <li>Open your own <b>AIC 3</b> repo in GitHub Codespaces (its <code>.devcontainer</code> installs MuJoCo, Gymnasium, CPU-only Stable-Baselines3, <code>usd-core</code> and BlenderProc). <span class="tag amber">Planned</span> The AIC 3 starter repository and its GitHub Classroom invite are being built and tested; the invite link goes here when they are published.</li>
     <li>Run the cell once: <code>python -m simulation.run_once</code> writes <code>renders/first_frame.png</code>. Then export it: <code>python -m simulation.export_usd</code> writes <code>scene/cell.usda</code>. Open the file and find the carton.</li>
     <li>Give your assistant the prompt below, then start <code>python train.py</code>. It takes about 10 minutes on two cores; carry on with the next step while it runs.</li>
     <li>Render the labeled images: <code>blenderproc run synth/render_parts.py --n 200</code>. The first run downloads Blender (a few minutes); after that, each 256 × 256 image takes a second or two on CPU.</li>
@@ -91,7 +91,7 @@ plots/training.png showing both learning curves.
 It must finish in under 10 minutes on a 2-core Codespace.
 Make pytest pass.</code></pre>
   <p class="small"><b>Gotchas to expect:</b> (1) The assistant may build in a <em>new</em> workspace instead of your starter folder; use Agent mode and say "this existing workspace". (2) There is no GPU: if it sets <code>device="cuda"</code> or installs a CUDA build of PyTorch, training fails or the disk fills up. Keep <code>device="cpu"</code> and the pinned <code>requirements.txt</code>. (3) Headless rendering needs <code>MUJOCO_GL=osmesa</code>, which the <code>.devcontainer</code> sets; if the assistant changes it, <code>run_once</code> fails with an OpenGL error. (4) If the assistant reloads the XML every episode, training gets ten times slower.</p>
-  <div class="submit-box"><h3>Submit (Engagement)</h3><ul><li>Paste the prompt you gave your AI assistant under <b>Create</b> in <code>NOTES.md</code>, add <code>plots/training.png</code> and <code>renders/samples.png</code> (a grid of nine of your images) to <code>screenshots/</code>, then commit and push to your Module 3 repo.</li></ul></div>
+  <div class="submit-box"><h3>Submit (Create)</h3><ul><li>Paste the prompt you gave your AI assistant under <b>Create</b> in <code>NOTES.md</code>, add <code>plots/training.png</code> and <code>renders/samples.png</code> (a grid of nine of your images) to <code>screenshots/</code>, then commit and push to your Module 3 repo.</li></ul></div>
 </section>
 <section class="module card" id="evaluate">
   <div class="module-head"><div class="module-icon">🔍</div><div><h2>2 · Evaluate</h2><div class="module-meta"><span class="tag blue">Week 5 · Fri–Sun</span></div></div></div>
@@ -131,7 +131,7 @@ Make pytest pass.</code></pre>
   </div>
 </section>
 
-<div class="guide-nav"><a href="../module-2/hos-guide.html">← HOS 2 guide</a><a href="index.html">Module 3 lesson →</a></div>
+<div class="guide-nav"><a href="../module-2/hos-guide.html">← AIC 2 build guide</a><a href="index.html">Module 3 lesson →</a></div>
 </main>
 <footer class="foot">AI 440: Digital Twins and Physical AI · City University of Seattle, School of Technology &amp; Computing<br>Course design &amp; materials: Clark Ngo · Simulators are illustrative HTML models — no real sensors, models, simulators or network calls.<br>© 2026 Clark Ngo · Free to reuse and adapt under <a href="https://creativecommons.org/licenses/by/4.0/" rel="license">CC BY 4.0</a>, except where noted · <a href="https://github.com/clarkngo/ai440/blob/main/LICENSE.md">How to credit</a></footer>
 <script src="../assets/course.js"></script>

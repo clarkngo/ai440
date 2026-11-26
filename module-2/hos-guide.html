@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="AI 440 HOS 2 hands-on guide: Physics-Informed Neural Networks, stage by stage (Create, Evaluate, Analyze, Understand and Refine) in GitHub Codespaces.">
-<title>AI 440 — HOS 2 Hands-On Guide: Physics-Informed Neural Networks</title>
+<meta name="description" content="AI 440 AIC 2 hands-on guide: Physics-Informed Neural Networks, stage by stage (Create, Evaluate, Analyze, Understand and Refine) in GitHub Codespaces.">
+<title>AI 440 — AIC 2 Hands-On Guide: Physics-Informed Neural Networks</title>
 <link rel="stylesheet" href="../assets/course.css">
 <style>
 .needs-list li { margin-bottom:6px; }
@@ -33,8 +33,8 @@
 </header>
 <section class="hero">
   <div class="hero-inner">
-    <div class="eyebrow">AI 440 · Module 2 · Hands-On Skill (HOS) guide</div>
-    <h1>HOS 2: Physics-Informed Neural Networks</h1>
+    <div class="eyebrow">AI 440 · Module 2 · AI Challenge (AIC) guide</div>
+    <h1>AIC 2: Physics-Informed Neural Networks</h1>
     <p class="lede">Train a physics-informed neural network in plain PyTorch on CPU that predicts the temperature inside a building wall through a cold snap, compare it with a data-only network where the twin actually needs predictions, then make the wall's diffusivity something the PINN learns.</p>
     <div class="chips"><span class="chip">Est. 4–5 hrs</span><span class="chip">CO2</span><span class="chip">Module 2 · Weeks 3–4</span><span class="chip">10% of final grade</span></div>
   </div>
@@ -51,20 +51,20 @@
   </ol>
   <h3>What you'll need</h3>
   <ul class="needs-list">
-    <li><strong>Starter code:</strong> your own <b>HOS 2</b> repo, opened in GitHub Codespaces. <span class="tag amber">Planned</span> The HOS 2 starter repository and its GitHub Classroom invite are being built and tested; the invite link goes here when they are published. Not sure what a file does? See the <a href="../reference/starter-code-walkthrough.html#hos2">starter code walkthrough for this HOS</a>.</li>
+    <li><strong>Starter code:</strong> your own <b>AIC 2</b> repo, opened in GitHub Codespaces. <span class="tag amber">Planned</span> The AIC 2 starter repository and its GitHub Classroom invite are being built and tested; the invite link goes here when they are published. Not sure what a file does? See the <a href="../reference/starter-code-walkthrough.html#hos2">starter code walkthrough for this AIC</a>.</li>
     <li>A <a href="../start-here/accounts.html#github">GitHub account</a>. No GPU and no paid service: PyTorch (the CPU build) and DeepXDE are free.</li><li>The default 2-core Codespace. Training the PINN takes 2–5 minutes; the data-only network under a minute.</li>
   </ul>
   <div class="ref-box"><h3>Reference reading (optional, before you start)</h3><ul>
     <li><a href="https://pytorch.org/tutorials/beginner/basics/autogradqs_tutorial.html" target="_blank" rel="noopener">PyTorch: automatic differentiation with torch.autograd</a>: how <code>torch.autograd.grad</code> gives derivatives of the network's output.</li><li><a href="https://deepxde.readthedocs.io/en/latest/demos/pinn_forward.html" target="_blank" rel="noopener">DeepXDE forward-problem demos</a>: the same kind of problem in a PINN library, for the Analyze mapping.</li><li><a href="https://doi.org/10.1016/j.jcp.2018.10.045" target="_blank" rel="noopener">Raissi, Perdikaris &amp; Karniadakis (2019)</a>: the paper that introduced physics-informed neural networks.</li>
   </ul></div>
-  <p>This HOS is graded across four stages instead of on code correctness alone: <strong>Engagement</strong> (Create/Scaffold) is 20% of the HOS grade, and <strong>Skills</strong> is 80%: Evaluate, Analyze, Apply (the change you make by hand in Understand &amp; Refine) and Understand (your own explanation of it), 20% each. Each stage below says exactly what to submit. Everything goes in your Module 2 GitHub Classroom repo: written work under the matching heading in <code>NOTES.md</code>, screenshots in <code>screenshots/</code>. Commit and push as you go. By the end of Week 4, push your final work: your repo is your submission, so there is nothing to submit in Brightspace, and your last push before the deadline is what counts.</p>
+  <p>This guide covers the <strong>build</strong>: Part A (Create / Scaffold, Evaluate) and the first half of Part B (Analyze, Understand &amp; Refine). It is graded across those stages instead of on code correctness alone, for <strong>60 of the 100 AIC points</strong>: 12 points each for Create, Evaluate, Analyze, Apply (the change you make by hand in Understand &amp; Refine) and Understand (your own explanation of it, plus the short <a href="index.html#postmortem">Post Mortem</a> you write after the challenge). The other 40 points are the <a href="application-challenge.html">Part B challenge</a>, in the <code>challenge/</code> folder of the same repo. The whole AIC is graded once, at the end of Week 4. Each stage below says exactly what to submit. Everything goes in your Module 2 GitHub Classroom repo: written work under the matching heading in <code>NOTES.md</code>, screenshots in <code>screenshots/</code>. Commit and push as you go. By the end of Week 4, push your final work: your repo is your submission, so there is nothing to submit in Brightspace, and your last push before the deadline is what counts.</p>
 </section>
 <section class="module card" id="create">
   <div class="module-head"><div class="module-icon">🛠️</div><div><h2>1 · Create / Scaffold</h2><div class="module-meta"><span class="tag blue">Week 3 · Wed–Thu</span></div></div></div>
-<p class="stage-tagline">Graded as Engagement: 20% of this HOS. The AI-built starting point, not the deliverable.</p>
+<p class="stage-tagline">Graded under Build: Create, 12 of the 100 AIC points. The AI-built starting point, not the deliverable.</p>
   <p>Get a working PINN with an AI coding assistant: the network, the three loss terms and the training loop, in plain PyTorch on CPU. The readings, a data-only network and a comparison script are already in the starter. This is the starting point, not the deliverable; whether it is right is what Evaluate is for.</p>
   <ol>
-    <li>Open your own <b>HOS 2</b> repo in GitHub Codespaces (its <code>.devcontainer</code> installs CPU-only PyTorch and DeepXDE). <span class="tag amber">Planned</span> The HOS 2 starter repository and its GitHub Classroom invite are being built and tested; the invite link goes here when they are published.</li>
+    <li>Open your own <b>AIC 2</b> repo in GitHub Codespaces (its <code>.devcontainer</code> installs CPU-only PyTorch and DeepXDE). <span class="tag amber">Planned</span> The AIC 2 starter repository and its GitHub Classroom invite are being built and tested; the invite link goes here when they are published.</li>
     <li>Train the data-only baseline first and look at its plot: <code>python compare.py --model data</code>. It writes <code>plots/data_only.png</code>.</li>
     <li>Give your assistant the prompt below, then run <code>python compare.py --model pinn</code> and <code>python compare.py --model both</code>.</li>
   </ol>
@@ -91,7 +91,7 @@ the wall: du/dt = ALPHA * d2u/dx2.
 - It must finish in under 5 minutes on a 2-core Codespace.
 - Make python compare.py --model pinn work and pytest pass.</code></pre>
   <p class="small"><b>Gotchas to expect:</b> (1) The assistant may build in a <em>new</em> workspace instead of your starter folder; use Agent mode and say "this existing workspace". (2) If it installs a CUDA build of PyTorch, the Codespace runs out of disk and the install fails; the starter pins the CPU wheel, so don't let it change <code>requirements.txt</code>. (3) A PINN that "trains" but whose physics loss never drops usually lost <code>requires_grad</code> on the collocation points, or forgot <code>create_graph=True</code>.</p>
-  <div class="submit-box"><h3>Submit (Engagement)</h3><ul><li>Paste the prompt you gave your AI assistant under <b>Create</b> in <code>NOTES.md</code>, add <code>plots/both.png</code> and a screenshot of <code>compare.py</code>'s error table to <code>screenshots/</code>, then commit and push to your Module 2 repo.</li></ul></div>
+  <div class="submit-box"><h3>Submit (Create)</h3><ul><li>Paste the prompt you gave your AI assistant under <b>Create</b> in <code>NOTES.md</code>, add <code>plots/both.png</code> and a screenshot of <code>compare.py</code>'s error table to <code>screenshots/</code>, then commit and push to your Module 2 repo.</li></ul></div>
 </section>
 <section class="module card" id="evaluate">
   <div class="module-head"><div class="module-icon">🔍</div><div><h2>2 · Evaluate</h2><div class="module-meta"><span class="tag blue">Week 3 · Fri–Sun</span></div></div></div>
@@ -131,7 +131,7 @@ the wall: du/dt = ALPHA * d2u/dx2.
   </div>
 </section>
 
-<div class="guide-nav"><a href="../module-1/hos-guide.html">← HOS 1 guide</a><a href="index.html">Module 2 lesson →</a></div>
+<div class="guide-nav"><a href="../module-1/hos-guide.html">← AIC 1 build guide</a><a href="index.html">Module 2 lesson →</a></div>
 </main>
 <footer class="foot">AI 440: Digital Twins and Physical AI · City University of Seattle, School of Technology &amp; Computing<br>Course design &amp; materials: Clark Ngo · Simulators are illustrative HTML models — no real sensors, models, simulators or network calls.<br>© 2026 Clark Ngo · Free to reuse and adapt under <a href="https://creativecommons.org/licenses/by/4.0/" rel="license">CC BY 4.0</a>, except where noted · <a href="https://github.com/clarkngo/ai440/blob/main/LICENSE.md">How to credit</a></footer>
 <script src="../assets/course.js"></script>

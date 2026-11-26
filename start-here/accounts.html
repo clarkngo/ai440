@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="AI 440 account setup: a GitHub account for Week 1 and a free Gemini API key for HOS 4, plus the tools that need no account.">
+<meta name="description" content="AI 440 account setup: a GitHub account for Week 1 and a free Gemini API key for AIC 4, plus the tools that need no account.">
 <title>AI 440 — Account &amp; Service Setup</title>
 <link rel="stylesheet" href="../assets/course.css">
 <style>
@@ -98,14 +98,14 @@
 <div class="intro-box"><h3>What this page is</h3><p style="margin:0">Every account this course asks you to create, with exactly what to click. There are two, both free. Everything else in the course runs inside your Codespace and needs no account at all.</p></div>
   <div class="table-wrap" tabindex="0"><table class="map-table">
     <tr><th>Service</th><th>What it's for</th><th>First needed</th><th>Jump</th></tr>
-    <tr><td class="svc-name">GitHub</td><td>Your repo for each HOS and Application Challenge, the Codespace you build in, and GitHub Copilot</td><td>HOS 1 (Week 1)</td><td><a class="jump" href="#github">Read →</a></td></tr>
-    <tr><td class="svc-name">Google AI Studio</td><td>A free Gemini API key for the ADK agent in HOS 4, and in your Term Project if your twin uses an agent</td><td>HOS 4 (Week 7)</td><td><a class="jump" href="#gemini">Read →</a></td></tr>
+    <tr><td class="svc-name">GitHub</td><td>Your repo for each AIC (build and Part B challenge), the Codespace you build in, and GitHub Copilot</td><td>AIC 1 (Week 1)</td><td><a class="jump" href="#github">Read →</a></td></tr>
+    <tr><td class="svc-name">Google AI Studio</td><td>A free Gemini API key for the ADK agent in AIC 4, and in your Term Project if your twin uses an agent</td><td>AIC 4 (Week 7)</td><td><a class="jump" href="#gemini">Read →</a></td></tr>
   </table></div>
 </section>
 
 <section class="module card" id="github">
-  <div class="module-head"><div class="module-icon">🐙</div><div><h2>GitHub</h2><div class="module-meta"><span class="tag blue">First needed: HOS 1</span><span class="tag">Free — no credit card</span></div></div></div>
-<p class="why-line"><strong>What it's for:</strong> your own repo for each HOS and Application Challenge, created from the invite link in each module, and the Codespace you open from it.</p>
+  <div class="module-head"><div class="module-icon">🐙</div><div><h2>GitHub</h2><div class="module-meta"><span class="tag blue">First needed: AIC 1</span><span class="tag">Free — no credit card</span></div></div></div>
+<p class="why-line"><strong>What it's for:</strong> your own repo for each AIC (build and Part B challenge), created from the invite link in each module, and the Codespace you open from it.</p>
   <ol class="steps">
     <li>Go to <a href="https://github.com" target="_blank" rel="noopener">github.com</a> and click <strong>Sign up</strong>.</li>
     <li>Enter an email, create a password and pick a username. Use something professional: this account is worth keeping for internships and job applications.</li>
@@ -117,16 +117,16 @@
 </section>
 
 <section class="module card" id="gemini">
-  <div class="module-head"><div class="module-icon">🔑</div><div><h2>Google AI Studio: Gemini API key</h2><div class="module-meta"><span class="tag blue">First needed: HOS 4 (Week 7)</span><span class="tag">Free — no credit card</span></div></div></div>
-<p class="why-line"><strong>What it's for:</strong> the key that lets your HOS 4 agent, built with Google's Agent Development Kit, call Gemini. You get it once and reuse it.</p>
+  <div class="module-head"><div class="module-icon">🔑</div><div><h2>Google AI Studio: Gemini API key</h2><div class="module-meta"><span class="tag blue">First needed: AIC 4 (Week 7)</span><span class="tag">Free — no credit card</span></div></div></div>
+<p class="why-line"><strong>What it's for:</strong> the key that lets your AIC 4 agent, built with Google's Agent Development Kit, call Gemini. You get it once and reuse it.</p>
   <ol class="steps">
     <li>Go to <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a> and sign in with a <strong>personal</strong> Google account (a Gmail address). School and work accounts may be refused.</li>
     <li>Click <strong>Create API key</strong>.</li>
     <li>Copy the long string it gives you. It starts with something like <code>AIza</code>.</li>
-    <li>In your HOS 4 Codespace, copy <code>.env.example</code> to <code>.env</code> and paste the key after <code>GOOGLE_API_KEY=</code>.</li>
+    <li>In your AIC 4 Codespace, copy <code>.env.example</code> to <code>.env</code> and paste the key after <code>GOOGLE_API_KEY=</code>.</li>
   </ol>
   <div class="explain"><strong>Treat this like a password.</strong> Never paste it into a file you commit, a chat, an AI assistant's prompt, or a screenshot. The free tier needs no billing account; if a call fails with a rate-limit error (<code>429</code>), wait a minute and try again. The starter sets the model to <code>gemini-3.8-flash</code>, which works with new keys; older model names may not.</div>
-  <div class="done-box"><h3>You'll know it worked when…</h3><ul><li>The HOS 4 agent answers in <code>adk web --allow_origins "*"</code>. A missing or wrong key shows an error on the first message.</li></ul></div>
+  <div class="done-box"><h3>You'll know it worked when…</h3><ul><li>The AIC 4 agent answers in <code>adk web --allow_origins "*"</code>. A missing or wrong key shows an error on the first message.</li></ul></div>
 </section>
 
 <section class="module card" id="none">
@@ -134,17 +134,17 @@
 <p>These all run inside your Codespace, free and open source, with nothing to sign up for:</p>
   <div class="table-wrap" tabindex="0"><table class="map-table">
     <tr><th>Tool</th><th>Used in</th><th>What it does</th></tr>
-    <tr><td class="svc-name">Mosquitto, Node-RED, InfluxDB, Grafana</td><td>HOS 1, HOS 4, AC 1</td><td>The MQTT broker, flow editor, time-series database and dashboard, in Docker. Local passwords come from the starter's <code>.env.example</code>.</td></tr>
-    <tr><td class="svc-name">PyTorch (CPU), DeepXDE</td><td>HOS 2, AC 2</td><td>Training physics-informed neural networks.</td></tr>
-    <tr><td class="svc-name">MuJoCo, OpenUSD (<code>usd-core</code>), BlenderProc</td><td>HOS 3, AC 3</td><td>Physics simulation, scene description and synthetic images. BlenderProc downloads Blender on its first run.</td></tr>
-    <tr><td class="svc-name">Gymnasium, Stable-Baselines3</td><td>HOS 3</td><td>Reinforcement-learning environments and training, on CPU.</td></tr>
-    <tr><td class="svc-name">SimPy</td><td>HOS 4, AC 4</td><td>Discrete-event simulation for what-if sweeps.</td></tr>
+    <tr><td class="svc-name">Mosquitto, Node-RED, InfluxDB, Grafana</td><td>AIC 1 (build and challenge), AIC 4</td><td>The MQTT broker, flow editor, time-series database and dashboard, in Docker. Local passwords come from the starter's <code>.env.example</code>.</td></tr>
+    <tr><td class="svc-name">PyTorch (CPU), DeepXDE</td><td>AIC 2 (build and challenge)</td><td>Training physics-informed neural networks.</td></tr>
+    <tr><td class="svc-name">MuJoCo, OpenUSD (<code>usd-core</code>), BlenderProc</td><td>AIC 3 (build and challenge)</td><td>Physics simulation, scene description and synthetic images. BlenderProc downloads Blender on its first run.</td></tr>
+    <tr><td class="svc-name">Gymnasium, Stable-Baselines3</td><td>AIC 3</td><td>Reinforcement-learning environments and training, on CPU.</td></tr>
+    <tr><td class="svc-name">SimPy</td><td>AIC 4 (build and challenge)</td><td>Discrete-event simulation for what-if sweeps.</td></tr>
   </table></div>
 </section>
 
 <section class="module card" id="together">
   <div class="module-head"><div class="module-icon">🧩</div><div><h2>Putting it all together</h2></div></div>
-<p style="font-size:0.9rem;color:var(--muted)">Only the HOS 4 repo (and your Term Project, if it uses an agent) needs a key. Its <code>.env</code>, copied from <code>.env.example</code>, holds:</p>
+<p style="font-size:0.9rem;color:var(--muted)">Only the AIC 4 repo (and your Term Project, if it uses an agent) needs a key. Its <code>.env</code>, copied from <code>.env.example</code>, holds:</p>
   <div class="env-example" tabindex="0"><span class="key">GOOGLE_GENAI_USE_VERTEXAI</span>=FALSE<br><span class="key">GOOGLE_API_KEY</span>=AIzaSyD-your-real-key-goes-right-here<br><span class="key">MODEL</span>=gemini-3.8-flash</div>
   <p style="font-size:0.85rem;color:var(--muted)">This file is excluded from Git by each repo's <code>.gitignore</code>. It stays in your Codespace and is never committed.</p>
   <a class="back-to-top" href="#find">↑ Back to Find your service</a>

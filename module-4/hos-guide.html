@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="AI 440 HOS 4 hands-on guide: What-If Testing and Safe Autonomous Decisions, stage by stage (Create, Evaluate, Analyze, Understand and Refine) in GitHub Codespaces.">
-<title>AI 440 — HOS 4 Hands-On Guide: What-If Testing and Safe Autonomous Decisions</title>
+<meta name="description" content="AI 440 AIC 4 hands-on guide: What-If Testing and Safe Autonomous Decisions, stage by stage (Create, Evaluate, Analyze, Understand and Refine) in GitHub Codespaces.">
+<title>AI 440 — AIC 4 Hands-On Guide: What-If Testing and Safe Autonomous Decisions</title>
 <link rel="stylesheet" href="../assets/course.css">
 <style>
 .needs-list li { margin-bottom:6px; }
@@ -33,8 +33,8 @@
 </header>
 <section class="hero">
   <div class="hero-inner">
-    <div class="eyebrow">AI 440 · Module 4 · Hands-On Skill (HOS) guide</div>
-    <h1>HOS 4: What-If Testing &amp; Safe Autonomous Decisions</h1>
+    <div class="eyebrow">AI 440 · Module 4 · AI Challenge (AIC) guide</div>
+    <h1>AIC 4: What-If Testing &amp; Safe Autonomous Decisions</h1>
     <p class="lede">Run what-if sweeps on a simulated floor during a heat wave, find the combined failure the single tests miss, let an ADK agent change setpoints over MQTT, then write the safety envelope it can't break, from your own sweep results.</p>
     <div class="chips"><span class="chip">Est. 5–6 hrs</span><span class="chip">CO5</span><span class="chip">Module 4 · Weeks 7–8</span><span class="chip">10% of final grade</span></div>
   </div>
@@ -51,20 +51,20 @@
   </ol>
   <h3>What you'll need</h3>
   <ul class="needs-list">
-    <li><strong>Starter code:</strong> your own <b>HOS 4</b> repo, opened in GitHub Codespaces. <span class="tag amber">Planned</span> The HOS 4 starter repository and its GitHub Classroom invite are being built and tested; the invite link goes here when they are published. Not sure what a file does? See the <a href="../reference/starter-code-walkthrough.html#hos4">starter code walkthrough for this HOS</a>.</li>
+    <li><strong>Starter code:</strong> your own <b>AIC 4</b> repo, opened in GitHub Codespaces. <span class="tag amber">Planned</span> The AIC 4 starter repository and its GitHub Classroom invite are being built and tested; the invite link goes here when they are published. Not sure what a file does? See the <a href="../reference/starter-code-walkthrough.html#hos4">starter code walkthrough for this AIC</a>.</li>
     <li>A <a href="../start-here/accounts.html#github">GitHub account</a> and a free <a href="../start-here/accounts.html#gemini">Gemini API key</a> from Google AI Studio (no credit card). It goes in <code>.env</code> as <code>GOOGLE_API_KEY</code>.</li><li>The default 2-core Codespace. The sweep (480 runs) takes a few minutes; only the Mosquitto container runs this time.</li>
   </ul>
   <div class="ref-box"><h3>Reference reading (optional, before you start)</h3><ul>
     <li><a href="https://simpy.readthedocs.io/en/latest/simpy_intro/index.html" target="_blank" rel="noopener">SimPy in 10 minutes</a>: processes, events and timeouts, as <code>twin/floor_sim.py</code> uses them.</li><li><a href="https://google.github.io/adk-docs/callbacks/types-of-callbacks/" target="_blank" rel="noopener">ADK: types of callbacks</a>: what <code>before_tool_callback</code> receives, and what returning a dict does.</li><li><a href="https://www.nist.gov/itl/ai-risk-management-framework" target="_blank" rel="noopener">NIST AI Risk Management Framework</a>: the vocabulary of risk, oversight and accountability your Analyze can borrow.</li>
   </ul></div>
-  <p>This HOS is graded across four stages instead of on code correctness alone: <strong>Engagement</strong> (Create/Scaffold) is 20% of the HOS grade, and <strong>Skills</strong> is 80%: Evaluate, Analyze, Apply (the change you make by hand in Understand &amp; Refine) and Understand (your own explanation of it), 20% each. Each stage below says exactly what to submit. Everything goes in your Module 4 GitHub Classroom repo: written work under the matching heading in <code>NOTES.md</code>, screenshots in <code>screenshots/</code>. Commit and push as you go. By the end of Week 8, push your final work: your repo is your submission, so there is nothing to submit in Brightspace, and your last push before the deadline is what counts.</p>
+  <p>This guide covers the <strong>build</strong>: Part A (Create / Scaffold, Evaluate) and the first half of Part B (Analyze, Understand &amp; Refine). It is graded across those stages instead of on code correctness alone, for <strong>60 of the 100 AIC points</strong>: 12 points each for Create, Evaluate, Analyze, Apply (the change you make by hand in Understand &amp; Refine) and Understand (your own explanation of it, plus the short <a href="index.html#postmortem">Post Mortem</a> you write after the challenge). The other 40 points are the <a href="application-challenge.html">Part B challenge</a>, in the <code>challenge/</code> folder of the same repo. The whole AIC is graded once, at the end of Week 8. Each stage below says exactly what to submit. Everything goes in your Module 4 GitHub Classroom repo: written work under the matching heading in <code>NOTES.md</code>, screenshots in <code>screenshots/</code>. Commit and push as you go. By the end of Week 8, push your final work: your repo is your submission, so there is nothing to submit in Brightspace, and your last push before the deadline is what counts.</p>
 </section>
 <section class="module card" id="create">
   <div class="module-head"><div class="module-icon">🛠️</div><div><h2>1 · Create / Scaffold</h2><div class="module-meta"><span class="tag blue">Week 7 · Wed–Thu</span></div></div></div>
-<p class="stage-tagline">Graded as Engagement: 20% of this HOS. The AI-built starting point, not the deliverable.</p>
+<p class="stage-tagline">Graded under Build: Create, 12 of the 100 AIC points. The AI-built starting point, not the deliverable.</p>
   <p>Get a what-if sweep running on the floor model, with an AI coding assistant's help, and an ADK agent reading the twin and proposing setpoint changes over MQTT through a safety check that allows everything. The floor model, the agent's two tools and the logging are in the starter. This is the starting point, not the deliverable; whether it's safe is what Evaluate is for.</p>
   <ol>
-    <li>Open your own <b>HOS 4</b> repo in GitHub Codespaces. Copy <code>.env.example</code> to <code>.env</code> and paste your free Gemini API key. <span class="tag amber">Planned</span> The HOS 4 starter repository and its GitHub Classroom invite are being built and tested; the invite link goes here when they are published.</li>
+    <li>Open your own <b>AIC 4</b> repo in GitHub Codespaces. Copy <code>.env.example</code> to <code>.env</code> and paste your free Gemini API key. <span class="tag amber">Planned</span> The AIC 4 starter repository and its GitHub Classroom invite are being built and tested; the invite link goes here when they are published.</li>
     <li>Run one afternoon to see the model: <code>python -m twin.floor_sim --outside 34 --capacity 1.0 --people 40</code> prints each room's temperature every 15 minutes.</li>
     <li>Give your assistant the prompt below, then run <code>python -m whatif.sweep</code> and open <code>plots/sweep_heatmap.png</code>.</li>
     <li>Start the broker and the agent: <code>docker compose up -d mosquitto</code>, then <code>adk web --allow_origins "*"</code>, open the forwarded port, pick <code>hvac_agent</code> and ask it to keep Floor 3 comfortable through the afternoon.</li>
@@ -89,7 +89,7 @@ In whatif/sweep.py, write a what-if sweep over the SimPy floor model
 It must finish in under 5 minutes on a 2-core Codespace (CPU only).
 Make pytest pass. Do not change agent/envelope.py.</code></pre>
   <p class="small"><b>Gotchas to expect:</b> (1) The assistant may build in a <em>new</em> workspace instead of your starter folder; use Agent mode and say "this existing workspace". (2) Plain <code>adk web</code> returns 403 errors in Codespaces; always use <code>adk web --allow_origins "*"</code>. (3) The starter's <code>.env.example</code> names <code>gemini-3.8-flash</code>; older model names return errors for new free keys. (4) If the assistant "helpfully" adds limits to <code>agent/envelope.py</code>, undo them: writing the envelope from your own sweep is your Week 8 work.</p>
-  <div class="submit-box"><h3>Submit (Engagement)</h3><ul><li>Paste the prompt you gave your AI assistant under <b>Create</b> in <code>NOTES.md</code>, add <code>plots/sweep_heatmap.png</code> and a screenshot of the agent's first actions in <code>adk web</code> to <code>screenshots/</code>, then commit and push to your Module 4 repo.</li></ul></div>
+  <div class="submit-box"><h3>Submit (Create)</h3><ul><li>Paste the prompt you gave your AI assistant under <b>Create</b> in <code>NOTES.md</code>, add <code>plots/sweep_heatmap.png</code> and a screenshot of the agent's first actions in <code>adk web</code> to <code>screenshots/</code>, then commit and push to your Module 4 repo.</li></ul></div>
 </section>
 <section class="module card" id="evaluate">
   <div class="module-head"><div class="module-icon">🔍</div><div><h2>2 · Evaluate</h2><div class="module-meta"><span class="tag blue">Week 7 · Fri–Sun</span></div></div></div>
@@ -129,7 +129,7 @@ Make pytest pass. Do not change agent/envelope.py.</code></pre>
   </div>
 </section>
 
-<div class="guide-nav"><a href="../module-3/hos-guide.html">← HOS 3 guide</a><a href="index.html">Module 4 lesson →</a></div>
+<div class="guide-nav"><a href="../module-3/hos-guide.html">← AIC 3 build guide</a><a href="index.html">Module 4 lesson →</a></div>
 </main>
 <footer class="foot">AI 440: Digital Twins and Physical AI · City University of Seattle, School of Technology &amp; Computing<br>Course design &amp; materials: Clark Ngo · Simulators are illustrative HTML models — no real sensors, models, simulators or network calls.<br>© 2026 Clark Ngo · Free to reuse and adapt under <a href="https://creativecommons.org/licenses/by/4.0/" rel="license">CC BY 4.0</a>, except where noted · <a href="https://github.com/clarkngo/ai440/blob/main/LICENSE.md">How to credit</a></footer>
 <script src="../assets/course.js"></script>
